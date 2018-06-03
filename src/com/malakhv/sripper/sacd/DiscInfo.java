@@ -23,18 +23,20 @@ package com.malakhv.sripper.sacd;
 public final class DiscInfo extends BaseInfo {
 
 
-    /**  */
+    /** The Disc creation date. Can be {@code null}. */
     public String date;
 
-
+    /** The Disc version. Can be {@code null}. */
     public String version;
 
+    /** {@inheritDoc} */
     @Override
     public void clear() {
         super.clear();
         date = version = null;
     }
 
+    /** {@inheritDoc} */
     @Override
     public String toString() {
         return "DiscInfo {" + super.toString() + ", version=" + version + ", date=" + date + "}";
