@@ -40,7 +40,7 @@ uses
     SysUtils, MyStrUtils;
 
 const
-    DEBUG = True;
+    DEBUG = False;
 
 { Converts an array of bytes to string. }
 procedure PrintArray(Source: Array of Byte; Limit: Integer; InHex: Boolean);

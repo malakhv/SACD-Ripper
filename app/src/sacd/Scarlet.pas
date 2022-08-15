@@ -19,12 +19,18 @@ unit Scarlet;
 Interface
 
 const
+
+    SACD_MAX_SECTOR_COUNT = 123456; // TODO Need to specify
+
     { The length of one sector on disk in bytes. }
     SACD_SECTOR_LENGTH = 2048;
 
 type
-    { The raw data of a disk sector represents as byte array. }
+    { The raw data of a disk sector represents as a byte array. }
     TSectorData = Array [0..SACD_SECTOR_LENGTH - 1] of Byte;
+
+type
+    TSectorNumber = 0..High(ShortInt);
 
 type
     { The abstract sector with its number and data. }
@@ -33,16 +39,53 @@ type
         Data: TSectorData;
         { Returns offset for current sector in bytes. }
         function GetOffset(): Integer;
-        { Returns part of sector data from Start position as string. }
-        function ToString(Start, Count: Integer): String;
+        { Returns sector as a string. }
+        function ToString(): String; overload;
+        { Returns part of sector data from Start position as a string. }
+        function ToString(Start, Count: Integer): String; overload;
         { Clear all sector data in this record. }
         procedure ClearData();
+    end;
+
+type
+
+    TSACDArea = class (TObject)
+    private
+        FFirstSector: Integer;
+        FSectorCount: Integer;
+        RawData: Array of RSector;
+    protected
+        function DoGetData(Index : Integer): RSector;
+    public
+        property Data[Index : Integer]: RSector Read DoGetData; default;
+        property SectorCount: Integer read FSectorCount;
+        property FirstSector: Integer read FFirstSector;
+        { Returns true, if current object has a data. }
+        function HasData(): Boolean;
+        { Clear all sectos data. }
+        procedure ClearData();
+        { Load Aread data from file. }
+        procedure Load(var AFile: File);
+        { Construct a new instance of TAppLogs class with specified parameters. }
+        constructor Create(FirstSector, SectorCount: Integer);
+        {Free all related resources. }
+        destructor Destroy; override;
     end;
 
 //type
 //    TSacdFile = class(Tancestor)
 
 Implementation
+
+{
+    Common things
+}
+
+{ Returns offset for specified disk sector number. }
+function GetSectorOffset(SectorNumber: Integer): Integer;
+begin
+    Result := SectorNumber * SACD_SECTOR_LENGTH;
+end;
 
 { Converts an array of bytes to string. }
 function ByteArrayToStr(Source: Array of Byte): String;
@@ -53,13 +96,23 @@ begin
         Result := Result + Char(Source[i]);
 end;
 
+{
+    RSector
+}
+
 { Returns offset for current sector in bytes. }
 function RSector.GetOffset(): Integer;
 begin
-    Result := Number * SACD_SECTOR_LENGTH;
+    Result := GetSectorOffset(Number);
 end;
 
-{ Returns part of sector data from PosStart to PosEnd as string. }
+{ Returns sector as a string. }
+function RSector.ToString(): String;
+begin
+    Result := ToString(0, -1);
+end;
+
+{ Returns part of sector data from Start position as a string. }
 function RSector.ToString(Start, Count: Integer): String;
 var pos: Integer;
 begin
@@ -88,6 +141,69 @@ begin
     // TODO Need to optimization
     for i := Low(Data) to High(Data) do
         Data[i] := 0;
+end;
+
+{
+    TSACDArea
+}
+
+{ Construct a new instance of TAppLogs class with specified parameters. }
+constructor TSACDArea.Create(FirstSector, SectorCount: Integer);
+begin
+    FFirstSector := FirstSector;
+    FSectorCount := SectorCount;
+end;
+
+{ Free all related resources. }
+destructor TSACDArea.Destroy();
+begin
+    ClearData();
+end;
+
+function TSACDArea.DoGetData(Index : Integer): RSector;
+begin
+    Result := RawData[Index];
+end;
+
+{ Returns true, if current object has a data. }
+function TSACDArea.HasData(): Boolean;
+begin
+    Result := Length(RawData) > 0;
+end;
+
+{ Clear all sectos data. }
+procedure TSACDArea.ClearData();
+var i: integer;
+begin
+    if not HasData() then SetLength(RawData, 0);
+end;
+
+{ Load Aread data from file. }
+procedure TSACDArea.Load(var AFile: File);
+var i, sector, offset: integer;
+begin
+    // Clear current data
+    ClearData();
+    SetLength(RawData, SectorCount);
+
+    // Open inpurt file read and setting up
+    // size of read chunk to 1 byte
+    Reset(AFile, 1);
+
+    // Read data
+    sector := FirstSector;
+    offset := GetSectorOffset(FirstSector);
+    try
+        Seek(AFile, offset);
+        for i:= Low(RawData) to High(RawData) do
+        begin
+            RawData[i].Number := sector;
+            BlockRead(AFile, RawData[i].Data, SizeOf(RawData[i].Data));
+            Inc(sector);
+        end;
+    finally
+        CloseFile(AFile);
+    end;
 end;
 
 end.

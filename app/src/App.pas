@@ -24,6 +24,7 @@ var
     Sector: RSector;
     AppLogs: TAppLogs;
     i: integer;
+    DiskArea: TSACDArea;
 
 procedure ParseParams();
 var 
@@ -73,18 +74,21 @@ begin
     
     AssignFile(F, FName);
     ReadSector(F, 510, Sector);
+    Writeln(Sector.ToString());
     Writeln('-----');
-    ReadSector(F, 511, Sector);
-    Writeln(Sector.ToString(0, 20));
+    for i := 511 to 550 do
+    begin
+        ReadSector(F, i, Sector);
+        //Writeln(Sector.ToString(0, -1));
+    end;
 
 
-    Writeln('-----');
-    Writeln('MaxInt is ', MaxInt);
-
-    i := MaxInt;
-    //Inc(i);
-    //Inc(i);
-    i := i + 2;
-    Writeln('NewInt is ', i);
+    //Writeln('-----');
+    DiskArea := TSACDArea.Create(510, 1);
+    DiskArea.Load(F);
+    if DiskArea.HasData() then
+    begin
+        WriteLn(DiskArea[0].ToString());
+    end;
 
 end.
