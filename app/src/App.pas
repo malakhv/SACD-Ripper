@@ -25,6 +25,8 @@ var
     AppLogs: TAppLogs;
     i: integer;
     DiskArea: TSACDArea;
+    MasterToc: TMasterTocArea;
+    TextToc: TMasterTextArea;
 
 procedure ParseParams();
 var 
@@ -90,5 +92,17 @@ begin
     begin
         WriteLn(DiskArea[0].ToString());
     end;
+
+    Writeln('-----');
+    MasterToc := TMasterTocArea.Create();
+    MasterToc.Load(F);
+    Writeln(MasterToc.Header);
+
+    Writeln('-----');
+    TextToc := TMasterTextArea.Create();
+    TextToc.Load(F);
+    Writeln(TextToc.Header);
+    Writeln('Album: ', TextToc.AlbumTitle);
+    Writeln('Artist: ', TextToc.AlbumArtist);
 
 end.

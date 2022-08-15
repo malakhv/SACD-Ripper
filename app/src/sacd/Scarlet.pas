@@ -37,6 +37,8 @@ type
     RSector = record
         Number: Integer;
         Data: TSectorData;
+        function GetByte(Index: Integer): Byte;
+        property RawData[Index: Integer]: Byte read GetByte; default;
         { Returns offset for current sector in bytes. }
         function GetOffset(): Integer;
         { Returns sector as a string. }
@@ -72,10 +74,38 @@ type
         destructor Destroy; override;
     end;
 
+    TTocArea = class (TSACDArea)
+    protected
+        function DoGetHeader: String; virtual;
+    public
+        property Header: String read DoGetHeader;
+        constructor Create(FirstSector: Integer);
+    end;
+
+
+    TMasterTocArea = class (TTocArea)
+    public
+        constructor Create();
+    end;
+
+    TMasterTextArea = class (TTocArea)
+    protected
+        function DoGetAlbumTitle(): String;
+        function DoGetAlbumArtist(): String;
+        function GetPtr(From: Integer): Integer;
+    public
+        property AlbumTitle: String read DoGetAlbumTitle;
+        property AlbumArtist: String read DoGetAlbumArtist;
+        constructor Create();
+    end;
+
+
 //type
 //    TSacdFile = class(Tancestor)
 
 Implementation
+
+uses MyStrUtils;
 
 {
     Common things
@@ -96,9 +126,18 @@ begin
         Result := Result + Char(Source[i]);
 end;
 
+function BytesToInt(First, Second: Byte): Integer;
+begin
+    Result := (Integer(First) shl 8) or Second;
+end;
 {
     RSector
 }
+
+function RSector.GetByte(Index: Integer): Byte;
+begin
+    Result := Data[Index];
+end;
 
 { Returns offset for current sector in bytes. }
 function RSector.GetOffset(): Integer;
@@ -173,7 +212,6 @@ end;
 
 { Clear all sectos data. }
 procedure TSACDArea.ClearData();
-var i: integer;
 begin
     if not HasData() then SetLength(RawData, 0);
 end;
@@ -204,6 +242,81 @@ begin
     finally
         CloseFile(AFile);
     end;
+end;
+
+{
+    TTocArea
+}
+
+constructor TTocArea.Create(FirstSector: Integer);
+begin
+    inherited Create(FirstSector, 1);
+end;
+
+function TTocArea.DoGetHeader: String;
+begin
+    if HasData() then
+        Result := Self[0].ToString(0, 8)
+    else
+        Result := MyStrUtils.EMPTY;
+end;
+
+{
+    TMasterTocArea
+}
+
+constructor TMasterTocArea.Create();
+begin
+    inherited Create(510);
+end;
+
+{
+    TMasterTextArea
+}
+
+constructor TMasterTextArea.Create();
+begin
+    inherited Create(511);
+end;
+
+function TMasterTextArea.GetPtr(From: Integer): Integer;
+begin
+    if HasData() then
+        Result := BytesToInt(Self[0][From], Self[0][From + 1])
+    else
+        Result := -1;
+end;
+
+function TMasterTextArea.DoGetAlbumArtist(): String;
+const
+    ALBUM_ARTIST_PTR = 18;
+var s_pos, e_pos: Integer;
+begin
+    if not HasData() then
+    begin
+        Result := '';
+        Exit;
+    end;
+    s_pos := GetPtr(ALBUM_ARTIST_PTR);
+    e_pos := GetPtr(ALBUM_ARTIST_PTR + 2); // The next data is end of the current data
+    //WriteLn(s_pos, ' - ', e_pos);
+    Result := Self[0].ToString(s_pos, e_pos - s_pos);
+end;
+
+function TMasterTextArea.DoGetAlbumTitle(): String;
+const
+    ALBUM_TITLE_PTR = 16;
+var s_pos, e_pos: Integer;
+begin
+    if not HasData() then
+    begin
+        Result := '';
+        Exit;
+    end;
+    s_pos := GetPtr(ALBUM_TITLE_PTR);
+    e_pos := GetPtr(ALBUM_TITLE_PTR + 2); // The next data is end of the current data
+    //WriteLn(s_pos, ' - ', e_pos);
+    Result := Self[0].ToString(s_pos, e_pos - s_pos);
 end;
 
 end.
