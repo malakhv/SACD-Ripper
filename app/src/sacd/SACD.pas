@@ -1,0 +1,120 @@
+//
+// Copyright (C) 2022 Mikhail Malakhov <malakhv@gmail.com>
+//
+// Confidential and Proprietary. All Rights Reserved.
+// Unauthorized copying of this file, via any medium is strictly prohibited.
+//
+
+{
+    The Unit includes some things to working with SACD image file.
+    Author: Mikhail.Malakhov
+}
+
+Unit SACD;
+
+// Compiler options
+{$mode delphi}
+{$h+}
+
+Interface
+
+uses Scarlet;
+
+const
+
+    { The SACD image file magic data represents as a string }
+    SACD_MAGIC_CHAR = 'SACDMTOC';
+
+    { The SACD image file magic data offset }
+    SACD_MAGIC_OFFSET = $FF000;
+
+{ Checks that specified file is SACD image file. }
+function isSacdImage(Name: String): Boolean;
+
+//procedure ReadSector(AFile: File; Sector: RSector); override;
+procedure ReadSector(var AFile: File; Number: Integer; var Sector: RSector);
+
+Implementation
+
+uses
+    SysUtils, MyStrUtils;
+
+const
+    DEBUG = True;
+
+{ Converts an array of bytes to string. }
+procedure PrintArray(Source: Array of Byte; Limit: Integer; InHex: Boolean);
+const COLUMN_LIMIT = $F;
+var i, col: Integer;
+    val: Byte;
+begin
+    col := COLUMN_LIMIT;
+    if Limit <= 0 then Limit := MaxInt;
+    for i := Low(Source) to High(Source) do
+    begin
+        val := Source[i];
+        if (InHex) then
+            Write(IntToHex(val))
+        else
+            Write(val);
+        Write(' ');
+        Dec(Limit);
+        if Limit <= 0 then break;
+        Dec(col);
+        if col < 0 then
+        begin
+            Writeln('');
+            col := COLUMN_LIMIT;
+        end;
+    end;
+    Writeln('');
+end;
+
+{ Checks that specified file is SACD image file. }
+function isSacdImage(Name: String): Boolean;
+var
+    f: File;
+    buf: Array [1..SizeOf(SACD_MAGIC_CHAR)] of Byte;
+begin
+    // Open inpurt file read and setting up
+    // size of read chunk to 1 byte
+    AssignFile(f, Name);
+    Reset(f, 1);
+    try
+        Seek(f, SACD_MAGIC_OFFSET);
+        BlockRead(f, buf, SizeOf(buf));
+    finally
+        CloseFile(f);
+    end;
+
+    if DEBUG then
+    begin
+        Write('isSacdImage: ');
+        PrintArray(buf, 0, True);
+    end;
+    // Check magic data
+    Result := SACD_MAGIC_CHAR = BytesToStr(buf);
+end;
+
+procedure ReadSector(var AFile: File; Number: Integer; var Sector: RSector);
+begin
+    // Configure sector record
+    Sector.ClearData();
+    Sector.Number := Number;
+    // Open inpurt file read and setting up
+    // size of read chunk to 1 byte
+    Reset(AFile, 1);
+    try
+        Seek(AFile,Sector.GetOffset());
+        BlockRead(AFile, Sector.Data, SizeOf(Sector.Data));
+    finally
+        CloseFile(AFile);
+    end;
+    if DEBUG then
+    begin
+        Writeln('ReadSector ', Sector.Number, ':');
+        PrintArray(Sector.Data, 8, True);
+    end;
+end;
+
+end.
