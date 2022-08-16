@@ -11,7 +11,7 @@
   We use "My" prefix for all custom Units to differentiate it of standard Pascal Units.
 }
 
-unit MyStrUtils;
+unit Mikhan.Util.StrUtils;
 
 // Compiler options
 {$mode delphi}

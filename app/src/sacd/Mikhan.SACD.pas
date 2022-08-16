@@ -10,7 +10,7 @@
     Author: Mikhail.Malakhov
 }
 
-Unit SACD;
+Unit Mikhan.SACD;
 
 // Compiler options
 {$mode delphi}
@@ -18,7 +18,7 @@ Unit SACD;
 
 Interface
 
-uses Scarlet;
+uses Mikhan.SACD.Scarlet;
 
 const
 
@@ -37,7 +37,7 @@ procedure ReadSector(var AFile: File; Number: Integer; var Sector: RSector);
 Implementation
 
 uses
-    SysUtils, MyStrUtils;
+    SysUtils, Mikhan.Util.StrUtils;
 
 const
     DEBUG = False;

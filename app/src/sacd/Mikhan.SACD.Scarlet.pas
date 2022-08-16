@@ -1,16 +1,18 @@
-//
-// Copyright (C) 2022 Mikhail Malakhov <malakhv@gmail.com>
-//
-// Confidential and Proprietary. All Rights Reserved.
-// Unauthorized copying of this file, via any medium is strictly prohibited.
-//
+{                                                                               }
+{ Copyright (C) 2022 Mikhail Malakhov <malakhv@gmail.com>                       }
+{                                                                               }
+{ This file is a part of SACD-Ripper project.                                   }
+{                                                                               }
+{ Confidential and Proprietary. All Rights Reserved.                            }
+{ Unauthorized copying of this file, via any medium is strictly prohibited.     }
+{                                                                               }
 
 {
     The Unit includes some difinitions from Scarlet Book specification.
     Author: Mikhail.Malakhov
 }
 
-unit Scarlet;
+unit Mikhan.SACD.Scarlet;
 
 // Compiler options
 {$mode delphi}
@@ -20,17 +22,23 @@ Interface
 
 const
 
-    SACD_MAX_SECTOR_COUNT = 123456; // TODO Need to specify
-
     { The length of one sector on disk in bytes. }
     SACD_SECTOR_LENGTH = 2048;
+    { TODO Need to specify }
+    SACD_MAX_SECTOR_COUNT = 123456;
+
+    {  }
+    MASTER_TOC_SECTOR = 510;
+    {  }
+    MASTER_TOC_LENGTH = 10;
+
+type
+    { The sequential number of a SACD disc sector. }
+    TSectorNumber = 0..SACD_MAX_SECTOR_COUNT - 1;
 
 type
     { The raw data of a disk sector represents as a byte array. }
     TSectorData = Array [0..SACD_SECTOR_LENGTH - 1] of Byte;
-
-type
-    TSectorNumber = 0..High(ShortInt);
 
 type
     { The abstract sector with its number and data. }
@@ -105,7 +113,7 @@ type
 
 Implementation
 
-uses MyStrUtils;
+uses Mikhan.Util.StrUtils;
 
 {
     Common things
@@ -258,7 +266,7 @@ begin
     if HasData() then
         Result := Self[0].ToString(0, 8)
     else
-        Result := MyStrUtils.EMPTY;
+        Result := Mikhan.Util.StrUtils.EMPTY;
 end;
 
 {

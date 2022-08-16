@@ -14,7 +14,7 @@ program test;
 {$h+}
 
 uses
-    SysUtils, AppLogs, Scarlet, SACD;
+    SysUtils, Mikhan.App.AppLogs, Mikhan.SACD.Scarlet, Mikhan.SACD;
 
 { Global scope }
 var

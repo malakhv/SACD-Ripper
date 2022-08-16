@@ -10,7 +10,7 @@
     Author: Mikhail.Malakhov
 }
 
-unit AppLogs;
+unit Mikhan.App.AppLogs;
 
 // Compiler options
 {$mode delphi}
@@ -99,12 +99,12 @@ type
 //--------------------------------------------------------------------------------------------------
 Implementation
 
-uses MyStrUtils;
+uses Mikhan.Util.StrUtils;
 
 const
 
     { The empty log tag. }
-    TAG_EMPTY = MyStrUtils.EMPTY;
+    TAG_EMPTY = Mikhan.Util.StrUtils.EMPTY;
 
     { String that will use as delimiter for tags in LogCat message. }
     TAG_DELIMITER = ': ';
@@ -120,7 +120,7 @@ constructor TAppLogs.Create(AppTag: String; Debug: Boolean);
 begin
     inherited Create();
     FAppTag := AppTag;
-    HasAppTag := not MyStrUtils.isEmpty(FAppTag);
+    HasAppTag := not Mikhan.Util.StrUtils.isEmpty(FAppTag);
     LogLevel := TLogLevel.llDebug;
     IsDebug := Debug;
 end;
@@ -156,7 +156,7 @@ begin
     prefix := '';
     if HasAppTag then
         prefix := AppTag + TAG_DELIMITER;
-    if not MyStrUtils.isEmpty(Tag) then
+    if not Mikhan.Util.StrUtils.isEmpty(Tag) then
         prefix := prefix + Tag + TAG_DELIMITER;
     Writeln(prefix, Message);
 end;
