@@ -11,14 +11,20 @@
 {                                                                }
 {----------------------------------------------------------------}
 
-{
-    The Unit includes some things to working with SACD image file.
-    Author: Mikhail.Malakhov
-}
+{----------------------------------------------------------------}
+{ The Unit contains constants and methods to working             }
+{ with SACD image file.                                          }
+{                                                                }
+{ Package: Mikhan.Util                                           }
+{ Types: TODO                                                    }
+{ Dependencies: Mikhan.SACD                                      }
+{                                                                }
+{ Created: 14.08.2022                                            }
+{ Author: Mikhail.Malakhov                                       }
+{----------------------------------------------------------------}
 
 Unit Mikhan.SACD;
 
-// Compiler options
 {$mode delphi}
 {$h+}
 

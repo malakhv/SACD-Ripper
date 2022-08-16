@@ -11,10 +11,17 @@
 {                                                                }
 {----------------------------------------------------------------}
 
-{
-    The Unit contains types, methods and classes to working with program logs.
-    Author: Mikhail.Malakhov
-}
+{----------------------------------------------------------------}
+{ The Unit contains types, methods and classes to working with   }
+{ program logs.                                                  }
+{                                                                }
+{ Package: Mikhan.Util                                           }
+{ Types: TLogLevel, TAppLogs                                     }
+{ Dependencies: Mikhan.Util.StrUtils                             }
+{                                                                }
+{ Created: 14.08.2022                                            }
+{ Author: Mikhail.Malakhov                                       }
+{----------------------------------------------------------------}
 
 unit Mikhan.Util.AppLogs;
 
@@ -47,9 +54,7 @@ type
 
 type
 
-    {
-      Class implements a program logging mechanism.
-    }
+    { Class implements a program logging mechanism. }
     TAppLogs = class (TObject)
     private
         FAppTag: String;        // See AppTag property
@@ -59,7 +64,6 @@ type
     protected
         { Setter for LogLevel property }
         procedure DoSetLogLevel(LogLevel: TLogLevel); virtual;
-
         { Low-level logging call. Print a message with specified parameters. }
         procedure Print(Level: TLogLevel; const Message: String); overload;
         { Low-level logging call. Print a message with specified parameters. }

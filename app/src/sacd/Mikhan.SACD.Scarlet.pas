@@ -11,14 +11,20 @@
 {                                                                }
 {----------------------------------------------------------------}
 
-{
-    The Unit includes some difinitions from Scarlet Book specification.
-    Author: Mikhail.Malakhov
-}
+{----------------------------------------------------------------}
+{ The Unit includes some difinitions from Scarlet Book           }
+{ specification.                                                 }
+{                                                                }
+{ Package: Mikhan.Util                                           }
+{ Types: TODO                                                    }
+{ Dependencies: Mikhan.SACD                                      }
+{                                                                }
+{ Created: 14.08.2022                                            }
+{ Author: Mikhail.Malakhov                                       }
+{----------------------------------------------------------------}
 
 unit Mikhan.SACD.Scarlet;
 
-// Compiler options
 {$mode delphi}
 {$h+}
 
