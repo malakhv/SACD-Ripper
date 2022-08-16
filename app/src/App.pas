@@ -1,7 +1,15 @@
-// Copyright (C) 2012 Mikhail Malakhov <malakhv@live.ru>
-//
-// Confidential and Proprietary. All Rights Reserved.
-// Unauthorized copying of this file, via any medium is strictly prohibited.
+{----------------------------------------------------------------}
+{                                                                }
+{                     SACD-Ripper project                        }
+{                                                                }
+{  Copyright (C) 2022 Mikhail Malakhov <malakhv@gmail.com>       }
+{                                                                }
+{  Unauthorized copying of this file, via any medium is          }
+{  strictly prohibited.                                          }
+{                                                                }
+{       Confidential and Proprietary. All Rights Reserved.       }
+{                                                                }
+{----------------------------------------------------------------}
 
 {
     The simple programm to test Pascal lenguage.
@@ -14,7 +22,7 @@ program test;
 {$h+}
 
 uses
-    SysUtils, Mikhan.App.AppLogs, Mikhan.SACD.Scarlet, Mikhan.SACD;
+    SysUtils, Mikhan.Util.AppLogs, Mikhan.SACD.Scarlet, Mikhan.SACD;
 
 { Global scope }
 var

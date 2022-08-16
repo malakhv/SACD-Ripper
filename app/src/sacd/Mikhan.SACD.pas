@@ -1,9 +1,15 @@
-//
-// Copyright (C) 2022 Mikhail Malakhov <malakhv@gmail.com>
-//
-// Confidential and Proprietary. All Rights Reserved.
-// Unauthorized copying of this file, via any medium is strictly prohibited.
-//
+{----------------------------------------------------------------}
+{                                                                }
+{                     SACD-Ripper project                        }
+{                                                                }
+{  Copyright (C) 2022 Mikhail Malakhov <malakhv@gmail.com>       }
+{                                                                }
+{  Unauthorized copying of this file, via any medium is          }
+{  strictly prohibited.                                          }
+{                                                                }
+{       Confidential and Proprietary. All Rights Reserved.       }
+{                                                                }
+{----------------------------------------------------------------}
 
 {
     The Unit includes some things to working with SACD image file.

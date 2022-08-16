@@ -1,19 +1,23 @@
-//
-// Copyright (C) 2022 Mikhail Malakhov <malakhv@gmail.com>
-//
-// Confidential and Proprietary. All Rights Reserved.
-// Unauthorized copying of this file, via any medium is strictly prohibited.
-//
+{----------------------------------------------------------------}
+{                                                                }
+{                  Pascal Util Library (PUL)                     }
+{                                                                }
+{  Copyright (C) 2022 Mikhail Malakhov <malakhv@gmail.com>       }
+{                                                                }
+{  Unauthorized copying of this file, via any medium is          }
+{  strictly prohibited.                                          }
+{                                                                }
+{       Confidential and Proprietary. All Rights Reserved.       }
+{                                                                }
+{----------------------------------------------------------------}
 
 {
   The Unit contains things to working with strings.
   Author: Mikhail.Malakhov
-  We use "My" prefix for all custom Units to differentiate it of standard Pascal Units.
 }
 
 unit Mikhan.Util.StrUtils;
 
-// Compiler options
 {$mode delphi}
 {$h+}
 
