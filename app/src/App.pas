@@ -22,7 +22,7 @@ program test;
 {$h+}
 
 uses
-    SysUtils, Mikhan.Util.AppLogs, Mikhan.SACD.Scarlet, Mikhan.SACD;
+    SysUtils, Mikhan.Util.AppArgs, Mikhan.Util.AppLogs, Mikhan.SACD.Scarlet, Mikhan.SACD;
 
 { Global scope }
 var
@@ -31,10 +31,15 @@ var
     F: File;
     Sector: RSector;
     AppLogs: TAppLogs;
-    i: integer;
+    i,j,k: integer;
     DiskArea: TSACDArea;
     MasterToc: TMasterTocArea;
     TextToc: TMasterTextArea;
+    AppArgs: Mikhan.Util.AppArgs.TAppArgs;
+    Test1: Array of ShortString;
+    Test2: Array of ShortString;
+    //AppOpt: TAppOpt;
+
 
 procedure ParseParams();
 var 
@@ -73,7 +78,25 @@ end;
 // Program entry point
 //
 begin
-    ParseParams();
+    
+    // Testing programm args
+    Writeln('ParamCount: ', ParamCount());
+    for i := 0 to ParamCount() do
+    begin
+        WriteLn(i, ': ', ParamStr(i));
+    end;
+
+    Writeln('-----');
+    //AppOpt := TAppOpt.Create;
+    //AppOpt.ParseArgs();
+    //AppOpt.PrintAll();
+
+    //Writeln('-----');
+    AppArgs := TAppArgs.Create();
+    AppArgs.ParseArgs();
+    AppArgs.PrintAll();
+    
+    {ParseParams();
     AppLogs := TAppLogs.Create('SACD');
 
     AppLogs.D(FName);
@@ -112,5 +135,5 @@ begin
     Writeln(TextToc.Header);
     Writeln('Album: ', TextToc.AlbumTitle);
     Writeln('Artist: ', TextToc.AlbumArtist);
-
+    }
 end.

@@ -16,7 +16,7 @@
 { program logs.                                                  }
 {                                                                }
 { Package: Mikhan.Util                                           }
-{ Types: TLogLevel, TAppLogs                                     }
+{ Types: TAppLogs, TLogLevel                                     }
 { Dependencies: Mikhan.Util.StrUtils                             }
 {                                                                }
 { Created: 14.08.2022                                            }
@@ -25,7 +25,6 @@
 
 unit Mikhan.Util.AppLogs;
 
-// Compiler options
 {$mode delphi}
 {$h+}
 
