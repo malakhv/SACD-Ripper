@@ -77,7 +77,7 @@ type
     protected
         function DoGetData(Index : Integer): RSector;
     public
-        property Data[Index : Integer]: RSector Read DoGetData; default;
+        property Data[Index : Integer]: RSector read DoGetData; default;
         property SectorCount: Integer read FSectorCount;
         property FirstSector: Integer read FFirstSector;
         { Returns true, if current object has a data. }

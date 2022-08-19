@@ -13,7 +13,7 @@
 
 {----------------------------------------------------------------}
 { The Unit contains types, methods and classes to working with   }
-{ program input parameters.                                      }
+{ program command line (input) arguments.                        }
 {                                                                }
 { Package: Mikhan.Util                                           }
 { Types: TAppParams                                              }
@@ -24,7 +24,7 @@
 {----------------------------------------------------------------}
 
 {----------------------------------------------------------------}
-{ There are three types of programm input parameters:            }
+{ There are three types of programm command line arguments:      }
 {   - simple option or flag (short or long format) without any   }
 {     data, for example: -l, --help                              }
 {   - option (short or long format) with value (key-value pair), }
@@ -38,13 +38,6 @@ unit Mikhan.Util.AppArgs;
 {$h+}
 
 Interface
-
-const
-
-    { Option prefix: short format. }
-    OPTION_PREFIX_SHORT = '-';
-    { Option prefix: long format. }
-    OPTION_PREFIX_LONG = '--';
 
 const
 
@@ -78,14 +71,22 @@ const
     { Programm option: Status, long format. }
     OPTION_VERSION_LONG = '--version';
 
+const
+
+    { Option prefix: short format. }
+    OPTION_PREFIX_SHORT = '-';
+    { Option prefix: long format. }
+    OPTION_PREFIX_LONG = '--';
+
 type
 
-    { Class to retreive programm input parameters.  }
+    { Class to retreive programm arguments. }
     TAppArgs = class(TObject)
     private
-        FPWD: ShortString;
+        { The programm file name. }
+        FName: ShortString;
         { Program options, with prefix. }
-        Options: Array of ShortString;
+        FOptions: Array of ShortString;
         { Program parameters (key-value pairs). }
         Parameters: Array of ShortString;
         { Program arguments. }
@@ -93,27 +94,45 @@ type
     protected
         { Returns true, if specified string is option (has option prefix). }
         function IsOption(const Arg: ShortString): Boolean;
-        function HasHelp(): Boolean;
-        function HasVersion(): Boolean;
-        function HasOption(Opt: ShortString): Boolean;
-        function Find(Arg: ShortString; const Target: Array of ShortString): Boolean;
+        { Returns an option in short or long format by index. }
+        function GetOption(Index: Integer): ShortString;
+
         procedure AddOption(const Opt: ShortString);
         procedure AddArgument(const Arg: ShortString);
         procedure AddParameter(const Key, Value: ShortString);
     public
-        { }
-        property Pwd: ShortString read FPWD;
+        { The programm file name. }
+        property Name: ShortString read FName;
+
+        { The program options in short and long format. }
+        property Options[Index: Integer]: ShortString read GetOption; default;
+
+        { Returns true if programm has Help option (-h or --help). }
+        function HasHelp(): Boolean;
+        { Returns true if programm has Version option (-v or --version). }
+        function HasVersion(): Boolean;
+        { Returns true if programm has specified option. }
+        function HasOption(Opt: ShortString): Boolean; overload;
+        { Returns true if programm has specified option in short or long format. }
+        function HasOption(const Short, Long: ShortString): Boolean; overload;
+
         { Clears all stored program parameters. }
         procedure ClearArgs();
         { Persing all program parameters. }
         procedure ParseArgs();
         { Print all known (after parsing) program parameters. }
         procedure PrintAll();
+
         constructor Create; 
         destructor Destroy; override;
     end;
 
 Implementation
+
+uses Mikhan.Util.StrUtils;
+
+const
+    STR_EMPTY = Mikhan.Util.StrUtils.EMPTY;
 
 constructor TAppArgs.Create;
 begin
@@ -127,6 +146,11 @@ begin
     inherited Destroy();
 end;
 
+function TAppArgs.GetOption(Index: Integer): ShortString;
+begin
+    Result := FOptions[Index];
+end;
+
 { Returns true, if specified string is option (has option prefix). }
 function TAppArgs.IsOption(const Arg: ShortString): Boolean;
 begin
@@ -134,11 +158,11 @@ begin
         (pos(OPTION_PREFIX_LONG, Arg) = 1);
 end;
 
-function TAppArgs.Find(Arg: ShortString; const Target: Array of ShortString): Boolean;
+function Find(Arg1, Arg2: ShortString; const Target: Array of ShortString): Boolean;
 var item: ShortString;
 begin
     for item in Target do
-        if item = Arg then
+        if (item = Arg1) or (item = Arg2)  then
         begin
             Result := True;
             Exit;
@@ -149,7 +173,7 @@ end;
 { Clears all stored program parameters. }
 procedure TAppArgs.ClearArgs();
 begin
-    SetLength(Options, 0);
+    SetLength(FOptions, 0);
     SetLength(Parameters, 0);
     SetLength(Arguments, 0);
 end;
@@ -157,9 +181,9 @@ end;
 procedure TAppArgs.AddOption(const Opt: ShortString);
 var len: integer;
 begin
-    len := Length(Options);
-    SetLength(Options, len + 1);
-    Options[len] := Opt;
+    len := Length(FOptions);
+    SetLength(FOptions, len + 1);
+    FOptions[len] := Opt;
 end;
 
 procedure TAppArgs.AddArgument(const Arg: ShortString);
@@ -193,14 +217,19 @@ end;
 
 function TAppArgs.HasOption(Opt: ShortString): Boolean;
 begin
-    Result := Find(Opt, Options);
+    Result := HasOption(Opt, STR_EMPTY);
+end;
+
+function TAppArgs.HasOption(const Short, Long: ShortString): Boolean; overload;
+begin
+    Result := Find(Short, Long, FOptions);
 end;
 
 { Print all known (after parsing) program parameters. }
 procedure TAppArgs.PrintAll();
 var i: Integer;
 begin
-    WriteLn('PWD: ', Self.Pwd);
+    WriteLn('Name: ', Self.Name);
     WriteLn('Options:');
     for i := Low(Options) to High(Options) do
          WriteLn('  ', Options[i]);
@@ -225,7 +254,7 @@ begin
     ClearArgs();
     count := ParamCount();
     if count <= 0 then Exit;
-    FPWD := ParamStr(0);
+    FName := ParamStr(0);
     cur := 1;
     while cur <= count do
     begin
