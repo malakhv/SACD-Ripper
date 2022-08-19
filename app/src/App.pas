@@ -95,6 +95,7 @@ begin
     AppArgs := TAppArgs.Create();
     AppArgs.ParseArgs();
     AppArgs.PrintAll();
+    Writeln('-----');
     
     {ParseParams();
     AppLogs := TAppLogs.Create('SACD');
