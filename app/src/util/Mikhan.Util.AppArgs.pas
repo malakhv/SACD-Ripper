@@ -80,7 +80,7 @@ const
 
 type
 
-    { The base type of programm commang line arguments data. }
+    { The base type of programm commang line arguments. }
     TArgString = String;
 
 type
@@ -94,7 +94,7 @@ type
     end;
 
     { The list of programm options (in short or long format). }
-    TOptions = Array of TOption;
+    TOptions = array of TOption;
 
 type
 
@@ -106,11 +106,8 @@ type
         { Program command line options, with prefix (in short and long format). }
         Options: TOptions;
         { Program command line arguments. }
-        Arguments: Array of TArgString;
+        Arguments: array of TArgString;
     protected
-        { Returns true, if specified argument is option (has option prefix). }
-        function IsOption(const Arg: TArgString): Boolean;
-
         procedure AddOption(const Key: TArgString); overload;
         procedure AddOption(const Key, Value: TArgString); overload;
         procedure AddArgument(const Argument: TArgString);
@@ -118,17 +115,22 @@ type
         { The programm file name. }
         property Name: TArgString read FName;
 
+        { Returns true if programm has specified argument. }
+        function HasArgument(Argument: TArgString): Boolean;
+
         { Returns true if programm has Help option (-h or --help). }
         function HasHelp(): Boolean;
         { Returns true if programm has Version option (-v or --version). }
         function HasVersion(): Boolean;
-        
+
         { Returns true if programm has specified option. }
         function HasOption(const Key: TArgString): Boolean; overload;
         { Returns true if programm has specified option in short or long format. }
         function HasOption(const Short, Long: TArgString): Boolean; overload;
 
+        { Returns value for specified option, or empty string. }
         function GetValue(const Key: TArgString): TArgString; overload;
+        { Returns value for specified option (in short and long format), or empty string. }
         function GetValue(const Short, Long: TArgString): TArgString; overload;
 
         { Clears all stored program parameters. }
@@ -152,10 +154,19 @@ uses Mikhan.Util.StrUtils;
 const
     STR_EMPTY = Mikhan.Util.StrUtils.EMPTY;
 
+function HasShortPrefix(const Argument: TArgString): Boolean;
+begin
+    Result := Mikhan.Util.StrUtils.StartWith(OPTION_PREFIX_SHORT, Argument);
+end;
+
+function HasLongPrefix(const Argument: TArgString): Boolean;
+begin
+    Result := Mikhan.Util.StrUtils.StartWith(OPTION_PREFIX_LONG, Argument);
+end;
+
 function IsOption(const Argument: TArgString): Boolean;
 begin
-    Result := (pos(OPTION_PREFIX_SHORT, Argument) = 1) or
-        (pos(OPTION_PREFIX_LONG, Argument) = 1);
+    Result := HasShortPrefix(Argument) or HasLongPrefix(Argument);
 end;
 
 function FindOption(Long, Short: TArgString; const Target: TOptions): Integer; overload;
@@ -184,7 +195,8 @@ end;
 
 function TOption.IsShort(): Boolean;
 begin
-    Result := (pos(OPTION_PREFIX_LONG, Self.Key) <> 1);
+    //Result := (pos(OPTION_PREFIX_LONG, Self.Key) <> 1);
+    Result := not HasLongPrefix(Self.Key) and HasShortPrefix(Self.Key);
 end;
 
 function TOption.HasValue(): Boolean;
@@ -206,12 +218,6 @@ destructor TAppArgs.Destroy;
 begin
     ClearArgs();
     inherited Destroy();
-end;
-
-function TAppArgs.IsOption(const Arg: TArgString): Boolean;
-begin
-    Result := (pos(OPTION_PREFIX_SHORT, Arg) = 1) or
-        (pos(OPTION_PREFIX_LONG, Arg) = 1);
 end;
 
 procedure TAppArgs.ClearArgs();
@@ -242,16 +248,26 @@ begin
     Arguments[len] := Argument;
 end;
 
+function TAppArgs.HasArgument(Argument: TArgString): Boolean;
+var item: TArgString;
+begin
+    for item in Arguments do
+        if item = Argument then
+        begin
+            Result := True;
+            Exit;
+        end;
+    Result := False;
+end;
+
 function TAppArgs.HasHelp(): Boolean;
 begin
-    Result := HasOption(OPTION_HELP_SHORT) or
-        HasOption(OPTION_HELP_LONG);
+    Result := HasOption(OPTION_HELP_SHORT, OPTION_HELP_LONG);
 end;
 
 function TAppArgs.HasVersion(): Boolean;
 begin
-    Result := HasOption(OPTION_VERSION_SHORT) or
-        HasOption(OPTION_VERSION_LONG);
+    Result := HasOption(OPTION_VERSION_SHORT, OPTION_VERSION_LONG);
 end;
 
 function TAppArgs.HasOption(const Key: TArgString): Boolean;

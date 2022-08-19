@@ -53,57 +53,59 @@ const
     { The special char: empty line. }
     CHAR_EMPTY_LINE = '\n\n';
 
-    { The special char: Slash }
+    { The special char: slash }
     CHAR_SLASH = '/';
+
+{
+    Trims blank characters (spaces and control characters) at the beginning
+    and end of the specified string.
+}
+procedure TrimStr(var Source: String);
+
+{
+    Returns True if the string is null, 0-length, or this string
+    contains only whitespaces.
+}
+function IsEmpty(const Source: String): Boolean;
+
+{ Returns true, if string S starts with specified Prefix. }
+function StartWith(const Prefix, S: String): Boolean;
 
 {
   Converts an array of bytes to string.
 }
-function BytesToStr(Source: Array of Byte): String;
-
-{
-  Returns True if the string is null, 0-length, or this string
-  contains only whitespaces.
-}
-function IsEmpty(Source: String): Boolean;
-
-{
-  Trims blank characters (spaces and control characters) at
-  the beginning and end of the specified string.
-}
-procedure TrimStr(var Source: String);
+function BytesToStr(const Source: Array of Byte): String;
 
 Implementation
 
 uses SysUtils;
 
-{
-  Converts an array of bytes to string.
-}
-function BytesToStr(Source: Array of Byte): String;
+procedure TrimStr(var Source: String);
+begin
+    Source := Trim(Source);
+end;
+
+function IsEmpty(const Source: String): Boolean;
+begin
+    Result := (Length(Source) <= 0) or (Length(Trim(Source)) <= 0);
+end;
+
+function StartWith(const Prefix, S: String): Boolean;
+begin
+    if IsEmpty(S) or IsEmpty(Prefix) or (Length(Prefix) > Length(S)) then
+    begin
+        Result := False;
+        Exit;
+    end;
+    Result := pos(Prefix, S) = 1;
+end;
+
+function BytesToStr(const Source: Array of Byte): String;
 var i: Integer;
 begin
     Result := '';
     for i := Low(Source) to High(Source) do
         Result := Result + Char(Source[i]);
-end;
-
-{
-  Returns True if the string is null, 0-length, or this string
-  contains only whitespaces.
-}
-function IsEmpty(Source: String): Boolean;
-begin
-    Result := (Length(Source) <= 0) or (Length(Trim(Source)) <= 0);
-end;
-
-{
-  Trims blank characters (spaces and control characters) at
-  the beginning and end of the specified string.
-}
-procedure TrimStr(var Source: String);
-begin
-    Source := Trim(Source);
 end;
 
 end.
