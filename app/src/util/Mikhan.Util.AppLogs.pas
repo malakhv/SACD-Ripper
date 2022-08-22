@@ -80,6 +80,15 @@ type
         { Checks to loggable or not messages with specified log level. }
         function IsLoggable(Level: TLogLevel): Boolean; virtual;
 
+        { Sends a verbose log message with main program tag. }
+        procedure V(const Message: String); overload;
+        { Sends a verbose log message with main program tag and specified tag. }
+        procedure V(const Tag: String; const Message: String); overload;
+        { Sends a verbose log messages with main program tag. }
+        procedure V(const Messages: array of const); overload;
+        { Sends a verbose log messages with main program tag and specified tag. }
+        procedure V(const Tag: String; const Messages: array of const); overload;
+
         { Sends a debug log message with main program tag. }
         procedure D(const Message: String); overload;
         { Sends a debug log message with main program tag and specified tag. }
@@ -239,6 +248,31 @@ begin
         WriteVarRec(Messages[i]);
 
     WriteLn();
+end;
+
+
+{ Sends a verbose log message with main program tag. }
+procedure TAppLogs.V(const Message: String);
+begin
+    V(TAG_EMPTY, Message);
+end;
+
+{ Sends a verbose log message with main program tag and specified tag. }
+procedure TAppLogs.V(const Tag: String; const Message: String);
+begin
+    Print(TLogLevel.llVerbose, Tag, Message);
+end;
+
+{ Sends a verbose log messages with main program tag. }
+procedure TAppLogs.V(const Messages: array of const);
+begin
+    V(TAG_EMPTY, Messages);
+end;
+
+{ Sends a verbose log messages with main program tag and specified tag. }
+procedure TAppLogs.V(const Tag: String; const Messages: array of const);
+begin
+    Print(TLogLevel.llVerbose, Tag, Messages);
 end;
 
 { Sends a debug log message with main program tag. }
