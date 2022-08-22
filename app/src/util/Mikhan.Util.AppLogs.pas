@@ -148,6 +148,17 @@ const
     { String that will use as delimiter for tags in LogCat message. }
     TAG_DELIMITER = ': ';
 
+const
+
+    { Array ot LogLevel abbreviations. }
+    LOG_LEVEL_STR: array[TLogLevel] of Char = ('V', 'D', 'I', 'W', 'E', 'S');
+
+{ Returns LogLevel as string abbreviation. }
+function LogLavelToStr(LogLevel: TLogLevel): String;
+begin
+    Result := LOG_LEVEL_STR[LogLevel];
+end;
+
 { Write a TVarRec. }
 procedure WriteVarRec(Value: TVarRec);
 begin
@@ -218,9 +229,10 @@ procedure TAppLogs.Print(Level: TLogLevel; const Tag, Message: String);
 var prefix: String;
 begin
     if not IsLoggable(Level) then Exit;
-    prefix := '';
+    //prefix := '';
+    prefix := LogLavelToStr(Level) + TAG_DELIMITER;
     if HasAppTag then
-        prefix := AppTag + TAG_DELIMITER;
+        prefix := prefix + AppTag + TAG_DELIMITER;
     if not Mikhan.Util.StrUtils.isEmpty(Tag) then
         prefix := prefix + Tag + TAG_DELIMITER;
     Writeln(prefix, Message);
@@ -238,9 +250,10 @@ var i: Integer;
     prefix: String;
 begin
     if not IsLoggable(Level) then Exit;
-    prefix := '';
+    //prefix := '';
+    prefix := LogLavelToStr(Level) + TAG_DELIMITER;
     if HasAppTag then
-        prefix := AppTag + TAG_DELIMITER;
+        prefix := prefix + AppTag + TAG_DELIMITER;
     if not Mikhan.Util.StrUtils.isEmpty(Tag) then
         prefix := prefix + Tag + TAG_DELIMITER;
     Write(prefix);
