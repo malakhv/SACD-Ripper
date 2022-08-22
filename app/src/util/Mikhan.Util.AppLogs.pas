@@ -125,7 +125,6 @@ type
         { Sends a error log messages with main program tag and specified tag. }
         procedure E(const Tag: String; const Messages: array of const); overload;
 
-
         { Construct a new instance of TAppLogs class with specified parameters. }
         constructor Create(AppTag: String); overload;
         { Construct a new instance of TAppLogs class with specified parameters. }
