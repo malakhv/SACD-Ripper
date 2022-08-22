@@ -96,17 +96,19 @@ begin
     AppArgs.ParseArgs();
     AppArgs.PrintAll();
     Writeln('-----');
-    
-    {ParseParams();
+
+
     AppLogs := TAppLogs.Create('SACD');
 
     AppLogs.D(FName);
-    isSacd := isSacdImage(FName);
-    AppLogs.I('isSacd=' + BoolToStr(isSacd));
+    AppLogs.D(['FName=', 1, ', c=', 2]);
+
+    //isSacd := isSacdImage(FName);
+    //AppLogs.I('isSacd=' + BoolToStr(isSacd));
     
     Writeln('-----');
     
-    AssignFile(F, FName);
+    {AssignFile(F, FName);
     ReadSector(F, 510, Sector);
     Writeln(Sector.ToString());
     Writeln('-----');

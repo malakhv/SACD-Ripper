@@ -67,6 +67,10 @@ type
         procedure Print(Level: TLogLevel; const Message: String); overload;
         { Low-level logging call. Print a message with specified parameters. }
         procedure Print(Level: TLogLevel; const Tag, Message: String); overload;
+        { Low-level logging call. Print a messages with specified parameters. }
+        procedure Print(Level: TLogLevel; const Messages: array of const); overload;
+        { Low-level logging call. Print a messages with specified parameters. }
+        procedure Print(Level: TLogLevel; const Tag: String; const Messages: array of const); overload;
     public
         { The main program log tag. }
         property AppTag: String read FAppTag;
@@ -80,21 +84,38 @@ type
         procedure D(const Message: String); overload;
         { Sends a debug log message with main program tag and specified tag. }
         procedure D(const Tag: String; const Message: String); overload;
+        { Sends a debug log messages with main program tag. }
+        procedure D(const Messages: array of const); overload;
+        { Sends a debug log messages with main program tag and specified tag. }
+        procedure D(const Tag: String; const Messages: array of const); overload;
 
         { Sends a info log message with main program tag. }
         procedure I(const Message: String); overload;
         { Sends a info log message with main program tag and specified tag. }
         procedure I(const Tag: String; const Message: String); overload;
+        { Sends a info log messages with main program tag. }
+        procedure I(const Messages: array of const); overload;
+        { Sends a info log messages with main program tag and specified tag. }
+        procedure I(const Tag: String; const Messages: array of const); overload;
 
         { Sends a warning log message with main program tag. }
         procedure W(const Message: String); overload;
         { Sends a warning log message with main program tag and specified tag. }
         procedure W(const Tag: String; const Message: String); overload;
+        { Sends a warning log messages with main program tag. }
+        procedure W(const Messages: array of const); overload;
+        { Sends a warning log messages with main program tag and specified tag. }
+        procedure W(const Tag: String; const Messages: array of const); overload;
 
         { Sends a error log message with main program tag. }
         procedure E(const Message: String); overload;
         { Sends a error log message with main program tag and specified tag. }
         procedure E(const Tag: String; const Message: String); overload;
+        { Sends a error log messages with main program tag. }
+        procedure E(const Messages: array of const); overload;
+        { Sends a error log messages with main program tag and specified tag. }
+        procedure E(const Tag: String; const Messages: array of const); overload;
+
 
         { Construct a new instance of TAppLogs class with specified parameters. }
         constructor Create(AppTag: String); overload;
@@ -117,6 +138,32 @@ const
 
     { String that will use as delimiter for tags in LogCat message. }
     TAG_DELIMITER = ': ';
+
+{ Write a TVarRec. }
+procedure WriteVarRec(Value: TVarRec);
+begin
+    case Value.VType of
+        vtBoolean: Write(Value.vBoolean);
+        vtInteger: Write(Value.vInteger);
+        vtCurrency: Write(Value.vCurrency^);
+        vtExtended: Write(Value.VExtended^);
+        vtInt64: Write(Value.vInt64^);
+        vtChar: Write(Value.vChar);
+        vtWideChar: Write(Value.vWideChar);
+        vtString: Write(Value.vString^);
+        vtAnsiString: Write(AnsiString(Value.vAnsiString));
+        vtWideString: Write(WideString(Value.vWideString));
+    else
+        Write(Value.VType);
+    end;
+end;
+
+{ Write a TVarRec and go to new string. }
+procedure WriteVarRecLn(Value: TVarRec);
+begin
+    WriteVarRec(Value);
+    WriteLn();
+end;
 
 { Construct a new instance of TAppLogs class with specified parameters. }
 constructor TAppLogs.Create(AppTag: String);
@@ -158,7 +205,7 @@ begin
 end;
 
 { Low-level logging call. Print a message with specified parameters. }
-procedure TAppLogs.Print(Level: TLogLevel; const Tag, Message: String); overload;
+procedure TAppLogs.Print(Level: TLogLevel; const Tag, Message: String);
 var prefix: String;
 begin
     if not IsLoggable(Level) then Exit;
@@ -168,6 +215,30 @@ begin
     if not Mikhan.Util.StrUtils.isEmpty(Tag) then
         prefix := prefix + Tag + TAG_DELIMITER;
     Writeln(prefix, Message);
+end;
+
+{ Low-level logging call. Print a messages with specified parameters. }
+procedure TAppLogs.Print(Level: TLogLevel; const Messages: array of const);
+begin
+    Print(Level, TAG_EMPTY, Messages);
+end;
+
+{ Low-level logging call. Print a messages with specified parameters. }
+procedure TAppLogs.Print(Level: TLogLevel; const Tag: String; const Messages: array of const);
+var i: Integer;
+    prefix: String;
+begin
+    if not IsLoggable(Level) then Exit;
+    prefix := '';
+    if HasAppTag then
+        prefix := AppTag + TAG_DELIMITER;
+    if not Mikhan.Util.StrUtils.isEmpty(Tag) then
+        prefix := prefix + Tag + TAG_DELIMITER;
+    Write(prefix);
+    for i := Low(Messages) to High(Messages) do
+        WriteVarRec(Messages[i]);
+
+    WriteLn();
 end;
 
 { Sends a debug log message with main program tag. }
@@ -182,6 +253,18 @@ begin
     Print(TLogLevel.llDebug, Tag, Message);
 end;
 
+{ Sends a debug log messages with main program tag. }
+procedure TAppLogs.D(const Messages: array of const);
+begin
+    D(TAG_EMPTY, Messages);
+end;
+
+{ Sends a debug log messages with main program tag and specified tag. }
+procedure TAppLogs.D(const Tag: String; const Messages: array of const);
+begin
+    Print(TLogLevel.llDebug, Tag, Messages);
+end;
+
 { Sends a info log message with main program tag. }
 procedure TAppLogs.I(const Message: String);
 begin
@@ -192,6 +275,18 @@ end;
 procedure TAppLogs.I(const Tag: String; const Message: String);
 begin
     Print(TLogLevel.llInfo, Tag, Message);
+end;
+
+{ Sends a info log messages with main program tag. }
+procedure TAppLogs.I(const Messages: array of const);
+begin
+    I(TAG_EMPTY, Messages);
+end;
+
+{ Sends a info log messages with main program tag and specified tag. }
+procedure TAppLogs.I(const Tag: String; const Messages: array of const);
+begin
+    Print(TLogLevel.llInfo, Tag, Messages);
 end;
 
 { Sends a warning log message with main program tag. }
@@ -206,6 +301,18 @@ begin
     Print(TLogLevel.llWarn, Tag, Message);
 end;
 
+{ Sends a warning log messages with main program tag. }
+procedure TAppLogs.W(const Messages: array of const);
+begin
+    W(TAG_EMPTY, Messages);
+end;
+
+{ Sends a warning log messages with main program tag and specified tag. }
+procedure TAppLogs.W(const Tag: String; const Messages: array of const);
+begin
+    Print(TLogLevel.llWarn, Tag, Messages);
+end;
+
 { Sends a error log message with main program tag. }
 procedure TAppLogs.E(const Message: String);
 begin
@@ -216,6 +323,18 @@ end;
 procedure TAppLogs.E(const Tag: String; const Message: String);
 begin
     Print(TLogLevel.llError, Tag, Message);
+end;
+
+{ Sends a error log messages with main program tag. }
+procedure TAppLogs.E(const Messages: array of const);
+begin
+    E(TAG_EMPTY, Messages);
+end;
+
+{ Sends a error log messages with main program tag and specified tag. }
+procedure TAppLogs.E(const Tag: String; const Messages: array of const);
+begin
+    Print(TLogLevel.llError, Tag, Messages);
 end;
 
 end.
