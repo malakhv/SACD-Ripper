@@ -71,6 +71,9 @@ const
     { Programm option: Status, long format. }
     OPTION_VERSION_LONG = '--version';
 
+    { Programm option: Verbose (turning all log messages), long format. }
+    OPTION_VERBOSE_LONG = '--verbose';
+
 const
 
     { Option prefix: short format. }
@@ -122,6 +125,9 @@ type
         function HasHelp(): Boolean;
         { Returns true if programm has Version option (-v or --version). }
         function HasVersion(): Boolean;
+
+        { Returns true if programm has Verbose option (--verbose). }
+        function HasVerbose(): Boolean;
 
         { Returns true if programm has specified option. }
         function HasOption(const Key: TArgString): Boolean; overload;
@@ -268,6 +274,11 @@ end;
 function TAppArgs.HasVersion(): Boolean;
 begin
     Result := HasOption(OPTION_VERSION_SHORT, OPTION_VERSION_LONG);
+end;
+
+function TAppArgs.HasVerbose(): Boolean;
+begin
+    Result := HasOption(OPTION_VERBOSE_LONG);
 end;
 
 function TAppArgs.HasOption(const Key: TArgString): Boolean;
