@@ -24,12 +24,12 @@
 {----------------------------------------------------------------}
 
 {----------------------------------------------------------------}
-{ There are three types of programm command line arguments:      }
+{ There are three types of program command line arguments:       }
 {   - simple option or flag (short or long format) without any   }
 {     data, for example: -l, --help                              }
 {   - option (short or long format) with value (key-value pair), }
 {     for example: -t "Text", -file ./file1.txt                  }
-{   - programm argument or command, for example: clone, status   }
+{   - program argument or command, for example: clone, status    }
 {----------------------------------------------------------------}
 
 unit Mikhan.Util.AppArgs;
@@ -41,37 +41,37 @@ Interface
 
 const
 
-    { Programm option: List, short format. }
+    { Program option: List, short format. }
     OPTION_LIST_SHORT = '-l';
-    { Programm option: List, long format. }
+    { Program option: List, long format. }
     OPTION_LIST_LONG = '--list';
 
-    { Programm option: Status, short format. }
+    { Program option: Status, short format. }
     OPTION_STATUS_SHORT = '-s';
-    { Programm option: Status, long format. }
+    { Program option: Status, long format. }
     OPTION_STATUS_LONG = '--status';
     
-    { Programm option: Info, short format. }
+    { Program option: Info, short format. }
     OPTION_INFO_SHORT = '-i';
-    { Programm option: Info, long format. }
+    { Program option: Info, long format. }
     OPTION_INFO_LONG = '--info';
 
-    { Programm option: File, short format. }
+    { Program option: File, short format. }
     OPTION_FILE_SHORT = '-f';
-    { Programm option: File, long format. }
+    { Program option: File, long format. }
     OPTION_FILE_LONG = '--file';
 
-    { Programm option: Help, short format. }
+    { Program option: Help, short format. }
     OPTION_HELP_SHORT = '-h';
-    { Programm option: Help, long format. }
+    { Program option: Help, long format. }
     OPTION_HELP_LONG = '--help';
 
-    { Programm option: Version, short format. }
+    { Program option: Version, short format. }
     OPTION_VERSION_SHORT = '-v';
-    { Programm option: Status, long format. }
+    { Program option: Status, long format. }
     OPTION_VERSION_LONG = '--version';
 
-    { Programm option: Verbose (turning all log messages), long format. }
+    { Program option: Verbose (turning all log messages), long format. }
     OPTION_VERBOSE_LONG = '--verbose';
 
 const
@@ -83,12 +83,12 @@ const
 
 type
 
-    { The base type of programm commang line arguments. }
+    { The base type of program commang line arguments. }
     TArgString = String;
 
 type
 
-    { A programm option in short or long format. }
+    { A program option in short or long format. }
     TOption = record
         Key: TArgString;
         Value: TArgString;
@@ -96,15 +96,15 @@ type
         function HasValue(): Boolean;
     end;
 
-    { The list of programm options (in short or long format). }
+    { The list of program options (in short or long format). }
     TOptions = array of TOption;
 
 type
 
-    { Class to retreive programm arguments. }
+    { Class to retreive program arguments. }
     TAppArgs = class(TObject)
     private
-        { The programm file name. }
+        { The program file name. }
         FName: TArgString;
         { Program command line options, with prefix (in short and long format). }
         Options: TOptions;
@@ -115,23 +115,23 @@ type
         procedure AddOption(const Key, Value: TArgString); overload;
         procedure AddArgument(const Argument: TArgString);
     public
-        { The programm file name. }
+        { The program file name. }
         property Name: TArgString read FName;
 
-        { Returns true if programm has specified argument. }
+        { Returns true if program has specified argument. }
         function HasArgument(Argument: TArgString): Boolean;
 
-        { Returns true if programm has Help option (-h or --help). }
+        { Returns true if program has Help option (-h or --help). }
         function HasHelp(): Boolean;
-        { Returns true if programm has Version option (-v or --version). }
+        { Returns true if program has Version option (-v or --version). }
         function HasVersion(): Boolean;
 
-        { Returns true if programm has Verbose option (--verbose). }
+        { Returns true if program has Verbose option (--verbose). }
         function HasVerbose(): Boolean;
 
-        { Returns true if programm has specified option. }
+        { Returns true if program has specified option. }
         function HasOption(const Key: TArgString): Boolean; overload;
-        { Returns true if programm has specified option in short or long format. }
+        { Returns true if program has specified option in short or long format. }
         function HasOption(const Short, Long: TArgString): Boolean; overload;
 
         { Returns value for specified option, or empty string. }

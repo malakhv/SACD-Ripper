@@ -12,7 +12,7 @@
 {----------------------------------------------------------------}
 
 {
-    The simple programm to test Pascal lenguage.
+    The simple program to test Pascal lenguage.
     Author: Mikhail.Malakhov
 }
 program test;
@@ -79,7 +79,7 @@ end;
 //
 begin
     
-    // Testing programm args
+    // Testing program args
     Writeln('ParamCount: ', ParamCount());
     for i := 0 to ParamCount() do
     begin

@@ -46,7 +46,7 @@ type
         llError,
         {
           Logging level: Silent mode, turning off all messages. In normal
-          case programm shouldn't use it to write a messages.
+          case program shouldn't use it to write a messages.
         }
         llSilent
     );
