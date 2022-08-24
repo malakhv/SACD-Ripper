@@ -1,6 +1,6 @@
 {----------------------------------------------------------------}
 {                                                                }
-{                  Pascal Util Library (PUL)                     }
+{                  Pascal Utils Library (PUL)                    }
 {                                                                }
 {  Copyright (C) 2022 Mikhail Malakhov <malakhv@gmail.com>       }
 {                                                                }
