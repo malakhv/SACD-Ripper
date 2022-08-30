@@ -22,7 +22,7 @@ program test;
 {$h+}
 
 uses
-    SysUtils, Mikhan.Util.AppArgs, Mikhan.Util.AppLogs, Mikhan.SACD.Scarlet, Mikhan.SACD;
+    SysUtils, Mikhan.Util.AppArgs, Mikhan.Util.AppLogs, Mikhan.SACD.Scarlet, Mikhan.SACD, Mikhan.Util.AppVersion;
 
 { Global scope }
 var
@@ -39,6 +39,7 @@ var
     Test1: Array of ShortString;
     Test2: Array of ShortString;
     //AppOpt: TAppOpt;
+    AppVer: TSemVer;
 
 
 procedure ParseParams();
@@ -80,13 +81,13 @@ end;
 begin
     
     // Testing program args
-    Writeln('ParamCount: ', ParamCount());
+    //Writeln('ParamCount: ', ParamCount());
     for i := 0 to ParamCount() do
     begin
-        WriteLn(i, ': ', ParamStr(i));
+        //WriteLn(i, ': ', ParamStr(i));
     end;
 
-    Writeln('-----');
+    //Writeln('-----');
     //AppOpt := TAppOpt.Create;
     //AppOpt.ParseArgs();
     //AppOpt.PrintAll();
@@ -94,9 +95,15 @@ begin
     //Writeln('-----');
     AppArgs := TAppArgs.Create();
     AppArgs.ParseArgs();
-    AppArgs.PrintAll();
-    Writeln('-----');
+    //AppArgs.PrintAll();
+    //Writeln('-----');
 
+    AppVer := TSemVer.Create(True);
+    if AppArgs.HasVersion() then
+    begin
+        WriteLn(AppVer.ToString());
+        Exit;
+    end;
 
     AppLogs := TAppLogs.Create('SACD');
 

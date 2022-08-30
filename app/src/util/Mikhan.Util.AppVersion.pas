@@ -68,18 +68,102 @@
 { The program version can be stored in separate file.            }
 {----------------------------------------------------------------}
 
-unit Mikhan.Util.AppParams;
+unit Mikhan.Util.AppVersion;
 
 {$mode delphi}
 {$h+}
 
-Interface
+interface
+
+uses SysUtils;
 
 const
 
+    { The default file name with version information. }
+    VER_FILE_NAME = 'version';
 
+    { The version name suffix using for debug builds. }
+    VER_DEBUG_SUFFIX = 'debug';
 
 type
 
+    { The version component available values: Major. }
+    TVerMajor = 0..99;
 
+    { The version component available values: Minor. }
+    TVerMinor = 0..99;
 
+    { The version component available values: Patch. }
+    TVerPatch = 0..999;
+
+type
+
+    { Class implements basic "Semantic Versioning" conception. }
+    TSemVer = class (TObject)
+    private
+        FMajor: TVerMajor;  // See Major property.
+        FMinor: TVerMinor;  // See Minor property.
+        FPatch: TVerPatch;  // See Patch property.
+        FDebug: Boolean;    // See Debug property.
+    protected
+        { See Code property. }
+        function GetCode(): Integer; virtual;
+        { See Name property. }
+        function GetName(): String; virtual;
+        { Reads the version information from specified file. }
+        function ReadFromFile(FileName: TFileName): Boolean;
+    public
+        { The version component: Major. }
+        property Major: TVerMajor read FMajor;
+        { The version component: Minor. }
+        property Minor: TVerMinor read FMinor;
+        { The version component: Patch. }
+        property Patch: TVerPatch read FPatch;
+        { The version code. }
+        property Code: Integer read GetCode;
+        { The version name. }
+        property Name: String read GetName;
+        { Debug app build or not? }
+        property Debug: Boolean read FDebug;
+        { Represents data in this object as readable string. }
+        function ToString(): String; override;
+        constructor Create(Debug: Boolean); overload; virtual;
+    end;
+
+Implementation
+
+{
+    TSemVer
+}
+
+constructor TSemVer.Create(Debug: Boolean);
+begin
+    inherited Create();
+    FDebug := Debug;
+    FMinor := 1; // The default app version is 0.1.0
+end;
+
+function TSemVer.GetCode(): Integer;
+begin
+    Result := Major * 100000 + Minor * 1000 + Patch;
+end;
+
+function TSemVer.GetName(): String;
+const VER_NAME_SEP = '.';
+begin
+    Result := IntToStr(Major) + VER_NAME_SEP + IntToStr(Minor) + VER_NAME_SEP + IntToStr(Patch);
+    if Debug then
+        Result := Result + VER_NAME_SEP + VER_DEBUG_SUFFIX;
+end;
+
+function TSemVer.ReadFromFile(FileName: TFileName): Boolean;
+begin
+    Result := False;
+end;
+
+function TSemVer.ToString(): String;
+begin
+    Result := 'Version: ' + Name + ' (' + IntToStr(Code) + ')';
+end;
+
+end.
