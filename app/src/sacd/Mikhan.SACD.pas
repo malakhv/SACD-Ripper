@@ -43,8 +43,7 @@ const
 { Checks that specified file is SACD image file. }
 function isSacdImage(Name: String): Boolean;
 
-//procedure ReadSector(AFile: File; Sector: RSector); override;
-procedure ReadSector(var AFile: File; Number: Integer; var Sector: RSector);
+procedure ReadSector(var AFile: File; Number: Integer; var Sector: TSACDSector);
 
 Implementation
 
@@ -108,7 +107,7 @@ begin
     Result := SACD_MAGIC_CHAR = BytesToStr(buf);
 end;
 
-procedure ReadSector(var AFile: File; Number: Integer; var Sector: RSector);
+procedure ReadSector(var AFile: File; Number: Integer; var Sector: TSACDSector);
 begin
     // Configure sector record
     Sector.ClearData();

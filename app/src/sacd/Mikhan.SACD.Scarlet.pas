@@ -28,31 +28,33 @@ unit Mikhan.SACD.Scarlet;
 {$mode delphi}
 {$h+}
 
-Interface
+interface
 
 const
 
-    { The length of one sector on disk in bytes. }
+    { The length of one sector on SACD disk in bytes. }
     SACD_SECTOR_LENGTH = 2048;
+
     { TODO Need to specify }
     SACD_MAX_SECTOR_COUNT = 123456;
 
-    {  }
-    MASTER_TOC_SECTOR = 510;
-    {  }
+    { The lenght of Master TOC in sectors. }
     MASTER_TOC_LENGTH = 10;
 
 type
+
     { The sequential number of a SACD disc sector. }
     TSectorNumber = 0..SACD_MAX_SECTOR_COUNT - 1;
 
 type
+
     { The raw data of a disk sector represents as a byte array. }
     TSectorData = Array [0..SACD_SECTOR_LENGTH - 1] of Byte;
 
 type
+
     { The abstract sector with its number and data. }
-    RSector = record
+    TSACDSector = record
         Number: Integer;
         Data: TSectorData;
         function GetByte(Index: Integer): Byte;
@@ -66,27 +68,38 @@ type
         { Clear all sector data in this record. }
         procedure ClearData();
     end;
+    PSACDSector = ^TSACDSector;
+    TSACDSectors = array of TSACDSector;
 
 type
 
+    { The abstract area (a group of sequential sectors) on SACD disk. }
     TSACDArea = class (TObject)
     private
-        FFirstSector: Integer;
-        FSectorCount: Integer;
-        RawData: Array of RSector;
+        FFirstSector: Integer;      // See FirstSector property
+        FSectorCount: Integer;      // See SectorCount property
+        FSectors: TSACDSectors;     // See Sectors property
     protected
-        function DoGetData(Index : Integer): RSector;
+        { See Sectors property. }
+        function GetSector(Index : Integer): PSACDSector;
     public
-        property Data[Index : Integer]: RSector read DoGetData; default;
-        property SectorCount: Integer read FSectorCount;
+        { The first sector number for this area. }
         property FirstSector: Integer read FFirstSector;
+        { The number of sectors in this area. }
+        property SectorCount: Integer read FSectorCount;
+        { The array of sectors in this area. }
+        property Sectors[Index : Integer]: PSACDSector read GetSector; default;
+
         { Returns true, if current object has a data. }
         function HasData(): Boolean;
+
         { Clear all sectos data. }
-        procedure ClearData();
+        procedure ClearData(); virtual;
+
         { Load Aread data from file. }
         procedure Load(var AFile: File);
-        { Construct a new instance of TAppLogs class with specified parameters. }
+
+        { Construct a new instance of TSACDArea class with specified parameters. }
         constructor Create(FirstSector, SectorCount: Integer);
         {Free all related resources. }
         destructor Destroy; override;
@@ -121,13 +134,21 @@ type
 //type
 //    TSacdFile = class(Tancestor)
 
-Implementation
+implementation    //WriteLn(s_pos, ' - ', e_pos);
 
 uses Mikhan.Util.StrUtils;
 
 {
     Common things
 }
+
+const
+
+    { The offset of pointer (2 bytes) to Album Artist info in Master TOC Text area. }
+    MASTER_TOC_TEXT_ALBUM_TITLE_PTR = 16;
+
+    { The offset of pointer (2 bytes) to Album Artist info in Master TOC Text area. }
+    MASTER_TOC_TEXT_ALBUM_ARTIST_PTR = 18;
 
 { Returns offset for specified disk sector number. }
 function GetSectorOffset(SectorNumber: Integer): Integer;
@@ -148,29 +169,30 @@ function BytesToInt(First, Second: Byte): Integer;
 begin
     Result := (Integer(First) shl 8) or Second;
 end;
+
 {
-    RSector
+    TSACDSector
 }
 
-function RSector.GetByte(Index: Integer): Byte;
+function TSACDSector.GetByte(Index: Integer): Byte;
 begin
     Result := Data[Index];
 end;
 
 { Returns offset for current sector in bytes. }
-function RSector.GetOffset(): Integer;
+function TSACDSector.GetOffset(): Integer;
 begin
     Result := GetSectorOffset(Number);
 end;
 
 { Returns sector as a string. }
-function RSector.ToString(): String;
+function TSACDSector.ToString(): String;
 begin
     Result := ToString(0, -1);
 end;
 
 { Returns part of sector data from Start position as a string. }
-function RSector.ToString(Start, Count: Integer): String;
+function TSACDSector.ToString(Start, Count: Integer): String;
 var pos: Integer;
 begin
     // Check start position
@@ -192,7 +214,7 @@ begin
 end;
 
 { Clear all sector data in this record. }
-procedure RSector.ClearData();
+procedure TSACDSector.ClearData();
 var i: Integer;
 begin
     // TODO Need to optimization
@@ -204,43 +226,39 @@ end;
     TSACDArea
 }
 
-{ Construct a new instance of TAppLogs class with specified parameters. }
 constructor TSACDArea.Create(FirstSector, SectorCount: Integer);
 begin
     FFirstSector := FirstSector;
     FSectorCount := SectorCount;
 end;
 
-{ Free all related resources. }
 destructor TSACDArea.Destroy();
 begin
     ClearData();
 end;
 
-function TSACDArea.DoGetData(Index : Integer): RSector;
-begin
-    Result := RawData[Index];
-end;
-
-{ Returns true, if current object has a data. }
-function TSACDArea.HasData(): Boolean;
-begin
-    Result := Length(RawData) > 0;
-end;
-
-{ Clear all sectos data. }
 procedure TSACDArea.ClearData();
 begin
-    if not HasData() then SetLength(RawData, 0);
+    SetLength(FSectors, 0);
+end;
+
+function TSACDArea.GetSector(Index : Integer): PSACDSector;
+begin
+    Result := @FSectors[Index];
+end;
+
+function TSACDArea.HasData(): Boolean;
+begin
+    Result := Length(FSectors) > 0;
 end;
 
 { Load Aread data from file. }
 procedure TSACDArea.Load(var AFile: File);
-var i, sector, offset: integer;
+var i, sector, offset, size: integer;
 begin
     // Clear current data
     ClearData();
-    SetLength(RawData, SectorCount);
+    SetLength(FSectors, SectorCount);
 
     // Open inpurt file read and setting up
     // size of read chunk to 1 byte
@@ -249,12 +267,13 @@ begin
     // Read data
     sector := FirstSector;
     offset := GetSectorOffset(FirstSector);
+    size := SizeOf(TSectorData);
     try
         Seek(AFile, offset);
-        for i:= Low(RawData) to High(RawData) do
+        for i:= Low(FSectors) to High(FSectors) do
         begin
-            RawData[i].Number := sector;
-            BlockRead(AFile, RawData[i].Data, SizeOf(RawData[i].Data));
+            FSectors[i].Number := sector;
+            BlockRead(AFile, FSectors[i].Data, size);
             Inc(sector);
         end;
     finally
@@ -300,7 +319,7 @@ end;
 function TMasterTextArea.GetPtr(From: Integer): Integer;
 begin
     if HasData() then
-        Result := BytesToInt(Self[0][From], Self[0][From + 1])
+        Result := BytesToInt(Self[0]^[From], Self[0]^[From + 1])
     else
         Result := -1;
 end;
@@ -317,7 +336,6 @@ begin
     end;
     s_pos := GetPtr(ALBUM_ARTIST_PTR);
     e_pos := GetPtr(ALBUM_ARTIST_PTR + 2); // The next data is end of the current data
-    //WriteLn(s_pos, ' - ', e_pos);
     Result := Self[0].ToString(s_pos, e_pos - s_pos);
 end;
 
@@ -333,7 +351,6 @@ begin
     end;
     s_pos := GetPtr(ALBUM_TITLE_PTR);
     e_pos := GetPtr(ALBUM_TITLE_PTR + 2); // The next data is end of the current data
-    //WriteLn(s_pos, ' - ', e_pos);
     Result := Self[0].ToString(s_pos, e_pos - s_pos);
 end;
 

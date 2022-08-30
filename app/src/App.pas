@@ -29,7 +29,7 @@ var
     FName: String;
     isSacd: Boolean;
     F: File;
-    Sector: RSector;
+    Sector: TSACDSector;
     AppLogs: TAppLogs;
     i,j,k: integer;
     DiskArea: TSACDArea;
@@ -95,6 +95,10 @@ begin
     //Writeln('-----');
     AppArgs := TAppArgs.Create();
     AppArgs.ParseArgs();
+    if AppArgs.HasOption('-f', '--file') then
+    begin
+        FName := AppArgs.GetValue('-f', '--file');
+    end;
     //AppArgs.PrintAll();
     //Writeln('-----');
 
@@ -108,15 +112,15 @@ begin
     AppLogs := TAppLogs.Create('SACD');
 
     AppLogs.D(FName);
-    AppLogs.D(['FName=', 1, ', c=', 2]);
+    //AppLogs.D(['FName=', 1, ', c=', 2]);
 
     //isSacd := isSacdImage(FName);
     //AppLogs.I('isSacd=' + BoolToStr(isSacd));
     
-    Writeln('-----');
+    //Writeln('-----');
     
-    {AssignFile(F, FName);
-    ReadSector(F, 510, Sector);
+    AssignFile(F, FName);
+    {ReadSector(F, 510, Sector);
     Writeln(Sector.ToString());
     Writeln('-----');
     for i := 511 to 550 do
@@ -132,7 +136,7 @@ begin
     if DiskArea.HasData() then
     begin
         WriteLn(DiskArea[0].ToString());
-    end;
+    end;}
 
     Writeln('-----');
     MasterToc := TMasterTocArea.Create();
@@ -145,5 +149,5 @@ begin
     Writeln(TextToc.Header);
     Writeln('Album: ', TextToc.AlbumTitle);
     Writeln('Artist: ', TextToc.AlbumArtist);
-    }
+
 end.
