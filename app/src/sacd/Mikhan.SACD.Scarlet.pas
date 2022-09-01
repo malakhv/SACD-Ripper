@@ -32,7 +32,7 @@ interface
 
 const
 
-    { The length of one sector on SACD disk in bytes. }
+    { The length of one sector on SACD disc in bytes. }
     SACD_SECTOR_LENGTH = 2048;
 
     { TODO Need to specify }
@@ -48,19 +48,27 @@ type
 
 type
 
-    { The raw data of a disk sector represents as a byte array. }
+    { The raw data of a disc sector represents as a byte array. }
     TSectorData = Array [0..SACD_SECTOR_LENGTH - 1] of Byte;
 
 type
 
     { The abstract sector with its number and data. }
     TSACDSector = record
+        { Logical Sector Number (LSN), used to address the Sectors on the disc. }
         Number: Integer;
-        Data: TSectorData;
+        { The 2048 bytes of "Main Data" in a "Data Frame" (see SACD Physical Specification
+          for more details). }
+        RawData: TSectorData;
+
+        { Returns a single byte by index. See RawData property. }
         function GetByte(Index: Integer): Byte;
-        property RawData[Index: Integer]: Byte read GetByte; default;
+        { Array property to quick access to the single bytes by index. }
+        property Data[Index: Integer]: Byte read GetByte; default;
+
         { Returns offset for current sector in bytes. }
         function GetOffset(): Integer;
+
         { Returns string from Start position to zero terminated char. }
         function GetString(Start: Integer): String;
         { Returns sector as a string (as is with all special character). }
@@ -68,6 +76,7 @@ type
         { Returns part of sector data from Start position as a string (as is
           with all special character). }
         function ToString(Start, Count: Integer): String; overload;
+
         { Clear all sector data in this record. }
         procedure ClearData();
     end;
@@ -76,7 +85,7 @@ type
 
 type
 
-    { The abstract area (a group of sequential sectors) on SACD disk. }
+    { The abstract area (a group of sequential sectors) on SACD disc. }
     TSACDArea = class (TObject)
     private
         FFirstSector: Integer;      // See FirstSector property
@@ -153,7 +162,7 @@ const
     { The offset of pointer (2 bytes) to Album Artist info in Master TOC Text area. }
     MASTER_TOC_TEXT_ALBUM_ARTIST_PTR = 18;
 
-{ Returns offset for specified disk sector number. }
+{ Returns offset for specified disc sector number. }
 function GetSectorOffset(SectorNumber: Integer): Integer;
 begin
     Result := SectorNumber * SACD_SECTOR_LENGTH;
@@ -179,7 +188,7 @@ end;
 
 function TSACDSector.GetByte(Index: Integer): Byte;
 begin
-    Result := Data[Index];
+    Result := RawData[Index];
 end;
 
 { Returns offset for current sector in bytes. }
@@ -191,7 +200,7 @@ end;
 { Returns string from Start position to zero terminated char. }
 function TSACDSector.GetString(Start: Integer): String;
 begin
-    Result := String(PAnsiChar(@Data[Start]));
+    Result := String(PAnsiChar(@RawData[Start]));
 end;
 
 { Returns sector as a string (as is with all special character). }
@@ -209,16 +218,16 @@ begin
     if Start > 0 then
         pos := Start
     else
-        pos := Low(Data); // In any case let's start from begining
+        pos := Low(RawData); // In any case let's start from begining
     
     // Should convert all data?
     if Count < 0 then
-        Count := High(Data);
+        Count := High(RawData);
     // Make a string
     Result := '';
     while count > 0 do
     begin
-        Result := Result + Char(Data[pos]);
+        Result := Result + Char(RawData[pos]);
         Dec(count); Inc(pos);
     end;
 end;
@@ -228,8 +237,8 @@ procedure TSACDSector.ClearData();
 var i: Integer;
 begin
     // TODO Need to optimization
-    for i := Low(Data) to High(Data) do
-        Data[i] := 0;
+    for i := Low(RawData) to High(RawData) do
+        RawData[i] := 0;
 end;
 
 {
@@ -283,7 +292,7 @@ begin
         for i:= Low(FSectors) to High(FSectors) do
         begin
             FSectors[i].Number := sector;
-            BlockRead(AFile, FSectors[i].Data, size);
+            BlockRead(AFile, FSectors[i].RawData, size);
             Inc(sector);
         end;
     finally

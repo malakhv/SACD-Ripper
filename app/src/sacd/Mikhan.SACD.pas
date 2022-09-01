@@ -119,14 +119,14 @@ begin
     Reset(AFile, 1);
     try
         Seek(AFile,Sector.GetOffset());
-        BlockRead(AFile, Sector.Data, SizeOf(Sector.Data));
+        BlockRead(AFile, Sector.RawData, SizeOf(Sector.RawData));
     finally
         CloseFile(AFile);
     end;
     if DEBUG then
     begin
         Writeln('ReadSector ', Sector.Number, ':');
-        PrintArray(Sector.Data, 8, True);
+        PrintArray(Sector.RawData, 8, True);
     end;
 end;
 
