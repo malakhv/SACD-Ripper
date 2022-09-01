@@ -85,6 +85,17 @@ const
     { The version name suffix using for debug builds. }
     VER_DEBUG_SUFFIX = 'debug';
 
+const
+
+    { The version component key: Major. }
+    VER_MAJOR_KEY = 'MAJOR';
+
+    { The version component key: Minor. }
+    VER_MINOR_KEY = 'MINOR';
+
+    { The version component key: Patch. }
+    VER_PATCH_KEY = 'PATCH';
+
 type
 
     { The version component available values: Major. }
@@ -110,8 +121,6 @@ type
         function GetCode(): Integer; virtual;
         { See Name property. }
         function GetName(): String; virtual;
-        { Reads the version information from specified file. }
-        function ReadFromFile(FileName: TFileName): Boolean;
     public
         { The version component: Major. }
         property Major: TVerMajor read FMajor;
@@ -125,12 +134,21 @@ type
         property Name: String read GetName;
         { Debug app build or not? }
         property Debug: Boolean read FDebug;
+
+        { Reads the version information from default file. }
+        function LoadFromFile(): Boolean; overload;
+        { Reads the version information from specified file. }
+        function LoadFromFile(FileName: TFileName): Boolean; overload;
+
         { Represents data in this object as readable string. }
         function ToString(): String; override;
+
         constructor Create(Debug: Boolean); overload; virtual;
     end;
 
 Implementation
+
+uses IniFiles, Mikhan.Util.StrUtils;
 
 {
     TSemVer
@@ -156,9 +174,22 @@ begin
         Result := Result + VER_NAME_SEP + VER_DEBUG_SUFFIX;
 end;
 
-function TSemVer.ReadFromFile(FileName: TFileName): Boolean;
+function TSemVer.LoadFromFile(): Boolean;
+begin
+    Result := Self.LoadFromFile(VER_FILE_NAME);
+end;
+
+function TSemVer.LoadFromFile(FileName: TFileName): Boolean;
+var ver : TIniFile;
 begin
     Result := False;
+    if Mikhan.Util.StrUtils.IsEmpty(FileName) then Exit;
+    ver := TIniFile.Create(FileName);
+    FMajor := ver.ReadInteger('version', VER_MAJOR_KEY, 0);
+    FMinor := ver.ReadInteger('version', VER_MINOR_KEY, 0);
+    FPatch := ver.ReadInteger('version', VER_PATCH_KEY, 0);
+    ver.Free;
+    Result := True;
 end;
 
 function TSemVer.ToString(): String;

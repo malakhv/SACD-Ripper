@@ -22,7 +22,8 @@ program test;
 {$h+}
 
 uses
-    SysUtils, Mikhan.Util.AppArgs, Mikhan.Util.AppLogs, Mikhan.SACD.Scarlet, Mikhan.SACD, Mikhan.Util.AppVersion;
+    SysUtils, Mikhan.Util.AppArgs, Mikhan.Util.AppLogs, Mikhan.SACD.Scarlet, Mikhan.SACD,
+    Mikhan.Util.AppVersion, Mikhan.Util.StrUtils;
 
 { Global scope }
 var
@@ -105,6 +106,7 @@ begin
     AppVer := TSemVer.Create(True);
     if AppArgs.HasVersion() then
     begin
+        AppVer.LoadFromFile();
         WriteLn(AppVer.ToString());
         Exit;
     end;
@@ -119,7 +121,6 @@ begin
     
     //Writeln('-----');
     
-    AssignFile(F, FName);
     {ReadSector(F, 510, Sector);
     Writeln(Sector.ToString());
     Writeln('-----');
@@ -138,16 +139,21 @@ begin
         WriteLn(DiskArea[0].ToString());
     end;}
 
-    Writeln('-----');
-    MasterToc := TMasterTocArea.Create();
-    MasterToc.Load(F);
-    Writeln(MasterToc.Header);
+    if not Mikhan.Util.StrUtils.IsEmpty(FName) then
+    begin
+        AssignFile(F, FName);
 
-    Writeln('-----');
-    TextToc := TMasterTextArea.Create();
-    TextToc.Load(F);
-    Writeln(TextToc.Header);
-    Writeln('Album: ', TextToc.AlbumTitle);
-    Writeln('Artist: ', TextToc.AlbumArtist);
+        Writeln('-----');
+        MasterToc := TMasterTocArea.Create();
+        MasterToc.Load(F);
+        Writeln(MasterToc.Header);
+
+        Writeln('-----');
+        TextToc := TMasterTextArea.Create();
+        TextToc.Load(F);
+        Writeln(TextToc.Header);
+        Writeln('Album: ', TextToc.AlbumTitle);
+        Writeln('Artist: ', TextToc.AlbumArtist);
+    end;
 
 end.
