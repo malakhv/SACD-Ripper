@@ -45,6 +45,8 @@ function isSacdImage(Name: String): Boolean;
 
 procedure ReadSector(var AFile: File; Number: Integer; var Sector: TSACDSector);
 
+procedure PrintArray(Source: Array of Byte; Limit: Integer; InHex: Boolean);
+
 Implementation
 
 uses

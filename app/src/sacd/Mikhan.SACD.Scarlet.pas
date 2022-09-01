@@ -61,9 +61,12 @@ type
         property RawData[Index: Integer]: Byte read GetByte; default;
         { Returns offset for current sector in bytes. }
         function GetOffset(): Integer;
-        { Returns sector as a string. }
+        { Returns string from Start position to zero terminated char. }
+        function GetString(Start: Integer): String;
+        { Returns sector as a string (as is with all special character). }
         function ToString(): String; overload;
-        { Returns part of sector data from Start position as a string. }
+        { Returns part of sector data from Start position as a string (as is
+          with all special character). }
         function ToString(Start, Count: Integer): String; overload;
         { Clear all sector data in this record. }
         procedure ClearData();
@@ -185,13 +188,20 @@ begin
     Result := GetSectorOffset(Number);
 end;
 
-{ Returns sector as a string. }
+{ Returns string from Start position to zero terminated char. }
+function TSACDSector.GetString(Start: Integer): String;
+begin
+    Result := String(PAnsiChar(@Data[Start]));
+end;
+
+{ Returns sector as a string (as is with all special character). }
 function TSACDSector.ToString(): String;
 begin
     Result := ToString(0, -1);
 end;
 
-{ Returns part of sector data from Start position as a string. }
+{ Returns part of sector data from Start position as a string (as is with all
+  special character). }
 function TSACDSector.ToString(Start, Count: Integer): String;
 var pos: Integer;
 begin
@@ -327,31 +337,27 @@ end;
 function TMasterTextArea.DoGetAlbumArtist(): String;
 const
     ALBUM_ARTIST_PTR = 18;
-var s_pos, e_pos: Integer;
+var start: Integer;
 begin
     if not HasData() then
     begin
-        Result := '';
-        Exit;
+        Result := ''; Exit;
     end;
-    s_pos := GetPtr(ALBUM_ARTIST_PTR);
-    e_pos := GetPtr(ALBUM_ARTIST_PTR + 2); // The next data is end of the current data
-    Result := Self[0].ToString(s_pos, e_pos - s_pos);
+    start := GetPtr(ALBUM_ARTIST_PTR);
+    Result := Self[0].GetString(start);
 end;
 
 function TMasterTextArea.DoGetAlbumTitle(): String;
 const
     ALBUM_TITLE_PTR = 16;
-var s_pos, e_pos: Integer;
+var start: Integer;
 begin
     if not HasData() then
     begin
-        Result := '';
-        Exit;
+        Result := ''; Exit;
     end;
-    s_pos := GetPtr(ALBUM_TITLE_PTR);
-    e_pos := GetPtr(ALBUM_TITLE_PTR + 2); // The next data is end of the current data
-    Result := Self[0].ToString(s_pos, e_pos - s_pos);
+    start := GetPtr(ALBUM_TITLE_PTR);
+    Result := Self[0].GetString(start);
 end;
 
 end.
