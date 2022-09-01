@@ -66,8 +66,8 @@ begin
         BlockRead(f, buf, SizeOf(buf));
         if buf > 0 then
         begin
-            Writeln(IntToHex(pos));
-            Writeln(IntToHex(buf));
+            Writeln(IntToHex(pos, 2));
+            Writeln(IntToHex(buf, 2));
             break;
         end;
         Inc(pos);

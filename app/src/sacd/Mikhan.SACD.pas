@@ -65,7 +65,7 @@ begin
     begin
         val := Source[i];
         if (InHex) then
-            Write(IntToHex(val))
+            Write(IntToHex(val, 2))
         else
             Write(val);
         Write(' ');
