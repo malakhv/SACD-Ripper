@@ -37,7 +37,7 @@ unit Mikhan.Util.AppArgs;
 {$mode delphi}
 {$h+}
 
-Interface
+interface
 
 const
 
@@ -150,10 +150,10 @@ type
         destructor Destroy; override;
     end;
 
-{----------------------------------------------------------------}
-{ Unit implementation section                                    }
-{----------------------------------------------------------------}
-Implementation
+//--------------------------------------------------------------------------------------------------
+// Implementation Section
+//--------------------------------------------------------------------------------------------------
+implementation
 
 uses Mikhan.Util.StrUtils;
 
@@ -201,7 +201,6 @@ end;
 
 function TOption.IsShort(): Boolean;
 begin
-    //Result := (pos(OPTION_PREFIX_LONG, Self.Key) <> 1);
     Result := not HasLongPrefix(Self.Key) and HasShortPrefix(Self.Key);
 end;
 
@@ -359,4 +358,4 @@ end;
 
 end.
 
-
+//--------------------------------------------------------------------------------------------------
