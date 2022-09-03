@@ -154,8 +154,9 @@ begin
         Writeln(TextToc.Header);
         Writeln('Album: ', TextToc.AlbumTitle);
         Writeln('Artist: ', TextToc.AlbumArtist);
-        //PrintArray(TextToc[0]^.Data, 0, True);
+        //PrintArray(TextToc[0]^.RawData, 0, True);
         Writeln('-----');
+        TAppLogs.Dump(TextToc[0]^.RawData, 128);
         //Writeln(TextToc[0]^.ToString());
     end;
 

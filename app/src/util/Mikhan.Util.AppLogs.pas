@@ -130,6 +130,12 @@ type
         { Construct a new instance of TAppLogs class with specified parameters. }
         constructor Create(AppTag: String; Debug: Boolean); overload;
         destructor Destroy; override;
+        { The class method to print raw data in hexadecimal format. }
+        class procedure Dump(Source: Array of Byte); overload;
+        { The class method to print raw data in hexadecimal format. }
+        class procedure Dump(Source: Array of Byte; Limit: Integer); overload;
+        { The class method to print raw data. }
+        class procedure Dump(Source: Array of Byte; Limit: Integer; InHex: Boolean); overload;
     end;
 
 //--------------------------------------------------------------------------------------------------
@@ -137,7 +143,7 @@ type
 //--------------------------------------------------------------------------------------------------
 implementation
 
-uses Mikhan.Util.StrUtils;
+uses SysUtils, Mikhan.Util.StrUtils;
 
 const
 
@@ -149,7 +155,7 @@ const
 
 const
 
-    { Array ot LogLevel abbreviations. }
+    { Array of LogLevel abbreviations. }
     LOG_LEVEL_STR: array[TLogLevel] of Char = ('V', 'D', 'I', 'W', 'E', 'S');
 
 { Returns LogLevel as string abbreviation. }
@@ -203,6 +209,75 @@ end;
 destructor TAppLogs.Destroy;
 begin
     // Empty
+end;
+
+{ The class method to print raw data in hexadecimal format. }
+class procedure TAppLogs.Dump(Source: Array of Byte);
+begin
+    TAppLogs.Dump(Source, 0);
+end;
+
+{ The class method to print raw data in hexadecimal format. }
+class procedure TAppLogs.Dump(Source: Array of Byte; Limit: Integer);
+begin
+    TAppLogs.Dump(Source, Limit, True);
+end;
+
+{ The class method to print raw data. }
+class procedure TAppLogs.Dump(Source: Array of Byte; Limit: Integer; InHex: Boolean);
+const
+    COL_LIMIT = $F;
+    COL_OFFSET = '          ';
+    COL_SEP = '| ';
+    HEADER_SEP = '-----------------------------------------------';
+var i, col, offset: Integer;
+    val: Byte;
+
+    procedure Header();
+    var i: Integer;
+    begin
+        Write(COL_OFFSET);
+        for i := 0 to COL_LIMIT do
+        begin
+            Write(IntToHex(i, 2)); Write(' ');
+        end;
+        WriteLn();
+        WriteLn(COL_OFFSET, HEADER_SEP);
+    end;
+
+    procedure NewRow();
+    begin
+        Writeln('');
+        offset := offset + COL_LIMIT + 1;
+        Write(IntToHex(offset, 8), COL_SEP);
+        col := COL_LIMIT;
+    end;
+
+begin
+
+    // Print header
+    Header();
+
+    col := COL_LIMIT;
+    offset := 0;
+    if Limit <= 0 then Limit := MaxInt;
+    Write(IntToHex(offset, 8), COL_SEP);
+    for i := Low(Source) to High(Source) do
+    begin
+
+        if col < 0 then NewRow();
+        Dec(col);
+
+        val := Source[i];
+        if (InHex) then
+            Write(IntToHex(val, 2))
+        else
+            Write(val);
+        Write(' ');
+        Dec(Limit);
+        if Limit <= 0 then break;
+    end;
+    Writeln('');
 end;
 
 { Setter for LogLevel property }

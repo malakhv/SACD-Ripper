@@ -328,7 +328,7 @@ end;
 procedure TAppArgs.ParseArgs();
 var
     arg, val: String;
-    cur, count, len: Integer;
+    cur, count: Integer;
 begin
     ClearArgs();
     count := ParamCount();
