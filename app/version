@@ -11,8 +11,9 @@
 #                                                                #
 #----------------------------------------------------------------#
 
-# The app version. This version's format matches to "Semantic Versioning 2.0.0", for more
-# details about this format, please see http://semver.org/
+# The app version. This version's format matches to "Semantic
+# Versioning 2.0.0", for more details about this format, please
+# see http://semver.org/
 [version]
 
 MAJOR=0
