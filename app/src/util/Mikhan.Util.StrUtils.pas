@@ -44,8 +44,26 @@ const
     { The comma character. }
     CHAR_COMMA = ',';
 
+    { The colon character. }
+    CHAR_COLON = ':';
+
+    { The semicolon character. }
+    CHAR_SEMICOLON = ';';
+
+    { The less-than sign. }
+    CHAR_LESS_THAN = '<';
+
     { The equal sign. }
     CHAR_EQUAL = '=';
+
+    { The greater-than sign. }
+    CHAR_GREATER_THAN = '>';
+
+    { The question mark. }
+    CHAR_QUESTION_MARK = '?';
+
+    { The at sign. }
+    CHAR_AT = '@';
 
     { The special char: end of the line. }
     CHAR_NEW_LINE = '\n';
