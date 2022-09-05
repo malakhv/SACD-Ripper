@@ -133,12 +133,39 @@ type
 
     TMasterTextArea = class (TTocArea)
     protected
+        const ALBUM_DATA_OFFSET = 16;
+        const ALBUM_TITLE_PTR_OFFSET = ALBUM_DATA_OFFSET;
+        const ALBUM_ARTIST_PTR_OFFSET = ALBUM_DATA_OFFSET + 2;
+        const ALBUM_PUBLISHER_PTR_OFFSET = ALBUM_DATA_OFFSET + 4;
+        const ALBUM_COPYRIGHT_PTR_OFFSET = ALBUM_DATA_OFFSET + 6;
+
+        const DISC_DATA_OFFSET = ALBUM_DATA_OFFSET + 14;
+        const DISC_TITLE_PTR_OFFSET = DISC_DATA_OFFSET + 2;
+        const DISC_ARTIST_PTR_OFFSET = DISC_DATA_OFFSET + 4;
+        const DISC_PUBLISHER_PTR_OFFSET = DISC_DATA_OFFSET + 6;
+        const DISC_COPYRIGHT_PTR_OFFSET = DISC_DATA_OFFSET + 8;
+
         function DoGetAlbumTitle(): String;
         function DoGetAlbumArtist(): String;
+        function DoGetAlbumPublisher(): String;
+        function DoGetAlbumCopyright(): String;
+
+        function DoGetDiscTitle(): String;
+        function DoGetDiscArtist(): String;
+        function DoGetDiscPublisher(): String;
+        function DoGetDiscCopyright(): String;
+
         function GetPtr(From: Integer): Integer;
+        function GetStringByPtr(PtrOffset: Integer): String;
     public
+        property DiscTitle: String read DoGetDiscTitle;
+        property DiscArtist: String read DoGetDiscArtist;
+        property DiscPublisher: String read DoGetDiscPublisher;
+        property DiscCopyright: String read DoGetDiscCopyright;
         property AlbumTitle: String read DoGetAlbumTitle;
         property AlbumArtist: String read DoGetAlbumArtist;
+        property AlbumPublisher: String read DoGetAlbumPublisher;
+        property AlbumCopyright: String read DoGetAlbumCopyright;
         constructor Create();
     end;
 
@@ -343,30 +370,59 @@ begin
         Result := -1;
 end;
 
-function TMasterTextArea.DoGetAlbumArtist(): String;
-const
-    ALBUM_ARTIST_PTR = 18;
+function TMasterTextArea.GetStringByPtr(PtrOffset: Integer): String;
 var start: Integer;
 begin
     if not HasData() then
     begin
         Result := ''; Exit;
     end;
-    start := GetPtr(ALBUM_ARTIST_PTR);
+    start := GetPtr(PtrOffset);
     Result := Self[0].GetString(start);
 end;
 
-function TMasterTextArea.DoGetAlbumTitle(): String;
-const
-    ALBUM_TITLE_PTR = 16;
-var start: Integer;
+function TMasterTextArea.DoGetAlbumArtist(): String;
 begin
-    if not HasData() then
-    begin
-        Result := ''; Exit;
-    end;
-    start := GetPtr(ALBUM_TITLE_PTR);
-    Result := Self[0].GetString(start);
+    Result := Self.GetStringByPtr(ALBUM_ARTIST_PTR_OFFSET);
+end;
+
+function TMasterTextArea.DoGetAlbumTitle(): String;
+begin
+    Result := Self.GetStringByPtr(ALBUM_TITLE_PTR_OFFSET);
+end;
+
+function TMasterTextArea.DoGetAlbumPublisher(): String;
+const
+    ALBUM_PUBLISHER_PTR = 20;
+begin
+    Result := Self.GetStringByPtr(ALBUM_PUBLISHER_PTR_OFFSET);
+end;
+
+function TMasterTextArea.DoGetAlbumCopyright(): String;
+const
+    ALBUM_COPYRIGHT_PTR = 22;
+begin
+    Result := Self.GetStringByPtr(ALBUM_COPYRIGHT_PTR_OFFSET);
+end;
+
+function TMasterTextArea.DoGetDiscTitle(): String;
+begin
+    Result := Self.GetStringByPtr(DISC_TITLE_PTR_OFFSET);
+end;
+
+function TMasterTextArea.DoGetDiscArtist(): String;
+begin
+    Result := Self.GetStringByPtr(DISC_ARTIST_PTR_OFFSET);
+end;
+
+function TMasterTextArea.DoGetDiscPublisher(): String;
+begin
+    Result := Self.GetStringByPtr(DISC_PUBLISHER_PTR_OFFSET);
+end;
+
+function TMasterTextArea.DoGetDiscCopyright(): String;
+begin
+    Result := Self.GetStringByPtr(DISC_COPYRIGHT_PTR_OFFSET);
 end;
 
 end.

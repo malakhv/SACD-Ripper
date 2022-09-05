@@ -152,8 +152,14 @@ begin
         TextToc := TMasterTextArea.Create();
         TextToc.Load(F);
         Writeln(TextToc.Header);
-        Writeln('Album: ', TextToc.AlbumTitle);
-        Writeln('Artist: ', TextToc.AlbumArtist);
+        Writeln('Album Title: ', TextToc.AlbumTitle);
+        Writeln('Album Artist: ', TextToc.AlbumArtist);
+        Writeln('Album Publisher: ', TextToc.AlbumPublisher);
+        Writeln('Album Copyright: ', TextToc.AlbumCopyright);
+        Writeln('Disc Title: ', TextToc.DiscTitle);
+        Writeln('Disc Artist: ', TextToc.DiscArtist);
+        Writeln('Disc Publisher: ', TextToc.DiscPublisher);
+        Writeln('Disc Copyright: ', TextToc.DiscCopyright);
         //PrintArray(TextToc[0]^.RawData, 0, True);
         Writeln('-----');
         TAppLogs.Dump(TextToc[0]^.RawData, 128);
