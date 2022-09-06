@@ -403,15 +403,11 @@ begin
 end;
 
 function TMasterTextArea.DoGetAlbumPublisher(): String;
-const
-    ALBUM_PUBLISHER_PTR = 20;
 begin
     Result := Self.GetStringByPtr(ALBUM_PUBLISHER_PTR_OFFSET);
 end;
 
 function TMasterTextArea.DoGetAlbumCopyright(): String;
-const
-    ALBUM_COPYRIGHT_PTR = 22;
 begin
     Result := Self.GetStringByPtr(ALBUM_COPYRIGHT_PTR_OFFSET);
 end;
