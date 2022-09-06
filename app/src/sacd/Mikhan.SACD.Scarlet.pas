@@ -131,15 +131,22 @@ type
         constructor Create();
     end;
 
+    {
+        The Master Text area contains all general text information that is related with the Album
+        and with the Disc. The size of this area is one SACD sector. This area has 'SACDText'
+        signature. This area is a part of Master TOC.
+    }
     TMasterTextArea = class (TTocArea)
     protected
-        const ALBUM_DATA_OFFSET = 16;
-        const ALBUM_TITLE_PTR_OFFSET = ALBUM_DATA_OFFSET;
-        const ALBUM_ARTIST_PTR_OFFSET = ALBUM_DATA_OFFSET + 2;
-        const ALBUM_PUBLISHER_PTR_OFFSET = ALBUM_DATA_OFFSET + 4;
-        const ALBUM_COPYRIGHT_PTR_OFFSET = ALBUM_DATA_OFFSET + 6;
+        { The offset of significant data in this sector. }
+        const AREA_DATA_OFFSET = 16;
 
-        const DISC_DATA_OFFSET = ALBUM_DATA_OFFSET + 14;
+        const ALBUM_TITLE_PTR_OFFSET = AREA_DATA_OFFSET;
+        const ALBUM_ARTIST_PTR_OFFSET = AREA_DATA_OFFSET + 2;
+        const ALBUM_PUBLISHER_PTR_OFFSET = AREA_DATA_OFFSET + 4;
+        const ALBUM_COPYRIGHT_PTR_OFFSET = AREA_DATA_OFFSET + 6;
+
+        const DISC_DATA_OFFSET = AREA_DATA_OFFSET + 14;
         const DISC_TITLE_PTR_OFFSET = DISC_DATA_OFFSET + 2;
         const DISC_ARTIST_PTR_OFFSET = DISC_DATA_OFFSET + 4;
         const DISC_PUBLISHER_PTR_OFFSET = DISC_DATA_OFFSET + 6;
