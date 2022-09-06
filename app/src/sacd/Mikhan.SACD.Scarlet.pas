@@ -35,8 +35,8 @@ const
     { The length of one sector on SACD disc in bytes. }
     SACD_SECTOR_LENGTH = 2048;
 
-    { TODO Need to specify }
-    SACD_MAX_SECTOR_COUNT = 123456;
+    { The max number of sectors in SACD disc. }
+    SACD_MAX_SECTOR_COUNT = 123456; // TODO Need to specify
 
     { The lenght of Master TOC in sectors. }
     MASTER_TOC_LENGTH = 10;
@@ -85,7 +85,9 @@ type
 
 type
 
-    { The abstract area (a group of sequential sectors) on SACD disc. }
+    {
+        The abstract area (a group of sequential sectors) on a SACD disc.
+    }
     TSACDArea = class (TObject)
     private
         FFirstSector: Integer;      // See FirstSector property
@@ -198,14 +200,6 @@ uses Mikhan.Util.StrUtils;
 {
     Common things
 }
-
-//const
-
-    { The offset of pointer (2 bytes) to Album Artist info in Master TOC Text area. }
-    //MASTER_TOC_TEXT_ALBUM_TITLE_PTR = 16;
-
-    { The offset of pointer (2 bytes) to Album Artist info in Master TOC Text area. }
-    //MASTER_TOC_TEXT_ALBUM_ARTIST_PTR = 18;
 
 { Returns offset for specified disc sector number. }
 function GetSectorOffset(SectorNumber: Integer): Integer;
@@ -324,8 +318,8 @@ begin
     ClearData();
     SetLength(FSectors, SectorCount);
 
-    // Open inpurt file read and setting up
-    // size of read chunk to 1 byte
+    // Open inpurt file read and setting up size of read chunk
+    // to 1 byte
     Reset(AFile, 1);
 
     // Read data
