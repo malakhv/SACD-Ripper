@@ -175,7 +175,6 @@ type
         function DoGetDiscPublisher(): String;
         function DoGetDiscCopyright(): String;
 
-        function GetPtr(From: Integer): Integer;
         function GetStringByPtr(PtrOffset: Integer): String;
     public
         property DiscTitle: String read DoGetDiscTitle;
@@ -371,25 +370,25 @@ end;
 
 constructor TMasterTextArea.Create();
 begin
-    inherited Create(511);
-end;
-
-function TMasterTextArea.GetPtr(From: Integer): Integer;
-begin
-    if HasData() then
-        Result := BytesToInt(Self[0]^[From], Self[0]^[From + 1])
-    else
-        Result := -1;
+    inherited Create(512);
 end;
 
 function TMasterTextArea.GetStringByPtr(PtrOffset: Integer): String;
+
+    function GetPtr(Offset: Integer): Integer;
+    begin
+        if Offset < SACD_SECTOR_LENGTH - 1 then
+            Result := BytesToInt(Self[0]^[Offset], Self[0]^[Offset + 1])
+        else
+            Result := -1;
+    end;
+
 var start: Integer;
 begin
-    if not HasData() then
-    begin
-        Result := ''; Exit;
-    end;
+    Result := '';
+    if not HasData() then Exit;
     start := GetPtr(PtrOffset);
+    if start = 0 then Exit;
     Result := Self[0].GetString(start);
 end;
 
