@@ -138,18 +138,29 @@ type
     }
     TMasterTextArea = class (TTocArea)
     protected
-        { The offset of significant data in this sector. }
+        { The offset of significant data in this area. }
         const AREA_DATA_OFFSET = 16;
 
-        const ALBUM_TITLE_PTR_OFFSET = AREA_DATA_OFFSET;
-        const ALBUM_ARTIST_PTR_OFFSET = AREA_DATA_OFFSET + 2;
-        const ALBUM_PUBLISHER_PTR_OFFSET = AREA_DATA_OFFSET + 4;
-        const ALBUM_COPYRIGHT_PTR_OFFSET = AREA_DATA_OFFSET + 6;
+        { The offset of Album data in this area. }
+        const ALBUM_DATA_OFFSET = AREA_DATA_OFFSET;
+        { The offset of pointer (2 bytes) to Album Title string in this area. }
+        const ALBUM_TITLE_PTR_OFFSET = ALBUM_DATA_OFFSET;
+        { The offset of pointer (2 bytes) to Album Artist string in this area. }
+        const ALBUM_ARTIST_PTR_OFFSET = ALBUM_DATA_OFFSET + 2;
+        { The offset of pointer (2 bytes) to Album Publisher string in this area. }
+        const ALBUM_PUBLISHER_PTR_OFFSET = ALBUM_DATA_OFFSET + 4;
+        { The offset of pointer (2 bytes) to Album Copyright string in this area. }
+        const ALBUM_COPYRIGHT_PTR_OFFSET = ALBUM_DATA_OFFSET + 6;
 
+        { The offset of Disc data in this area. }
         const DISC_DATA_OFFSET = AREA_DATA_OFFSET + 14;
+        { The offset of pointer (2 bytes) to Disc Title string in this area. }
         const DISC_TITLE_PTR_OFFSET = DISC_DATA_OFFSET + 2;
+        { The offset of pointer (2 bytes) to Disc Artist string in this area. }
         const DISC_ARTIST_PTR_OFFSET = DISC_DATA_OFFSET + 4;
+        { The offset of pointer (2 bytes) to Disc Publisher string in this area. }
         const DISC_PUBLISHER_PTR_OFFSET = DISC_DATA_OFFSET + 6;
+        { The offset of pointer (2 bytes) to Disc Copyright string in this area. }
         const DISC_COPYRIGHT_PTR_OFFSET = DISC_DATA_OFFSET + 8;
 
         function DoGetAlbumTitle(): String;
@@ -188,13 +199,13 @@ uses Mikhan.Util.StrUtils;
     Common things
 }
 
-const
+//const
 
     { The offset of pointer (2 bytes) to Album Artist info in Master TOC Text area. }
-    MASTER_TOC_TEXT_ALBUM_TITLE_PTR = 16;
+    //MASTER_TOC_TEXT_ALBUM_TITLE_PTR = 16;
 
     { The offset of pointer (2 bytes) to Album Artist info in Master TOC Text area. }
-    MASTER_TOC_TEXT_ALBUM_ARTIST_PTR = 18;
+    //MASTER_TOC_TEXT_ALBUM_ARTIST_PTR = 18;
 
 { Returns offset for specified disc sector number. }
 function GetSectorOffset(SectorNumber: Integer): Integer;
