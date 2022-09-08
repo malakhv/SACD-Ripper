@@ -156,6 +156,7 @@ begin
         Writeln('Disc Artist: ', TextToc.DiscArtist);
         Writeln('Disc Publisher: ', TextToc.DiscPublisher);
         Writeln('Disc Copyright: ', TextToc.DiscCopyright);
+
         Writeln('Album Title: ', TextToc.AlbumTitle);
         Writeln('Album Artist: ', TextToc.AlbumArtist);
         Writeln('Album Publisher: ', TextToc.AlbumPublisher);
