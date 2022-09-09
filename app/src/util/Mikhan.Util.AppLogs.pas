@@ -306,7 +306,7 @@ begin
     //prefix := '';
     prefix := LogLavelToStr(Level) + TAG_DELIMITER;
     if HasAppTag then
-        prefix := prefix + AppTag + TAG_DELIMITER;
+        prefix := AppTag + TAG_DELIMITER + prefix;
     if not Mikhan.Util.StrUtils.isEmpty(Tag) then
         prefix := prefix + Tag + TAG_DELIMITER;
     Writeln(prefix, Message);
@@ -327,7 +327,7 @@ begin
     //prefix := '';
     prefix := LogLavelToStr(Level) + TAG_DELIMITER;
     if HasAppTag then
-        prefix := prefix + AppTag + TAG_DELIMITER;
+        prefix := AppTag + TAG_DELIMITER + prefix;
     if not Mikhan.Util.StrUtils.isEmpty(Tag) then
         prefix := prefix + Tag + TAG_DELIMITER;
     Write(prefix);
