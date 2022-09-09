@@ -25,84 +25,78 @@ uses
     SysUtils, Mikhan.Util.AppArgs, Mikhan.Util.AppLogs, Mikhan.SACD.Scarlet, Mikhan.SACD,
     Mikhan.Util.AppVersion, Mikhan.Util.StrUtils;
 
+const
+    DEBUG = False;
+    LOG_SEP = '---------------------------------------------------------';
+
+{ Program commands }
+const
+
+    { Program command: Print information about SACD disc. }
+    CMD_INFO = 'info';
+
 { Global scope }
+
 var
-    FName: String;
-    isSacd: Boolean;
-    F: File;
+    AppVer: TSemVer;        // Program version
+    AppArgs: TAppArgs;      // Program command line arguments
+    AppLogs: TAppLogs;      // Program logs
+    Command: TArgString;    // The current command
+    InputFile: TFileName;   // Input file path
+    OutputFile: TFileName;   // Outpot file path
+
+{ Just for test }
+var
     Sector: TSACDSector;
-    AppLogs: TAppLogs;
     i,j,k: integer;
-    DiskArea: TSACDArea;
+
+{
+    Print an information about SACD disc.
+}
+procedure PrintInfo(AFile: TFileName);
+var
     MasterToc: TMasterTocArea;
     TextToc: TMasterTextArea;
-    AppArgs: Mikhan.Util.AppArgs.TAppArgs;
-    Test1: Array of ShortString;
-    Test2: Array of ShortString;
-    //AppOpt: TAppOpt;
-    AppVer: TSemVer;
-
-
-procedure ParseParams();
-var 
-    count: integer;
+    F: File;
 begin
-    count := paramCount();
-    if count > 0 then
-        FName := paramStr(1);
-end;
-
-procedure CheckFile(name: String);
-var
-    f: File;
-    buf: ShortInt;
-    pos: Integer;
-begin
-    AssignFile(f, name);
-    Reset(f, 1);
-    buf := 0;
-    pos := 0;
-    while not EOF(f) do
-    begin
-        BlockRead(f, buf, SizeOf(buf));
-        if buf > 0 then
-        begin
-            Writeln(IntToHex(pos, 2));
-            Writeln(IntToHex(buf, 2));
-            break;
-        end;
-        Inc(pos);
-    end;
-    CloseFile(f);
+    AssignFile(F, AFile);
+    Writeln(LOG_SEP);
+    MasterToc := TMasterTocArea.Create();
+    MasterToc.Load(F);
+    Writeln(MasterToc.Header);
+    Writeln(LOG_SEP);
+    TextToc := TMasterTextArea.Create();
+    TextToc.Load(F);
+    Writeln(TextToc.Header);
+    Writeln('Disc Title: ', TextToc.DiscTitle);
+    Writeln('Disc Artist: ', TextToc.DiscArtist);
+    Writeln('Disc Publisher: ', TextToc.DiscPublisher);
+    Writeln('Disc Copyright: ', TextToc.DiscCopyright);
+    Writeln('Album Title: ', TextToc.AlbumTitle);
+    Writeln('Album Artist: ', TextToc.AlbumArtist);
+    Writeln('Album Publisher: ', TextToc.AlbumPublisher);
+    Writeln('Album Copyright: ', TextToc.AlbumCopyright);
+    Writeln(LOG_SEP);
+    // Just for test
+    TAppLogs.Dump(TextToc[0]^.RawData, 128);
+    //Writeln(TextToc[0]^.ToString();
+    //PrintArray(TextToc[0]^.RawData, 0, True);
 end;
 
 //
 // Program entry point
 //
 begin
-    
-    // Testing program args
-    //Writeln('ParamCount: ', ParamCount());
-    for i := 0 to ParamCount() do
-    begin
-        //WriteLn(i, ': ', ParamStr(i));
-    end;
 
-    //Writeln('-----');
-    //AppOpt := TAppOpt.Create;
-    //AppOpt.ParseArgs();
-    //AppOpt.PrintAll();
-
-    //Writeln('-----');
+    // Parse input arguments
     AppArgs := TAppArgs.Create();
     AppArgs.ParseArgs();
     if AppArgs.HasOption('-f', '--file') then
     begin
-        FName := AppArgs.GetValue('-f', '--file');
+        InputFile := AppArgs.GetValue('-f', '--file');
     end;
-    //AppArgs.PrintAll();
-    //Writeln('-----');
 
+    // Program version
     AppVer := TSemVer.Create(True);
     if AppArgs.HasVersion() then
     begin
@@ -111,61 +105,13 @@ begin
         Exit;
     end;
 
+    // Program Logs
     AppLogs := TAppLogs.Create('SACD');
+    AppLogs.D(InputFile);
 
-    AppLogs.D(FName);
-    //AppLogs.D(['FName=', 1, ', c=', 2]);
-
-    //isSacd := isSacdImage(FName);
-    //AppLogs.I('isSacd=' + BoolToStr(isSacd));
-    
-    //Writeln('-----');
-    
-    {ReadSector(F, 510, Sector);
-    Writeln(Sector.ToString());
-    Writeln('-----');
-    for i := 511 to 550 do
+    if not Mikhan.Util.StrUtils.IsEmpty(InputFile) then
     begin
-        ReadSector(F, i, Sector);
-        //Writeln(Sector.ToString(0, -1));
-    end;
-
-
-    //Writeln('-----');
-    DiskArea := TSACDArea.Create(510, 1);
-    DiskArea.Load(F);
-    if DiskArea.HasData() then
-    begin
-        WriteLn(DiskArea[0].ToString());
-    end;}
-
-    if not Mikhan.Util.StrUtils.IsEmpty(FName) then
-    begin
-        AssignFile(F, FName);
-
-        Writeln('-----');
-        MasterToc := TMasterTocArea.Create();
-        MasterToc.Load(F);
-        Writeln(MasterToc.Header);
-
-        Writeln('-----');
-        TextToc := TMasterTextArea.Create();
-        TextToc.Load(F);
-        Writeln(TextToc.Header);
-        Writeln('Disc Title: ', TextToc.DiscTitle);
-        Writeln('Disc Artist: ', TextToc.DiscArtist);
-        Writeln('Disc Publisher: ', TextToc.DiscPublisher);
-        Writeln('Disc Copyright: ', TextToc.DiscCopyright);
-
-        Writeln('Album Title: ', TextToc.AlbumTitle);
-        Writeln('Album Artist: ', TextToc.AlbumArtist);
-        Writeln('Album Publisher: ', TextToc.AlbumPublisher);
-        Writeln('Album Copyright: ', TextToc.AlbumCopyright);
-
-        //PrintArray(TextToc[0]^.RawData, 0, True);
-        Writeln('-----');
-        TAppLogs.Dump(TextToc[0]^.RawData, 128);
-        //Writeln(TextToc[0]^.ToString());
+        PrintInfo(InputFile);
     end;
 
 end.

@@ -370,7 +370,7 @@ end;
 
 constructor TMasterTextArea.Create();
 begin
-    inherited Create(512);
+    inherited Create(511);
 end;
 
 function TMasterTextArea.GetStringByPtr(PtrOffset: Integer): String;
