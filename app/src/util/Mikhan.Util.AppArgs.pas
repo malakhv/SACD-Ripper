@@ -86,6 +86,9 @@ type
     { The base type of program commang line arguments. }
     TArgString = String;
 
+    { The array of program commang line arguments. }
+    TArgStrings = Array of TArgString;
+
 type
 
     { A program option in short or long format. }
@@ -97,7 +100,7 @@ type
     end;
 
     { The list of program options (in short or long format). }
-    TOptions = array of TOption;
+    TOptions = Array of TOption;
 
 type
 
@@ -109,14 +112,21 @@ type
         { Program command line options, with prefix (in short and long format). }
         Options: TOptions;
         { Program command line arguments. }
-        Arguments: array of TArgString;
+        FArguments: TArgStrings;
     protected
+        function GetArgument(Index: Integer): TArgString;
+        function GetArgumentCount(): Integer;
         procedure AddOption(const Key: TArgString); overload;
         procedure AddOption(const Key, Value: TArgString); overload;
         procedure AddArgument(const Argument: TArgString);
     public
         { The program file name. }
         property Name: TArgString read FName;
+
+        { The array of program arguments. }
+        property Arguments[Index : Integer]: TArgString read GetArgument;
+        { The number of program arguments. }
+        property ArgumentCount: Integer read GetArgumentCount;
 
         { Returns true if program has specified argument. }
         function HasArgument(Argument: TArgString): Boolean;
@@ -228,7 +238,7 @@ end;
 procedure TAppArgs.ClearArgs();
 begin
     SetLength(Options, 0);
-    SetLength(Arguments, 0);
+    SetLength(FArguments, 0);
 end;
 
 procedure TAppArgs.AddOption(const Key: TArgString);
@@ -241,22 +251,20 @@ var len: integer;
 begin
     len := Length(Options);
     SetLength(Options, len + 1);
-    Options[len].Key := Key;
-    Options[len].Value := Value;
 end;
 
 procedure TAppArgs.AddArgument(const Argument: TArgString);
 var len: integer;
 begin
-    len := Length(Arguments);
-    SetLength(Arguments, len + 1);
-    Arguments[len] := Argument;
+    len := Length(FArguments);
+    SetLength(FArguments, len + 1);
+    FArguments[len] := Argument;
 end;
 
 function TAppArgs.HasArgument(Argument: TArgString): Boolean;
 var item: TArgString;
 begin
-    for item in Arguments do
+    for item in FArguments do
         if item = Argument then
         begin
             Result := True;
@@ -305,6 +313,16 @@ begin
         Result := STR_EMPTY;
 end;
 
+function TAppArgs.GetArgument(Index: Integer): TArgString;
+begin
+    Result := FArguments[Index];
+end;
+
+function TAppArgs.GetArgumentCount(): Integer;
+begin
+    Result := Length(FArguments);
+end;
+
 procedure TAppArgs.PrintAll();
 var
     i: Integer;
@@ -321,8 +339,8 @@ begin
         WriteLn();
     end;
     WriteLn('Arguments:');
-    for i := Low(Arguments) to High(Arguments) do
-         WriteLn('  ', Arguments[i]);
+    for i := Low(FArguments) to High(FArguments) do
+         WriteLn('  ', FArguments[i]);
 end;
 
 procedure TAppArgs.ParseArgs();

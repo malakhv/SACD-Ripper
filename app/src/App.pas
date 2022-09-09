@@ -95,15 +95,14 @@ end;
 //
 begin
 
+    // Program Logs
+    AppLogs := TAppLogs.Create('SACD');
+
     // Parse input arguments
     AppArgs := TAppArgs.Create();
     AppArgs.ParseArgs();
-    if AppArgs.HasOption('-f', '--file') then
-    begin
-        InputFile := AppArgs.GetValue('-f', '--file');
-    end;
 
-    // Program version
+    // Program command: version
     if AppArgs.HasVersion() then
     begin
         AppVer := TSemVer.Create(True);
@@ -113,13 +112,18 @@ begin
         Exit;
     end;
 
-    // Program Logs
-    AppLogs := TAppLogs.Create('SACD');
-    AppLogs.D(InputFile);
-
-    if not Mikhan.Util.StrUtils.IsEmpty(InputFile) then
+    // Program command: info
+    if AppArgs.HasArgument(CMD_INFO) then
     begin
-        PrintInfo(InputFile);
+        // In this option we expect only SACD file path as
+        // second argument
+        if AppArgs.ArgumentCount >= 2 then
+        begin
+            InputFile := TFileName(AppArgs.Arguments[1]);
+            PrintInfo(InputFile);
+        end else
+            AppLogs.W('Please specify SACD image file path...');
+        Exit;
     end;
 
 end.
