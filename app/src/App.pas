@@ -26,7 +26,14 @@ uses
     Mikhan.Util.AppVersion, Mikhan.Util.StrUtils;
 
 const
+
+    { The name of this program. }
+    APP_NAME = 'SACD-Ripper';
+
+    { The common debug flag. }
     DEBUG = False;
+
+    { The default log separator. }
     LOG_SEP = '---------------------------------------------------------';
 
 { Program commands }
@@ -97,10 +104,11 @@ begin
     end;
 
     // Program version
-    AppVer := TSemVer.Create(True);
     if AppArgs.HasVersion() then
     begin
+        AppVer := TSemVer.Create(True);
         AppVer.LoadFromFile();
+        WriteLn(APP_NAME);
         WriteLn(AppVer.ToString());
         Exit;
     end;
