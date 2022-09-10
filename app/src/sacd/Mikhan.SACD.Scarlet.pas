@@ -1,27 +1,27 @@
-{----------------------------------------------------------------}
-{                                                                }
-{                     SACD-Ripper project                        }
-{                                                                }
-{  Copyright (C) 2022 Mikhail Malakhov <malakhv@gmail.com>       }
-{                                                                }
-{  Unauthorized copying of this file, via any medium is          }
-{  strictly prohibited.                                          }
-{                                                                }
-{       Confidential and Proprietary. All Rights Reserved.       }
-{                                                                }
-{----------------------------------------------------------------}
+{-----------------------------------------------------------------}
+{                                                                 }
+{                     SACD-Ripper project                         }
+{                                                                 }
+{  Copyright (C) 2022 Mikhail Malakhov <malakhv@gmail.com>        }
+{                                                                 }
+{  Unauthorized copying of this file, via any medium is           }
+{  strictly prohibited.                                           }
+{                                                                 }
+{       Confidential and Proprietary. All Rights Reserved.        }
+{                                                                 }
+{-----------------------------------------------------------------}
 
-{----------------------------------------------------------------}
-{ The Unit includes some difinitions from Scarlet Book           }
-{ specification.                                                 }
-{                                                                }
-{ Package: Mikhan.Util                                           }
-{ Types: TODO                                                    }
-{ Dependencies: Mikhan.SACD                                      }
-{                                                                }
-{ Created: 14.08.2022                                            }
-{ Author: Mikhail.Malakhov                                       }
-{----------------------------------------------------------------}
+{-----------------------------------------------------------------}
+{ The Unit includes some difinitions from Scarlet Book            }
+{ specification.                                                  }
+{                                                                 }
+{ Package: Mikhan.Util                                            }
+{ Types: TODO                                                     }
+{ Dependencies: Mikhan.SACD                                       }
+{                                                                 }
+{ Created: 14.08.2022                                             }
+{ Author: Mikhail.Malakhov                                        }
+{-----------------------------------------------------------------}
 
 unit Mikhan.SACD.Scarlet;
 
@@ -38,25 +38,28 @@ const
     { The max number of sectors in SACD disc. }
     SACD_MAX_SECTOR_COUNT = 123456; // TODO Need to specify
 
-    { The lenght of Master TOC in sectors. }
-    MASTER_TOC_LENGTH = 10;
-
+{-----------------------------------------------------------------------------------}
+{ The SACD disc Logical Sector. The length of a Logical Sector must be 2048 bytes,  }
+{ which is equal to the length of a Physical Sector (PS). Each Logical Sector of a  }
+{ volume is identified by a unique Logical Sector Number (LSN). Logical Sector      }
+{ Numbers must be consecutive integers assigned in ascending order to the Physical  }
+{ Sectors on the disc. The Logical Sector Number 0 must be assigned to Sector Start }
+{ PSN of Physical Layer 0.                                                          }
+{                                                                                   }
+{ For more details, please see "Super Audio CD Part 2, Disc Layout" document.       }
+{-----------------------------------------------------------------------------------}
 type
 
     { The sequential number of a SACD disc sector. }
     TSectorNumber = 0..SACD_MAX_SECTOR_COUNT - 1;
 
-type
-
     { The raw data of a disc sector represents as a byte array. }
     TSectorData = Array [0..SACD_SECTOR_LENGTH - 1] of Byte;
 
-type
-
-    { The abstract sector with its number and data. }
+    { The abstract Logical Sector with its number and data. }
     TSACDSector = record
         { Logical Sector Number (LSN), used to address the Sectors on the disc. }
-        Number: Integer;
+        Number: TSectorNumber;
         { The 2048 bytes of "Main Data" in a "Data Frame" (see SACD Physical Specification
           for more details). }
         RawData: TSectorData;
@@ -83,6 +86,9 @@ type
     PSACDSector = ^TSACDSector;
     TSACDSectors = array of TSACDSector;
 
+{-----------------------------------------------------------------------------------}
+{ SACD Area.                                                                        }
+{-----------------------------------------------------------------------------------}
 type
 
     {
@@ -110,14 +116,16 @@ type
         { Clear all sectos data. }
         procedure ClearData(); virtual;
 
-        { Load Aread data from file. }
-        procedure Load(var AFile: File);
+        { Load area data from file. }
+        procedure Load(var AFile: File); virtual;
 
         { Construct a new instance of TSACDArea class with specified parameters. }
         constructor Create(FirstSector, SectorCount: Integer);
         {Free all related resources. }
         destructor Destroy; override;
     end;
+
+type
 
     TTocArea = class (TSACDArea)
     protected
@@ -129,6 +137,9 @@ type
 
 
     TMasterTocArea = class (TTocArea)
+    protected
+        { The lenght of Master TOC in sectors. }
+        const MASTER_TOC_LENGTH = 10;
     public
         constructor Create();
     end;
