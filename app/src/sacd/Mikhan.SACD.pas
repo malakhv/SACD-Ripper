@@ -1,27 +1,27 @@
-{----------------------------------------------------------------}
-{                                                                }
-{                     SACD-Ripper project                        }
-{                                                                }
-{  Copyright (C) 2022 Mikhail Malakhov <malakhv@gmail.com>       }
-{                                                                }
-{  Unauthorized copying of this file, via any medium is          }
-{  strictly prohibited.                                          }
-{                                                                }
-{       Confidential and Proprietary. All Rights Reserved.       }
-{                                                                }
-{----------------------------------------------------------------}
+{-----------------------------------------------------------------}
+{                                                                 }
+{                     SACD-Ripper project                         }
+{                                                                 }
+{  Copyright (C) 2022 Mikhail Malakhov <malakhv@gmail.com>        }
+{                                                                 }
+{  Unauthorized copying of this file, via any medium is           }
+{  strictly prohibited.                                           }
+{                                                                 }
+{       Confidential and Proprietary. All Rights Reserved.        }
+{                                                                 }
+{-----------------------------------------------------------------}
 
-{----------------------------------------------------------------}
-{ The Unit contains constants and methods to working             }
-{ with SACD image file.                                          }
-{                                                                }
-{ Package: Mikhan.Util                                           }
-{ Types: TODO                                                    }
-{ Dependencies: Mikhan.SACD                                      }
-{                                                                }
-{ Created: 14.08.2022                                            }
-{ Author: Mikhail.Malakhov                                       }
-{----------------------------------------------------------------}
+{-----------------------------------------------------------------}
+{ The Unit contains constants and methods to working              }
+{ with SACD image file.                                           }
+{                                                                 }
+{ Package: Mikhan.Util                                            }
+{ Types: TODO                                                     }
+{ Dependencies: Mikhan.SACD                                       }
+{                                                                 }
+{ Created: 14.08.2022                                             }
+{ Author: Mikhail.Malakhov                                        }
+{-----------------------------------------------------------------}
 
 Unit Mikhan.SACD;
 

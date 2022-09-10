@@ -1,15 +1,15 @@
-{----------------------------------------------------------------}
-{                                                                }
-{                  Pascal Utils Library (PUL)                    }
-{                                                                }
-{  Copyright (C) 2022 Mikhail Malakhov <malakhv@gmail.com>       }
-{                                                                }
-{  Unauthorized copying of this file, via any medium is          }
-{  strictly prohibited.                                          }
-{                                                                }
-{       Confidential and Proprietary. All Rights Reserved.       }
-{                                                                }
-{----------------------------------------------------------------}
+{-----------------------------------------------------------------}
+{                                                                 }
+{                  Pascal Utils Library (PUL)                     }
+{                                                                 }
+{  Copyright (C) 2022 Mikhail Malakhov <malakhv@gmail.com>        }
+{                                                                 }
+{  Unauthorized copying of this file, via any medium is           }
+{  strictly prohibited.                                           }
+{                                                                 }
+{       Confidential and Proprietary. All Rights Reserved.        }
+{                                                                 }
+{-----------------------------------------------------------------}
 
 {----------------------------------------------------------------}
 { The Unit contains types, methods and classes to working with   }
