@@ -11,17 +11,17 @@
 {                                                                 }
 {-----------------------------------------------------------------}
 
-{----------------------------------------------------------------}
-{ The Unit contains constants and methods to working             }
-{ with strings.                                                  }
-{                                                                }
-{ Package: Mikhan.Util                                           }
-{ Types: No                                                      }
-{ Dependencies: No                                               }
-{                                                                }
-{ Created: 15.08.2022                                            }
-{ Author: Mikhail.Malakhov                                       }
-{----------------------------------------------------------------}
+{-----------------------------------------------------------------}
+{ The Unit contains constants and methods to working              }
+{ with strings.                                                   }
+{                                                                 }
+{ Package: Mikhan.Util                                            }
+{ Types: No                                                       }
+{ Dependencies: No                                                }
+{                                                                 }
+{ Created: 15.08.2022                                             }
+{ Author: Mikhail.Malakhov                                        }
+{-----------------------------------------------------------------}
 
 unit Mikhan.Util.StrUtils;
 

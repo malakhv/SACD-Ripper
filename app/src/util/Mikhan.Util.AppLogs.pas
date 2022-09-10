@@ -11,17 +11,17 @@
 {                                                                 }
 {-----------------------------------------------------------------}
 
-{----------------------------------------------------------------}
-{ The Unit contains types, methods and classes to working with   }
-{ program logs.                                                  }
-{                                                                }
-{ Package: Mikhan.Util                                           }
-{ Types: TAppLogs, TLogLevel                                     }
-{ Dependencies: Mikhan.Util.StrUtils                             }
-{                                                                }
-{ Created: 14.08.2022                                            }
-{ Author: Mikhail.Malakhov                                       }
-{----------------------------------------------------------------}
+{-----------------------------------------------------------------}
+{ The Unit contains types, methods and classes to working with    }
+{ program logs.                                                   }
+{                                                                 }
+{ Package: Mikhan.Util                                            }
+{ Types: TAppLogs, TLogLevel                                      }
+{ Dependencies: Mikhan.Util.StrUtils                              }
+{                                                                 }
+{ Created: 14.08.2022                                             }
+{ Author: Mikhail.Malakhov                                        }
+{-----------------------------------------------------------------}
 
 unit Mikhan.Util.AppLogs;
 

@@ -11,26 +11,26 @@
 {                                                                 }
 {-----------------------------------------------------------------}
 
-{----------------------------------------------------------------}
-{ The Unit contains types, methods and classes to working with   }
-{ program command line (input) arguments.                        }
-{                                                                }
-{ Package: Mikhan.Util                                           }
-{ Types: TAppParams                                              }
-{ Dependencies: Mikhan.Util.StrUtils                             }
-{                                                                }
-{ Created: 17.08.2022                                            }
-{ Author: Mikhail.Malakhov                                       }
-{----------------------------------------------------------------}
+{-----------------------------------------------------------------}
+{ The Unit contains types, methods and classes to working with    }
+{ program command line (input) arguments.                         }
+{                                                                 }
+{ Package: Mikhan.Util                                            }
+{ Types: TAppParams                                               }
+{ Dependencies: Mikhan.Util.StrUtils                              }
+{                                                                 }
+{ Created: 17.08.2022                                             }
+{ Author: Mikhail.Malakhov                                        }
+{-----------------------------------------------------------------}
 
-{----------------------------------------------------------------}
-{ There are three types of program command line arguments:       }
-{   - simple option or flag (short or long format) without any   }
-{     data, for example: -l, --help                              }
-{   - option (short or long format) with value (key-value pair), }
-{     for example: -t "Text", -file ./file1.txt                  }
-{   - program argument or command, for example: clone, status    }
-{----------------------------------------------------------------}
+{-----------------------------------------------------------------}
+{ There are three types of program command line arguments:        }
+{   - simple option or flag (short or long format) without any    }
+{     data, for example: -l, --help                               }
+{   - option (short or long format) with value (key-value pair),  }
+{     for example: -t "Text", -file ./file1.txt                   }
+{   - program argument or command, for example: clone, status     }
+{-----------------------------------------------------------------}
 
 unit Mikhan.Util.AppArgs;
 
@@ -205,9 +205,9 @@ begin
     Result := FindOption(Key, STR_EMPTY, Target);
 end;
 
-{----------------------------------------------------------------}
-{ TOption implementation                                         }
-{----------------------------------------------------------------}
+{-----------------------------------------------------------------}
+{ TOption implementation                                          }
+{-----------------------------------------------------------------}
 
 function TOption.IsShort(): Boolean;
 begin
@@ -219,9 +219,9 @@ begin
     Result := not Mikhan.Util.StrUtils.IsEmpty(Self.Value);
 end;
 
-{----------------------------------------------------------------}
-{ TAppArgs implementation                                        }
-{----------------------------------------------------------------}
+{-----------------------------------------------------------------}
+{ TAppArgs implementation                                         }
+{-----------------------------------------------------------------}
 
 constructor TAppArgs.Create;
 begin
