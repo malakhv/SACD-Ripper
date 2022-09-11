@@ -95,8 +95,10 @@ type
     TOption = record
         Key: TArgString;
         Value: TArgString;
+        function IsOption: Boolean;
         function IsShort(): Boolean;
-        function isArgument(): Boolean;
+        function IsLong():  Boolean;
+        function IsArgument(): Boolean;
         function HasValue(): Boolean;
     end;
 
@@ -214,14 +216,24 @@ end;
 { TOption implementation                                          }
 {-----------------------------------------------------------------}
 
-function TOption.IsShort(): Boolean;
+function TOption.IsOption: Boolean;
 begin
-    Result := not HasLongPrefix(Self.Key) and HasShortPrefix(Self.Key);
+    Result := HasLongPrefix(Self.Key) or HasShortPrefix(Self.Key);
 end;
 
-function TOption.isArgument(): Boolean;
+function TOption.IsShort(): Boolean;
 begin
-    Result := not HasLongPrefix(Self.Key) and not HasShortPrefix(Self.Key);
+    Result := HasShortPrefix(Self.Key) and (not HasLongPrefix(Self.Key));
+end;
+
+function TOption.IsLong():  Boolean;
+begin
+    Result := HasLongPrefix(Self.Key);
+end;
+
+function TOption.IsArgument(): Boolean;
+begin
+    Result := (not HasShortPrefix(Self.Key)) and (not HasLongPrefix(Self.Key));
 end;
 
 function TOption.HasValue(): Boolean;
