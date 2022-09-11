@@ -96,6 +96,7 @@ type
         Key: TArgString;
         Value: TArgString;
         function IsShort(): Boolean;
+        function isArgument(): Boolean;
         function HasValue(): Boolean;
     end;
 
@@ -167,6 +168,10 @@ implementation
 
 uses Mikhan.Util.StrUtils;
 
+{-----------------------------------------------------------------}
+{ Common things                                                   }
+{-----------------------------------------------------------------}
+
 const
     STR_EMPTY = Mikhan.Util.StrUtils.EMPTY;
 
@@ -212,6 +217,11 @@ end;
 function TOption.IsShort(): Boolean;
 begin
     Result := not HasLongPrefix(Self.Key) and HasShortPrefix(Self.Key);
+end;
+
+function TOption.isArgument(): Boolean;
+begin
+    Result := not HasLongPrefix(Self.Key) and not HasShortPrefix(Self.Key);
 end;
 
 function TOption.HasValue(): Boolean;
