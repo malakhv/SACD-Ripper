@@ -31,7 +31,7 @@ const
     APP_NAME = 'SACD-Ripper';
 
     { The common debug flag. }
-    DEBUG = False;
+    DEBUG = True;
 
     { The default log separator. }
     LOG_SEP = '---------------------------------------------------------';
@@ -101,6 +101,7 @@ begin
     // Parse input arguments
     AppArgs := TAppArgs.Create();
     AppArgs.ParseArgs();
+    if DEBUG then AppArgs.PrintAll();
 
     // Program command: version
     if AppArgs.HasVersion() then

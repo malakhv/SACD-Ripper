@@ -28,7 +28,7 @@
 {   - simple option or flag (short or long format) without any    }
 {     data, for example: -l, --help                               }
 {   - option (short or long format) with value (key-value pair),  }
-{     for example: -t "Text", -file ./file1.txt                   }
+{     for example: -t "Text", --file ./file1.txt                  }
 {   - program argument or command, for example: clone, status     }
 {-----------------------------------------------------------------}
 
@@ -91,7 +91,7 @@ type
 
 type
 
-    { A program option in short or long format. }
+    { A program argument or option (in short or long format). }
     TOption = record
         Key: TArgString;
         Value: TArgString;
@@ -102,8 +102,7 @@ type
         function HasValue(): Boolean;
     end;
 
-    { The list of program options (in short or long format). }
-    TOptions = Array of TOption;
+    { The list of program arguments and options (in short or long format). }
     TArguments = Array of TOption;
 
 type
@@ -113,19 +112,18 @@ type
     private
         { The program file name with full path. }
         FName: TArgString;
-        { Program command line options, with prefix (in short and long format). }
-        Options: TOptions;
-        { Program command line arguments. }
-        FArguments: TArgStrings;
-        FArgs: TArguments;
+        { Program command line arguments and options (in short and long format). }
+        FArguments: TArguments;
     protected
-        function GetArgument(Index: Integer): TArgString;
-        function GetArgumentCount(): Integer;
-        procedure AddOption(const Key: TArgString); overload;
-        procedure AddOption(const Key, Value: TArgString); overload;
-        procedure AddArgument(const Argument: TArgString);
+        //function GetArgument(Index: Integer): TArgString;
+        //function GetArgumentCount(): Integer;
+        //procedure AddOption(const Key: TArgString); overload;
+        //procedure AddOption(const Key, Value: TArgString); overload;
+        //procedure AddArgument(const Argument: TArgString);
 
-        function Get(Index: Integer): TOption;
+        function Get(Index: Integer): TOption;  // See Arguments property
+        function GetCount(): Integer;           // See Count property
+
         procedure Add(const Key: TArgString); overload;
         procedure Add(const Key, Value: TArgString); overload;
 
@@ -133,26 +131,21 @@ type
         { The program file name. }
         property Name: TArgString read FName;
 
+        { The current number of program arguments. }
+        property Count: Integer read GetCount;
+
         { The array of program arguments. }
-        property Arguments[Index : Integer]: TArgString read GetArgument;
-        property Args[Index : Integer]: TOption read Get; default;
-
-        { The number of program arguments. }
-        property ArgumentCount: Integer read GetArgumentCount;
-
-        { Returns true if program has specified argument. }
-        function HasArgument(Argument: TArgString): Boolean;
+        property Arguments[Index : Integer]: TOption read Get; default;
 
         { Returns true if program has Help option (-h or --help). }
         function HasHelp(): Boolean;
         { Returns true if program has Version option (-v or --version). }
         function HasVersion(): Boolean;
-
         { Returns true if program has Verbose option (--verbose). }
         function HasVerbose(): Boolean;
 
-        { Returns true if program has specified option. }
-        function HasOption(const Key: TArgString): Boolean; overload;
+        { Returns true if program has specified argument (or option). }
+        function HasArgument(const Key: TArgString): Boolean; overload;
         { Returns true if program has specified option in short or long format. }
         function HasOption(const Short, Long: TArgString): Boolean; overload;
 
@@ -364,12 +357,16 @@ end;
 
 procedure TAppArgs.Add(const Key: TArgString); overload;
 begin
-
+    Add(Key, STR_EMPTY);
 end;
 
 procedure TAppArgs.Add(const Key, Value: TArgString); overload;
+var len: integer;
 begin
-
+    len := Length(FArgs);
+    SetLength(FArgs, len + 1);
+    FArgs[len].Key := Key;
+    FArgs[len].Value := Value;
 end;
 
 
@@ -397,6 +394,16 @@ begin
     WriteLn('Arguments:');
     for i := Low(FArguments) to High(FArguments) do
          WriteLn('  ', FArguments[i]);
+    
+    WriteLn('Args:');
+    for item in FArgs do
+    begin
+        Write('  ', item.Key);
+        if item.HasValue then
+            Write('=', item.Value);
+        WriteLn();
+    end;
+    
 end;
 
 procedure TAppArgs.ParseArgs();
@@ -421,11 +428,18 @@ begin
             if (val <> '') and (not IsOption(val)) then
             begin
                 AddOption(arg, val);
+                Add(arg, val);
                 Inc(cur);
             end else
+            begin
                 AddOption(arg);
+                Add(arg);
+            end;
         end else
+        begin
             AddArgument(arg);
+            Add(arg);
+        end;
         Inc(cur);
     end;
 end;
