@@ -104,30 +104,39 @@ type
 
     { The list of program options (in short or long format). }
     TOptions = Array of TOption;
+    TArguments = Array of TOption;
 
 type
 
     { Class to retreive program arguments. }
     TAppArgs = class(TObject)
     private
-        { The program file name. }
+        { The program file name with full path. }
         FName: TArgString;
         { Program command line options, with prefix (in short and long format). }
         Options: TOptions;
         { Program command line arguments. }
         FArguments: TArgStrings;
+        FArgs: TArguments;
     protected
         function GetArgument(Index: Integer): TArgString;
         function GetArgumentCount(): Integer;
         procedure AddOption(const Key: TArgString); overload;
         procedure AddOption(const Key, Value: TArgString); overload;
         procedure AddArgument(const Argument: TArgString);
+
+        function Get(Index: Integer): TOption;
+        procedure Add(const Key: TArgString); overload;
+        procedure Add(const Key, Value: TArgString); overload;
+
     public
         { The program file name. }
         property Name: TArgString read FName;
 
         { The array of program arguments. }
         property Arguments[Index : Integer]: TArgString read GetArgument;
+        property Args[Index : Integer]: TOption read Get; default;
+
         { The number of program arguments. }
         property ArgumentCount: Integer read GetArgumentCount;
 
@@ -273,6 +282,8 @@ var len: integer;
 begin
     len := Length(Options);
     SetLength(Options, len + 1);
+    Options[len].Key := Key;
+    Options[len].Value := Value;
 end;
 
 procedure TAppArgs.AddArgument(const Argument: TArgString);
@@ -344,6 +355,29 @@ function TAppArgs.GetArgumentCount(): Integer;
 begin
     Result := Length(FArguments);
 end;
+
+
+function TAppArgs.Get(Index: Integer): TOption;
+begin
+    Result := FArgs[Index];
+end;
+
+procedure TAppArgs.Add(const Key: TArgString); overload;
+begin
+
+end;
+
+procedure TAppArgs.Add(const Key, Value: TArgString); overload;
+begin
+
+end;
+
+
+
+
+
+
+
 
 procedure TAppArgs.PrintAll();
 var
