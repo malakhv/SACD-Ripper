@@ -233,7 +233,7 @@ end;
 
 function TOption.IsArgument(): Boolean;
 begin
-    Result := (not HasShortPrefix(Self.Key)) and (not HasLongPrefix(Self.Key));
+    Result := not HasShortPrefix(Self.Key);
 end;
 
 function TOption.HasValue(): Boolean;
