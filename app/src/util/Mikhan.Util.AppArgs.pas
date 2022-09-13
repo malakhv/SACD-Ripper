@@ -121,8 +121,9 @@ type
         //procedure AddOption(const Key, Value: TArgString); overload;
         //procedure AddArgument(const Argument: TArgString);
 
-        function Get(Index: Integer): TOption;  // See Arguments property
-        function GetCount(): Integer;           // See Count property
+        function Get(Index: Integer): TOption;          // See Arguments property
+        function GetCount(): Integer;                   // See Count property
+        function GetValue(Index: Integer): TArgString;  // See Values property
 
         procedure Add(const Key: TArgString); overload;
         procedure Add(const Key, Value: TArgString); overload;
@@ -136,6 +137,7 @@ type
 
         { The array of program arguments. }
         property Arguments[Index : Integer]: TOption read Get; default;
+        property Values[Index: Integer]: TArgString read GetValue;
 
         { Returns true if program has Help option (-h or --help). }
         function HasHelp(): Boolean;
