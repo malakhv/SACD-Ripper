@@ -351,6 +351,11 @@ begin
     Result := Length(FArguments);
 end;
 
+function TAppArgs.GetValue(Index: Integer): TArgString;
+begin
+    Result := Self[Index].Value;
+end;
+
 
 function TAppArgs.Get(Index: Integer): TOption;
 begin
