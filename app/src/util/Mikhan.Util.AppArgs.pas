@@ -92,7 +92,7 @@ type
 type
 
     { A program argument or option (in short or long format). }
-    TOption = record
+    TArgument = record
         Key: TArgString;
         Value: TArgString;
         function IsOption: Boolean;
@@ -103,7 +103,7 @@ type
     end;
 
     { The list of program arguments and options (in short or long format). }
-    TArguments = Array of TOption;
+    TArguments = Array of TArgument;
 
 type
 
@@ -115,16 +115,9 @@ type
         { Program command line arguments and options (in short and long format). }
         FArguments: TArguments;
     protected
-        //function GetArgument(Index: Integer): TArgString;
-        //function GetArgumentCount(): Integer;
-        //procedure AddOption(const Key: TArgString); overload;
-        //procedure AddOption(const Key, Value: TArgString); overload;
-        //procedure AddArgument(const Argument: TArgString);
-
-        function Get(Index: Integer): TOption;          // See Arguments property
+        function Get(Index: Integer): TArgument;        // See Arguments property
         function GetCount(): Integer;                   // See Count property
         function GetValue(Index: Integer): TArgString;  // See Values property
-
         procedure Add(const Key: TArgString); overload;
         procedure Add(const Key, Value: TArgString); overload;
 
@@ -136,8 +129,13 @@ type
         property Count: Integer read GetCount;
 
         { The array of program arguments. }
-        property Arguments[Index : Integer]: TOption read Get; default;
+        property Arguments[Index : Integer]: TArgument read Get; default;
         property Values[Index: Integer]: TArgString read GetValue;
+
+        { Returns true if program has specified argument (or option). }
+        function Has(const Key: TArgString): Boolean; overload;
+        { Returns true if program has specified option in short or long format. }
+        function Has(const Short, Long: TArgString): Boolean; overload;
 
         { Returns true if program has Help option (-h or --help). }
         function HasHelp(): Boolean;
@@ -145,11 +143,6 @@ type
         function HasVersion(): Boolean;
         { Returns true if program has Verbose option (--verbose). }
         function HasVerbose(): Boolean;
-
-        { Returns true if program has specified argument (or option). }
-        function HasArgument(const Key: TArgString): Boolean; overload;
-        { Returns true if program has specified option in short or long format. }
-        function HasOption(const Short, Long: TArgString): Boolean; overload;
 
         { Returns value for specified option, or empty string. }
         function GetValue(const Key: TArgString): TArgString; overload;
@@ -196,14 +189,14 @@ begin
     Result := HasShortPrefix(Argument) or HasLongPrefix(Argument);
 end;
 
-function FindOption(Long, Short: TArgString; const Target: TOptions): Integer; overload;
-var item: TOption;
+function FindArgument(Short, Long: TArgString; const Target: TArguments): Integer; overload;
+var item: TArgument;
 var i: Integer;
 begin
     for i := Low(Target) to High(Target) do
     begin
         item := Target[i];
-        if (item.Key = Long) or (item.Key = Short) then
+        if (item.Key = Short) or (item.Key = Long) then
         begin
             Result := i; Exit;
         end;
@@ -211,36 +204,36 @@ begin
     Result := -1;
 end;
 
-function FindOption(Key: TArgString; const Target: TOptions): Integer; overload;
+function FindArgument(Key: TArgString; const Target: TArguments): Integer; overload;
 begin
-    Result := FindOption(Key, STR_EMPTY, Target);
+    Result := FindArgument(Key, Key, Target);
 end;
 
 {-----------------------------------------------------------------}
-{ TOption implementation                                          }
+{ TArgument implementation                                          }
 {-----------------------------------------------------------------}
 
-function TOption.IsOption: Boolean;
+function TArgument.IsOption: Boolean;
 begin
     Result := HasLongPrefix(Self.Key) or HasShortPrefix(Self.Key);
 end;
 
-function TOption.IsShort(): Boolean;
+function TArgument.IsShort(): Boolean;
 begin
     Result := HasShortPrefix(Self.Key) and (not HasLongPrefix(Self.Key));
 end;
 
-function TOption.IsLong():  Boolean;
+function TArgument.IsLong():  Boolean;
 begin
     Result := HasLongPrefix(Self.Key);
 end;
 
-function TOption.IsArgument(): Boolean;
+function TArgument.IsArgument(): Boolean;
 begin
     Result := not HasShortPrefix(Self.Key);
 end;
 
-function TOption.HasValue(): Boolean;
+function TArgument.HasValue(): Boolean;
 begin
     Result := not Mikhan.Util.StrUtils.IsEmpty(Self.Value);
 end;
@@ -263,92 +256,52 @@ end;
 
 procedure TAppArgs.ClearArgs();
 begin
-    SetLength(Options, 0);
     SetLength(FArguments, 0);
 end;
 
-procedure TAppArgs.AddOption(const Key: TArgString);
+function TAppArgs.GetCount(): Integer;
 begin
-    AddOption(Key, STR_EMPTY);
+    Result := Length(FArguments);
 end;
 
-procedure TAppArgs.AddOption(const Key, Value: TArgString);
-var len: integer;
+function TAppArgs.Has(const Key: TArgString): Boolean; overload;
 begin
-    len := Length(Options);
-    SetLength(Options, len + 1);
-    Options[len].Key := Key;
-    Options[len].Value := Value;
+    Result := FindArgument(Key, FArguments) <> -1;
 end;
 
-procedure TAppArgs.AddArgument(const Argument: TArgString);
-var len: integer;
+function TAppArgs.Has(const Short, Long: TArgString): Boolean; overload;
 begin
-    len := Length(FArguments);
-    SetLength(FArguments, len + 1);
-    FArguments[len] := Argument;
-end;
-
-function TAppArgs.HasArgument(Argument: TArgString): Boolean;
-var item: TArgString;
-begin
-    for item in FArguments do
-        if item = Argument then
-        begin
-            Result := True;
-            Exit;
-        end;
-    Result := False;
+    Result := FindArgument(Short, Long, FArguments) <> -1;
 end;
 
 function TAppArgs.HasHelp(): Boolean;
 begin
-    Result := HasOption(OPTION_HELP_SHORT, OPTION_HELP_LONG);
+    Result := Has(OPTION_HELP_SHORT, OPTION_HELP_LONG);
 end;
 
 function TAppArgs.HasVersion(): Boolean;
 begin
-    Result := HasOption(OPTION_VERSION_SHORT, OPTION_VERSION_LONG);
+    Result := Has(OPTION_VERSION_SHORT, OPTION_VERSION_LONG);
 end;
 
 function TAppArgs.HasVerbose(): Boolean;
 begin
-    Result := HasOption(OPTION_VERBOSE_LONG);
-end;
-
-function TAppArgs.HasOption(const Key: TArgString): Boolean;
-begin
-    Result := HasOption(Key, STR_EMPTY);
-end;
-
-function TAppArgs.HasOption(const Short, Long: TArgString): Boolean;
-begin
-    Result := FindOption(Short, Long, Options) <> -1;
+    Result := Has(OPTION_VERBOSE_LONG);
 end;
 
 function TAppArgs.GetValue(const Key: TArgString): TArgString;
 begin
-    Result := Self.GetValue(Key, STR_EMPTY);
+    Result := Self.GetValue(Key, Key);
 end;
 
 function TAppArgs.GetValue(const Short, Long: TArgString): TArgString;
 var opt: Integer;
 begin
-    opt := FindOption(Short, Long, Options);
+    opt := FindArgument(Short, Long, FArguments);
     if opt >= 0 then
-        Result := Options[opt].Value
+        Result := Arguments[opt].Value
     else
         Result := STR_EMPTY;
-end;
-
-function TAppArgs.GetArgument(Index: Integer): TArgString;
-begin
-    Result := FArguments[Index];
-end;
-
-function TAppArgs.GetArgumentCount(): Integer;
-begin
-    Result := Length(FArguments);
 end;
 
 function TAppArgs.GetValue(Index: Integer): TArgString;
@@ -356,10 +309,9 @@ begin
     Result := Self[Index].Value;
 end;
 
-
-function TAppArgs.Get(Index: Integer): TOption;
+function TAppArgs.Get(Index: Integer): TArgument;
 begin
-    Result := FArgs[Index];
+    Result := FArguments[Index];
 end;
 
 procedure TAppArgs.Add(const Key: TArgString); overload;
@@ -370,47 +322,24 @@ end;
 procedure TAppArgs.Add(const Key, Value: TArgString); overload;
 var len: integer;
 begin
-    len := Length(FArgs);
-    SetLength(FArgs, len + 1);
-    FArgs[len].Key := Key;
-    FArgs[len].Value := Value;
+    len := Length(FArguments);
+    SetLength(FArguments, len + 1);
+    FArguments[len].Key := Key;
+    FArguments[len].Value := Value;
 end;
 
-
-
-
-
-
-
-
 procedure TAppArgs.PrintAll();
-var
-    i: Integer;
-    item: TOption;
+var item: TArgument;
 begin
     WriteLn('Name: ', Self.Name);
-    WriteLn('Options:');
-    
-    for item in Options do
-    begin
-        Write('  ', item.Key);
-        if item.HasValue then
-            Write('=', item.Value);
-        WriteLn();
-    end;
     WriteLn('Arguments:');
-    for i := Low(FArguments) to High(FArguments) do
-         WriteLn('  ', FArguments[i]);
-    
-    WriteLn('Args:');
-    for item in FArgs do
+    for item in FArguments do
     begin
         Write('  ', item.Key);
         if item.HasValue then
             Write('=', item.Value);
         WriteLn();
     end;
-    
 end;
 
 procedure TAppArgs.ParseArgs();
@@ -434,19 +363,12 @@ begin
                 val := '';
             if (val <> '') and (not IsOption(val)) then
             begin
-                AddOption(arg, val);
                 Add(arg, val);
                 Inc(cur);
             end else
-            begin
-                AddOption(arg);
                 Add(arg);
-            end;
         end else
-        begin
-            AddArgument(arg);
             Add(arg);
-        end;
         Inc(cur);
     end;
 end;

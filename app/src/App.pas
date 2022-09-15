@@ -114,13 +114,13 @@ begin
     end;
 
     // Program command: info
-    if AppArgs.HasArgument(CMD_INFO) then
+    if AppArgs.Has(CMD_INFO) then
     begin
         // In this option we expect only SACD file path as
         // second argument
-        if AppArgs.ArgumentCount >= 2 then
+        if AppArgs.Count >= 2 then
         begin
-            InputFile := TFileName(AppArgs.Arguments[1]);
+            InputFile := TFileName(AppArgs.Arguments[1].Key);
             PrintInfo(InputFile);
         end else
             AppLogs.W('Please specify SACD image file path...');
