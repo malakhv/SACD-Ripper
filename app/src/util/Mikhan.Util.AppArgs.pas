@@ -95,7 +95,7 @@ type
     TArgument = record
         Key: TArgString;
         Value: TArgString;
-        function IsOption: Boolean;
+        function IsOption(): Boolean;
         function IsShort(): Boolean;
         function IsLong():  Boolean;
         function IsArgument(): Boolean;
@@ -104,6 +104,14 @@ type
 
     { The list of program arguments and options (in short or long format). }
     TArguments = Array of TArgument;
+
+    { The program option name in short and long format. }
+    TOptionName = record
+        Short: TArgString;
+        Long: TArgString;
+        function HasShort(): Boolean;
+        function HasLong(): Boolean;
+    end;
 
 type
 
@@ -236,6 +244,20 @@ end;
 function TArgument.HasValue(): Boolean;
 begin
     Result := not Mikhan.Util.StrUtils.IsEmpty(Self.Value);
+end;
+
+{-----------------------------------------------------------------}
+{ TOptionName implementation                                      }
+{-----------------------------------------------------------------}
+
+function TOptionName.HasShort(): Boolean;
+begin
+    Result := not Mikhan.Util.StrUtils.IsEmpty(Self.Short);
+end;
+
+function TOptionName.HasLong(): Boolean;
+begin
+    Result := not Mikhan.Util.StrUtils.IsEmpty(Self.Long);
 end;
 
 {-----------------------------------------------------------------}
