@@ -89,6 +89,14 @@ type
     { The array of program commang line arguments. }
     TArgStrings = Array of TArgString;
 
+    { The program option name in short and long format. }
+    TOptionName = record
+        Short: TArgString;
+        Long: TArgString;
+        function HasShort(): Boolean;
+        function HasLong(): Boolean;
+    end;
+
 type
 
     { A program argument or option (in short or long format). }
@@ -104,14 +112,6 @@ type
 
     { The list of program arguments and options (in short or long format). }
     TArguments = Array of TArgument;
-
-    { The program option name in short and long format. }
-    TOptionName = record
-        Short: TArgString;
-        Long: TArgString;
-        function HasShort(): Boolean;
-        function HasLong(): Boolean;
-    end;
 
 type
 
@@ -156,6 +156,8 @@ type
         function GetValue(const Key: TArgString): TArgString; overload;
         { Returns value for specified option (in short and long format), or empty string. }
         function GetValue(const Short, Long: TArgString): TArgString; overload;
+        { Returns value for specified option, or empty string. }
+        function GetValue(const Option: TOptionName): TArgString; overload;
 
         { Clears all stored program parameters. }
         procedure ClearArgs();
@@ -214,11 +216,11 @@ end;
 
 function FindArgument(Key: TArgString; const Target: TArguments): Integer; overload;
 begin
-    Result := FindArgument(Key, Key, Target);
+    Result := FindArgument(Key, STR_EMPTY, Target);
 end;
 
 {-----------------------------------------------------------------}
-{ TArgument implementation                                          }
+{ TArgument implementation                                        }
 {-----------------------------------------------------------------}
 
 function TArgument.IsOption: Boolean;
@@ -324,6 +326,11 @@ begin
         Result := Arguments[opt].Value
     else
         Result := STR_EMPTY;
+end;
+
+function TAppArgs.GetValue(const Option: TOptionName): TArgString;
+begin
+    Result := GetValue(Option.Short, Option.Long);
 end;
 
 function TAppArgs.GetValue(Index: Integer): TArgString;
