@@ -31,7 +31,7 @@ const
     APP_NAME = 'SACD-Ripper';
 
     { The common debug flag. }
-    DEBUG = True;
+    DEBUG = False;
 
     { The default log separator. }
     LOG_SEP = '---------------------------------------------------------';
@@ -61,33 +61,37 @@ var
     Print an information about SACD disc.
 }
 procedure PrintInfo(AFile: TFileName);
+const INDENT = '   - ';
 var
     MasterToc: TMasterTocArea;
     TextToc: TMasterTextArea;
     F: File;
 begin
+    WriteLn();
+    WriteLn('SACD: ', AFile);
     AssignFile(F, AFile);
-    Writeln(LOG_SEP);
     MasterToc := TMasterTocArea.Create();
     MasterToc.Load(F);
-    Writeln(MasterToc.Header);
-    Writeln(LOG_SEP);
     TextToc := TMasterTextArea.Create();
     TextToc.Load(F);
-    Writeln(TextToc.Header);
-    Writeln('Disc Title: ', TextToc.DiscTitle);
-    Writeln('Disc Artist: ', TextToc.DiscArtist);
-    Writeln('Disc Publisher: ', TextToc.DiscPublisher);
-    Writeln('Disc Copyright: ', TextToc.DiscCopyright);
-    Writeln('Album Title: ', TextToc.AlbumTitle);
-    Writeln('Album Artist: ', TextToc.AlbumArtist);
-    Writeln('Album Publisher: ', TextToc.AlbumPublisher);
-    Writeln('Album Copyright: ', TextToc.AlbumCopyright);
-    Writeln(LOG_SEP);
+    Writeln(INDENT, 'Disc Title: ', TextToc.DiscTitle);
+    Writeln(INDENT, 'Disc Artist: ', TextToc.DiscArtist);
+    Writeln(INDENT, 'Disc Publisher: ', TextToc.DiscPublisher);
+    Writeln(INDENT, 'Disc Copyright: ', TextToc.DiscCopyright);
+    Writeln(INDENT, 'Album Title: ', TextToc.AlbumTitle);
+    Writeln(INDENT, 'Album Artist: ', TextToc.AlbumArtist);
+    Writeln(INDENT, 'Album Publisher: ', TextToc.AlbumPublisher);
+    Writeln(INDENT, 'Album Copyright: ', TextToc.AlbumCopyright);
+
     // Just for test
-    TAppLogs.Dump(TextToc[0]^.RawData, 128);
-    //Writeln(TextToc[0]^.ToString();
-    //PrintArray(TextToc[0]^.RawData, 0, True);
+    if DEBUG then
+    begin
+        Writeln();
+        Writeln('Debug info:');
+        TAppLogs.Dump(TextToc[0]^.RawData, 128);
+        //Writeln(TextToc[0]^.ToString();
+        //PrintArray(TextToc[0]^.RawData, 0, True);
+    end;
 end;
 
 //
