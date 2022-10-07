@@ -66,18 +66,20 @@ const
 {-----------------------------------------------------------------------------------}
 type
 
-    { The sequential number of a SACD disc sector. }
+    { The sequential number of a SACD disc sector ("LSN"). }
     TSectorNumber = 0..SACD_MAX_SECTOR_COUNT - 1;
 
-    { The raw data of a disc sector represents as a byte array. }
+    {
+        The raw data of a disc sector represents as a byte array. This is a "Main Data"
+        in a "Data Frame", see SACD Physical Specification for more details.
+    }
     TSectorData = Array [0..SACD_SECTOR_LENGTH - 1] of Byte;
 
-    { The abstract Logical Sector with its number and data. }
+    { The abstract Logical Sector (LS) with its number and data. }
     TSACDSector = record
         { Logical Sector Number (LSN), used to address the Sectors on the disc. }
         Number: TSectorNumber;
-        { The 2048 bytes of "Main Data" in a "Data Frame" (see SACD Physical Specification
-          for more details). }
+        { The raw data of a disc sector represents as a byte array. }
         RawData: TSectorData;
 
         { Returns a single byte by index. See RawData property. }
@@ -107,9 +109,7 @@ type
 {-----------------------------------------------------------------------------------}
 type
 
-    {
-        The abstract area (a group of sequential sectors) on a SACD disc.
-    }
+    { The abstract area (a group of sequential sectors) on a SACD disc. }
     TSACDArea = class (TObject)
     private
         FFirstSector: Integer;      // See FirstSector property
