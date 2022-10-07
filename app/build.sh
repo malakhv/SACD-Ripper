@@ -2,4 +2,4 @@
 
 rm -R -f ./build
 mkdir -p build
-fpc ./src/App.pas -FEbuild -Fu./src/app -Fu./src/util -Fu./src/sacd -osacd
+fpc ./src/App.pas -FEbuild -Fu./src/app -Fu./src/util -Fu./src/rainbow -osacd
