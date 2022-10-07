@@ -15,9 +15,8 @@
 { The Unit contains constants and methods to working              }
 { with SACD image file.                                           }
 {                                                                 }
-{ Package: Mikhan.Util                                            }
+{ Package: Mikhan.SACD                                            }
 { Types: TODO                                                     }
-{ Dependencies: Mikhan.SACD                                       }
 {                                                                 }
 { Created: 14.08.2022                                             }
 { Author: Mikhail.Malakhov                                        }

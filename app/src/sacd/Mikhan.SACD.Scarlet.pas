@@ -15,7 +15,7 @@
 { The Unit includes some difinitions from Scarlet Book            }
 { specification.                                                  }
 {                                                                 }
-{ Package: Mikhan.Util                                            }
+{ Package: Mikhan.SACD                                            }
 { Types: TODO                                                     }
 { Dependencies: Mikhan.SACD                                       }
 {                                                                 }
