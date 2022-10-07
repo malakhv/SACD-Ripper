@@ -22,7 +22,7 @@ program test;
 {$h+}
 
 uses
-    SysUtils, Mikhan.Util.AppArgs, Mikhan.Util.AppLogs, Mikhan.SACD.Scarlet, Mikhan.SACD,
+    SysUtils, Mikhan.Util.AppArgs, Mikhan.Util.AppLogs, Mikhan.Rainbow.Scarlet,
     Mikhan.Util.AppVersion, Mikhan.Util.StrUtils;
 
 const

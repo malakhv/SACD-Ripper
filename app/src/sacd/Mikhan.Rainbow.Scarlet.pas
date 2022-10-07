@@ -23,7 +23,7 @@
 { Author: Mikhail.Malakhov                                        }
 {-----------------------------------------------------------------}
 
-unit Mikhan.SACD.Scarlet;
+unit Mikhan.Rainbow.Scarlet;
 
 {$mode delphi}
 {$h+}
