@@ -22,6 +22,23 @@
 { Author: Mikhail.Malakhov                                        }
 {-----------------------------------------------------------------}
 
+{-----------------------------------------------------------------}
+{ The Scarlet Book specification describes Super Audio Compact    }
+{ Disc format.                                                    }
+{                                                                 }
+{ Super Audio CD (SACD) is an optical disc format for audio       }
+{ storage introduced in 1999. It was developed jointly by Sony    }
+{ and Philips Electronics and intended to be the successor to the }
+{ Compact Disc (CD) format. The SACD format allows multiple audio }
+{ channels (i.e. surround sound or multichannel sound). It also   }
+{ provides a higher bit rate and longer playing time than a       }
+{ conventional CD.                                                }
+{                                                                 }
+{ An SACD is designed to be played on an SACD player. A hybrid    }
+{ SACD contains a Compact Disc Digital Audio (CDDA) layer and can }
+{ also be played on a standard CD player.                         }
+{-----------------------------------------------------------------}
+
 unit Mikhan.Rainbow.Scarlet;
 
 {$mode delphi}
