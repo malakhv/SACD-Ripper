@@ -89,14 +89,6 @@ type
     { The array of program commang line arguments. }
     TArgStrings = Array of TArgString;
 
-    { The program option name in short and long format. }
-    TOptionName = record
-        Short: TArgString;
-        Long: TArgString;
-        function HasShort(): Boolean;
-        function HasLong(): Boolean;
-    end;
-
 type
 
     { A program argument or option (in short or long format). }
@@ -156,8 +148,6 @@ type
         function GetValue(const Key: TArgString): TArgString; overload;
         { Returns value for specified option (in short and long format), or empty string. }
         function GetValue(const Short, Long: TArgString): TArgString; overload;
-        { Returns value for specified option, or empty string. }
-        function GetValue(const Option: TOptionName): TArgString; overload;
 
         { Clears all stored program parameters. }
         procedure ClearArgs();
@@ -249,20 +239,6 @@ begin
 end;
 
 {-----------------------------------------------------------------}
-{ TOptionName implementation                                      }
-{-----------------------------------------------------------------}
-
-function TOptionName.HasShort(): Boolean;
-begin
-    Result := not Mikhan.Util.StrUtils.IsEmpty(Self.Short);
-end;
-
-function TOptionName.HasLong(): Boolean;
-begin
-    Result := not Mikhan.Util.StrUtils.IsEmpty(Self.Long);
-end;
-
-{-----------------------------------------------------------------}
 { TAppArgs implementation                                         }
 {-----------------------------------------------------------------}
 
@@ -326,11 +302,6 @@ begin
         Result := Arguments[opt].Value
     else
         Result := STR_EMPTY;
-end;
-
-function TAppArgs.GetValue(const Option: TOptionName): TArgString;
-begin
-    Result := GetValue(Option.Short, Option.Long);
 end;
 
 function TAppArgs.GetValue(Index: Integer): TArgString;
