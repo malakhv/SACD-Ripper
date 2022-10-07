@@ -13,11 +13,10 @@
 
 {-----------------------------------------------------------------}
 { The Unit includes some difinitions from Scarlet Book            }
-{ specification.                                                  }
+{ specification (part of Rainbow Books).                          }
 {                                                                 }
-{ Package: Mikhan.SACD                                            }
+{ Package: Mikhan.Rainbow                                         }
 { Types: TODO                                                     }
-{ Dependencies: Mikhan.SACD                                       }
 {                                                                 }
 { Created: 14.08.2022                                             }
 { Author: Mikhail.Malakhov                                        }
