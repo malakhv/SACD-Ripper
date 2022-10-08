@@ -31,7 +31,7 @@ const
     APP_NAME = 'SACD-Ripper';
 
     { The common debug flag. }
-    DEBUG = False;
+    DEBUG = True;
 
     { The default log separator. }
     LOG_SEP = '---------------------------------------------------------';
@@ -74,6 +74,8 @@ begin
     MasterToc.Load(F);
     TextToc := TMasterTextArea.Create();
     TextToc.Load(F);
+    if DEBUG then
+        Writeln(INDENT, 'Area Header: ', TextToc.Header);
     Writeln(INDENT, 'Disc Title: ', TextToc.DiscTitle);
     Writeln(INDENT, 'Disc Artist: ', TextToc.DiscArtist);
     Writeln(INDENT, 'Disc Publisher: ', TextToc.DiscPublisher);
@@ -87,7 +89,7 @@ begin
     if DEBUG then
     begin
         Writeln();
-        Writeln('Debug info:');
+        Writeln('Area Dump:');
         TAppLogs.Dump(TextToc[0]^.RawData, 128);
         //Writeln(TextToc[0]^.ToString();
         //PrintArray(TextToc[0]^.RawData, 0, True);
