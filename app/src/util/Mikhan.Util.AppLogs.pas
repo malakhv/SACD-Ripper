@@ -208,7 +208,7 @@ end;
 
 destructor TAppLogs.Destroy;
 begin
-    // Empty
+    inherited;
 end;
 
 { The class method to print raw data in hexadecimal format. }
@@ -229,7 +229,7 @@ const
     COL_LIMIT = $F;
     COL_OFFSET = '          ';
     COL_SEP = '| ';
-    HEADER_SEP = '-----------------------------------------------';
+    HEADER_SEP = '---------------------------------------------------------';
 var i, col, offset: Integer;
     val: Byte;
 
@@ -242,7 +242,7 @@ var i, col, offset: Integer;
             Write(IntToHex(i, 2)); Write(' ');
         end;
         WriteLn();
-        WriteLn(COL_OFFSET, HEADER_SEP);
+        WriteLn(HEADER_SEP);
     end;
 
     procedure NewRow();
