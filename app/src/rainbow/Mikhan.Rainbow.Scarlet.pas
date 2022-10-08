@@ -116,9 +116,17 @@ type
         FSectorCount: Integer;      // See SectorCount property
         FSectors: TSACDSectors;     // See Sectors property
     protected
+        { The default length of area header in bytes. }
+        const AREA_HEADER_LENGTH = 8;
+
+        { See Header property. }
+        function GetHeader(): String; virtual;
         { See Sectors property. }
         function GetSector(Index : Integer): PSACDSector;
     public
+        { The header of this area. }
+        property Header: String read GetHeader;
+
         { The first sector number for this area. }
         property FirstSector: Integer read FFirstSector;
         { The number of sectors in this area. }
@@ -136,23 +144,17 @@ type
         procedure Load(var AFile: File); virtual;
 
         { Construct a new instance of TSACDArea class with specified parameters. }
-        constructor Create(FirstSector, SectorCount: Integer);
+        constructor Create(FirstSector: Integer); virtual; overload;
+        { Construct a new instance of TSACDArea class with specified parameters. }
+        constructor Create(FirstSector, SectorCount: Integer); virtual; overload;
+
         {Free all related resources. }
         destructor Destroy; override;
     end;
 
 type
 
-    TTocArea = class (TSACDArea)
-    protected
-        function DoGetHeader: String; virtual;
-    public
-        property Header: String read DoGetHeader;
-        constructor Create(FirstSector: Integer);
-    end;
-
-
-    TMasterTocArea = class (TTocArea)
+    TMasterTocArea = class (TSACDArea)
     protected
         { The lenght of Master TOC in sectors. }
         const MASTER_TOC_LENGTH = 10;
@@ -165,7 +167,7 @@ type
         and with the Disc. The size of this area is one SACD sector. This area has 'SACDText'
         signature. This area is a part of Master TOC.
     }
-    TMasterTextArea = class (TTocArea)
+    TMasterTextArea = class (TSACDArea)
     protected
         { The offset of significant data in this area. }
         const AREA_DATA_OFFSET = 16;
@@ -219,7 +221,7 @@ type
 //type
 //    TSacdFile = class(Tancestor)
 
-implementation    //WriteLn(s_pos, ' - ', e_pos);
+implementation
 
 uses Mikhan.Util.StrUtils;
 
@@ -242,6 +244,7 @@ begin
         Result := Result + Char(Source[i]);
 end;
 
+{ Converts pair of bytes to integer. }
 function BytesToInt(First, Second: Byte): Integer;
 begin
     Result := (Integer(First) shl 8) or Second;
@@ -256,26 +259,21 @@ begin
     Result := RawData[Index];
 end;
 
-{ Returns offset for current sector in bytes. }
 function TSACDSector.GetOffset(): Integer;
 begin
     Result := GetSectorOffset(Number);
 end;
 
-{ Returns string from Start position to zero terminated char. }
 function TSACDSector.GetString(Start: Integer): String;
 begin
     Result := String(PAnsiChar(@RawData[Start]));
 end;
 
-{ Returns sector as a string (as is with all special character). }
 function TSACDSector.ToString(): String;
 begin
     Result := ToString(0, -1);
 end;
 
-{ Returns part of sector data from Start position as a string (as is with all
-  special character). }
 function TSACDSector.ToString(Start, Count: Integer): String;
 var pos: Integer;
 begin
@@ -297,7 +295,6 @@ begin
     end;
 end;
 
-{ Clear all sector data in this record. }
 procedure TSACDSector.ClearData();
 var i: Integer;
 begin
@@ -309,6 +306,12 @@ end;
 {
     TSACDArea
 }
+
+constructor TSACDArea.Create(FirstSector: Integer);
+begin
+    // By default, the length of area is 1 sector;
+    Create(FirstSector, 1);
+end;
 
 constructor TSACDArea.Create(FirstSector, SectorCount: Integer);
 begin
@@ -326,6 +329,15 @@ begin
     SetLength(FSectors, 0);
 end;
 
+function TSACDArea.GetHeader(): String;
+begin
+    if HasData() then
+        // TODO May be we can use TSACDSector.GetString here?
+        Result := Self[0].ToString(0, AREA_HEADER_LENGTH)
+    else
+        Result := Mikhan.Util.StrUtils.EMPTY;
+end;
+
 function TSACDArea.GetSector(Index : Integer): PSACDSector;
 begin
     Result := @FSectors[Index];
@@ -336,7 +348,6 @@ begin
     Result := Length(FSectors) > 0;
 end;
 
-{ Load Aread data from file. }
 procedure TSACDArea.Load(var AFile: File);
 var i, sector, offset, size: integer;
 begin
@@ -363,23 +374,6 @@ begin
     finally
         CloseFile(AFile);
     end;
-end;
-
-{
-    TTocArea
-}
-
-constructor TTocArea.Create(FirstSector: Integer);
-begin
-    inherited Create(FirstSector, 1);
-end;
-
-function TTocArea.DoGetHeader: String;
-begin
-    if HasData() then
-        Result := Self[0].ToString(0, 8)
-    else
-        Result := Mikhan.Util.StrUtils.EMPTY;
 end;
 
 {
