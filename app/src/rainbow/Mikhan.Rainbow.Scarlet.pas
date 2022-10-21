@@ -284,11 +284,10 @@ begin
         pos := Low(RawData); // In any case let's start from begining
     
     // Should convert all data?
-    if Count < 0 then
-        Count := High(RawData);
+    if Count < 0 then Count := High(RawData);
     // Make a string
     Result := '';
-    while count > 0 do
+    while Count > 0 do
     begin
         Result := Result + Char(RawData[pos]);
         Dec(count); Inc(pos);
