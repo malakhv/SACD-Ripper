@@ -134,7 +134,7 @@ type
         { The array of sectors in this area. }
         property Sectors[Index : Integer]: PSACDSector read GetSector; default;
 
-        { Returns true, if current object has a data. }
+        { Returns true, if this object has a data. }
         function HasData(): Boolean;
 
         { Clear all sectos data. }
