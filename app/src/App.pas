@@ -42,6 +42,15 @@ const
     { Program command: Print information about SACD disc. }
     CMD_INFO = 'info';
 
+    { Program command: debug actions. }
+    CMD_DEBUG = 'debug';
+
+{ Any stuff for debug and testing }
+const
+
+    { An input file to testing. }
+    TEST_FILE_NAME_WIN = 'D:\Media\DireStraits.iso';
+
 { Global scope }
 
 var
@@ -60,7 +69,7 @@ var
 {
     Print an information about SACD disc.
 }
-procedure PrintInfo(AFile: TFileName);
+procedure PrintInfo(AFile: TFileName; Debug: Boolean);
 const INDENT = '   - ';
 var
     MasterToc: TMasterTocArea;
@@ -74,7 +83,7 @@ begin
     MasterToc.Load(F);
     TextToc := TMasterTextArea.Create();
     TextToc.Load(F);
-    if DEBUG then
+    if Debug then
         Writeln(INDENT, 'Area Header: ', TextToc.Header);
     Writeln(INDENT, 'Disc Title: ', TextToc.DiscTitle);
     Writeln(INDENT, 'Disc Artist: ', TextToc.DiscArtist);
@@ -86,7 +95,7 @@ begin
     Writeln(INDENT, 'Album Copyright: ', TextToc.AlbumCopyright);
 
     // Just for test
-    if DEBUG then
+    if Debug then
     begin
         Writeln();
         Writeln('Area Dump:');
@@ -109,6 +118,14 @@ begin
     AppArgs.ParseArgs();
     if DEBUG then AppArgs.PrintAll();
 
+    // Any actios for debug
+    if AppArgs.Has(CMD_DEBUG) then
+    begin
+        InputFile := TFileName(TEST_FILE_NAME_WIN);
+        PrintInfo(InputFile, True);
+        Exit;
+    end;
+
     // Program command: version
     if AppArgs.HasVersion() then
     begin
@@ -127,7 +144,7 @@ begin
         if AppArgs.Count >= 2 then
         begin
             InputFile := TFileName(AppArgs.Arguments[1].Key);
-            PrintInfo(InputFile);
+            PrintInfo(InputFile, DEBUG);
         end else
             AppLogs.W('Please specify SACD image file path...');
         Exit;
