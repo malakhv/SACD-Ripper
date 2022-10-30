@@ -42,8 +42,8 @@ const
     { Program command: Print information about SACD disc. }
     CMD_INFO = 'info';
 
-    { Program command: debug actions. }
-    CMD_DEBUG = 'debug';
+    { Program command: any actions for testing. }
+    CMD_TEST = 'test';
 
 { Any stuff for debug and testing }
 const
@@ -118,9 +118,10 @@ begin
     AppArgs.ParseArgs();
     if DEBUG then AppArgs.PrintAll();
 
-    // Any actios for debug
-    if AppArgs.Has(CMD_DEBUG) then
+    // Any actios for testing
+    if AppArgs.Has(CMD_TEST) then
     begin
+        // TODO Need to add Linux variant
         InputFile := TFileName(TEST_FILE_NAME_WIN);
         PrintInfo(InputFile, True);
         Exit;
