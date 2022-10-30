@@ -85,6 +85,7 @@ begin
     TextToc.Load(F);
     if Debug then
         Writeln(INDENT, 'Area Header: ', TextToc.Header);
+    Writeln(INDENT, 'Format Version: ', MasterToc.SpecVersion.ToString);
     Writeln(INDENT, 'Disc Title: ', TextToc.DiscTitle);
     Writeln(INDENT, 'Disc Artist: ', TextToc.DiscArtist);
     Writeln(INDENT, 'Disc Publisher: ', TextToc.DiscPublisher);
@@ -94,14 +95,15 @@ begin
     Writeln(INDENT, 'Album Publisher: ', TextToc.AlbumPublisher);
     Writeln(INDENT, 'Album Copyright: ', TextToc.AlbumCopyright);
 
-    // Just for test
+    // Just for testing and debug
     if Debug then
     begin
         Writeln();
-        Writeln('Area Dump:');
+        Writeln('TMasterTocArea dump:');
+        TAppLogs.Dump(MasterToc[0]^.RawData, 128);
+        Writeln();
+        Writeln('MasterTextArea[0] dump:');
         TAppLogs.Dump(TextToc[0]^.RawData, 128);
-        //Writeln(TextToc[0]^.ToString();
-        //PrintArray(TextToc[0]^.RawData, 0, True);
     end;
 end;
 

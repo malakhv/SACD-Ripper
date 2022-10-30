@@ -154,11 +154,26 @@ type
 
 type
 
+    { The SACD format specification version. }
+    TSACDSpecVersion = record
+        Major, Minor: Byte;
+        { Represents SACD specification version as a human readable string. }
+        function ToString(): String;
+    end;
+
     TMasterTocArea = class (TSACDArea)
     protected
         { The lenght of Master TOC in sectors. }
         const MASTER_TOC_LENGTH = 10;
+
+        { The offset of SACD format specification version in this area. }
+        const SPEC_VERSION_OFFSET = 8;
+
+        { See SpecVersion property. }
+        function GetSpecVersion(): TSACDSpecVersion;
     public
+        { The SACD format specification version. }
+        property SpecVersion: TSACDSpecVersion read GetSpecVersion;
         constructor Create();
     end;
 
@@ -223,7 +238,7 @@ type
 
 implementation
 
-uses Mikhan.Util.StrUtils;
+uses SysUtils, Mikhan.Util.StrUtils;
 
 {
     Common things
@@ -376,12 +391,34 @@ begin
 end;
 
 {
+    TSACDSpecVersion
+}
+
+function TSACDSpecVersion.ToString(): String;
+begin
+    Result := IntToStr(Self.Major) + '.' + IntToStr(Self.Minor);
+end;
+
+{
     TMasterTocArea
 }
 
 constructor TMasterTocArea.Create();
 begin
     inherited Create(510);
+end;
+
+function TMasterTocArea.GetSpecVersion(): TSACDSpecVersion;
+var Ver: TSACDSpecVersion;
+begin
+    Ver.Major := 0;
+    Ver.Minor := 0;
+    if HasData() then
+    begin
+        Ver.Major := Self[0]^.GetByte(SPEC_VERSION_OFFSET);
+        Ver.Minor := Self[0]^.GetByte(SPEC_VERSION_OFFSET + 1);
+    end;
+    Result := Ver;
 end;
 
 {
