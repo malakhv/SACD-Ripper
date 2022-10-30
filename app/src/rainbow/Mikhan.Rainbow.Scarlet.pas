@@ -161,6 +161,11 @@ type
         function ToString(): String;
     end;
 
+    {
+        The Master TOC area (Master_TOC_0) contains general information on the disc, such as
+        the size and location of the Audio Areas, album information, disc catalog number, disc
+        genre and disc date. This area has 'SACDMTOC' signature.
+    }
     TMasterTocArea = class (TSACDArea)
     protected
         { The lenght of Master TOC in sectors. }
@@ -178,9 +183,9 @@ type
     end;
 
     {
-        The Master Text area contains all general text information that is related with the Album
-        and with the Disc. The size of this area is one SACD sector. This area has 'SACDText'
-        signature. This area is a part of Master TOC.
+        The Master Text area (Master_Text) contains all general text information that is related
+        with the Album and with the Disc. The size of this area is one SACD sector. This area
+        has 'SACDText' signature. This area is a part of Master TOC.
     }
     TMasterTextArea = class (TSACDArea)
     protected
