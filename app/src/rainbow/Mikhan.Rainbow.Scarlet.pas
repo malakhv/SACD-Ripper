@@ -161,6 +161,13 @@ type
         function ToString(): String;
     end;
 
+    TMasterTocAlbum = record
+        SetSize: Word;
+        Number: Word;
+        CatalogNumber: String;
+        Genre: Integer;
+    end;
+
     {
         The Master TOC area (Master_TOC_0) contains general information on the disc, such as
         the size and location of the Audio Areas, album information, disc catalog number, disc
@@ -179,6 +186,9 @@ type
     public
         { The SACD format specification version. }
         property SpecVersion: TSACDSpecVersion read GetSpecVersion;
+        {}
+        function GetAlbumInfo(): TMasterTocAlbum;
+
         constructor Create();
     end;
 
@@ -268,6 +278,12 @@ end;
 function BytesToInt(First, Second: Byte): Integer;
 begin
     Result := (Integer(First) shl 8) or Second;
+end;
+
+{ Converts pair of bytes to word. }
+function BytesToWord(First, Second: Byte): Word;
+begin
+    Result := (Word(First) shl 8) or Second;
 end;
 
 {
@@ -424,6 +440,16 @@ begin
         Ver.Minor := Self[0]^.GetByte(SPEC_VERSION_OFFSET + 1);
     end;
     Result := Ver;
+end;
+
+function TMasterTocArea.GetAlbumInfo(): TMasterTocAlbum;
+var info: TMasterTocAlbum;
+begin
+    Result := info;
+    if not HasData() then Exit;
+    info.SetSize := BytesToInt(Self[0]^[16], Self[0]^[17]);
+    info.Number := BytesToInt(Self[0]^[18], Self[0]^[19]);
+    Result := info;
 end;
 
 {
