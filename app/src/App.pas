@@ -15,7 +15,7 @@
     The simple program to test Pascal lenguage.
     Author: Mikhail.Malakhov
 }
-program test;
+program sacd;
 
 // Compiler options
 {$mode delphi}
