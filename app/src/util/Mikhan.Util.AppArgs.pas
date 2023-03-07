@@ -150,11 +150,11 @@ type
         function GetValue(const Short, Long: TArgString): TArgString; overload;
 
         { Clears all stored program parameters. }
-        procedure ClearArgs();
+        procedure Clear();
         { Persing all program parameters. }
-        procedure ParseArgs();
+        procedure Parse();
         { Print all known (after parsing) program parameters. }
-        procedure PrintAll();
+        procedure Print();
 
         constructor Create; 
         destructor Destroy; override;
@@ -245,16 +245,16 @@ end;
 constructor TAppArgs.Create;
 begin
     inherited Create();
-    ClearArgs();
+    Clear();
 end;
 
 destructor TAppArgs.Destroy;
 begin
-    ClearArgs();
+    Clear();
     inherited Destroy();
 end;
 
-procedure TAppArgs.ClearArgs();
+procedure TAppArgs.Clear();
 begin
     SetLength(FArguments, 0);
 end;
@@ -328,7 +328,7 @@ begin
     FArguments[len].Value := Value;
 end;
 
-procedure TAppArgs.PrintAll();
+procedure TAppArgs.Print();
 var item: TArgument;
 begin
     WriteLn('Name: ', Self.Name);
@@ -342,12 +342,12 @@ begin
     end;
 end;
 
-procedure TAppArgs.ParseArgs();
+procedure TAppArgs.Parse();
 var
     arg, val: String;
     cur, count: Integer;
 begin
-    ClearArgs();
+    Clear();
     count := ParamCount();
     if count <= 0 then Exit;
     FName := ParamStr(0);

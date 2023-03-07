@@ -120,8 +120,8 @@ begin
 
     // Parse input arguments
     AppArgs := TAppArgs.Create();
-    AppArgs.ParseArgs();
-    if DEBUG then AppArgs.PrintAll();
+    AppArgs.Parse();
+    if DEBUG then AppArgs.Print();
 
     // Any actios for testing
     if AppArgs.Has(CMD_TEST) then
