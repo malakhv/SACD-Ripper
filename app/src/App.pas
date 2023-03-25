@@ -27,11 +27,11 @@ uses
 
 const
 
-    { The name of this program. }
-    APP_NAME = 'SACD-Ripper';
-
     { The common debug flag. }
     DEBUG = True;
+
+    { The name of this program. }
+    APP_NAME = 'SACD-Ripper';
 
     { The default log separator. }
     LOG_SEP = '---------------------------------------------------------';
@@ -59,7 +59,7 @@ var
     AppLogs: TAppLogs;      // Program logs
     Command: TArgString;    // The current command
     InputFile: TFileName;   // Input file path
-    OutputFile: TFileName;   // Outpot file path
+    OutputFile: TFileName;  // Outpot file path
 
 { Just for test }
 var
@@ -72,6 +72,11 @@ begin
     WriteLn(APP_NAME, ' command options:');
     WriteLn(INDENT, 'info SACD_FILE_NAME - print information abour SACD disc');
     WriteLn(INDENT, '-v or --versio - print program version');
+end;
+
+procedure PrintVersion();
+begin
+    WriteLn(AppVer.ToString());
 end;
 
 {
@@ -122,9 +127,11 @@ end;
 // Program entry point
 //
 begin
-
     // Program Logs
     AppLogs := TAppLogs.Create('SACD');
+
+    // Program Version
+    AppVer := TSemVer.Create(0, 1, 0, DEBUG);
 
     // Parse input arguments
     AppArgs := TAppArgs.Create();
@@ -143,11 +150,7 @@ begin
     // Program command: version
     if AppArgs.HasVersion() then
     begin
-        AppVer := TSemVer.Create(True);
-        AppVer.LoadFromFile();
-        WriteLn(APP_NAME);
-        WriteLn(AppVer.ToString());
-        Exit;
+        PrintVersion(); Exit;
     end;
 
     // Program command: help

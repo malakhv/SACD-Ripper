@@ -144,6 +144,8 @@ type
         function ToString(): String; override;
 
         constructor Create(Debug: Boolean); overload; virtual;
+        constructor Create(Major: TVerMajor; Minor: TVerMinor; Patch: TVerPatch;
+            Debug: Boolean); overload; virtual;
     end;
 
 Implementation
@@ -156,9 +158,17 @@ uses IniFiles, Mikhan.Util.StrUtils;
 
 constructor TSemVer.Create(Debug: Boolean);
 begin
+    Create(0, 1, 0, Debug); // The default app version is 0.1.0
+end;
+
+constructor TSemVer.Create(Major: TVerMajor; Minor: TVerMinor; Patch: TVerPatch;
+    Debug: Boolean);
+begin
     inherited Create();
     FDebug := Debug;
-    FMinor := 1; // The default app version is 0.1.0
+    FMajor := Major;
+    FMinor := Minor;
+    FPatch := Patch;
 end;
 
 function TSemVer.GetCode(): Integer;
