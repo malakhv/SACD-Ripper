@@ -59,12 +59,11 @@ unit Mikhan.Rainbow.Scarlet;
 {$mode delphi}
 {$h+}
 
+{--------------------------------------------------------------------}
+{                       Definitions                                  }
+{--------------------------------------------------------------------}
+
 interface
-
-const
-
-    { The max number of sectors in SACD disc. }
-    SACD_MAX_SECTOR_COUNT = 123456; // TODO Need to specify
 
 {--------------------------------------------------------------------}
 {                The SACD disc Logical Sector (LS).                  }
@@ -78,47 +77,59 @@ const
 { Sector Number 0 must be assigned to Sector Start PSN of Physical   }
 { Layer 0.                                                           }
 {                                                                    }
-{ For more details, please see "Super Audio CD Part 2, Disc Layout"  }
-{ document.                                                          }
+{ For more details, please see Part 2 of Super Audio CD System       }
+{ Description.                                                       }
 {--------------------------------------------------------------------}
 const
 
-    { The length of one Logical Sector (LS) on SACD disc in bytes. }
-    SACD_SECTOR_LENGTH = 2048;
+    { The length of one Logical Sector (LS) on SACD disc, in bytes. }
+    SACD_LOGICAL_SECTOR_LENGTH = 2048;
+
+    { The maximum number of Logical Sectors in SACD disc. }
+    SACD_LOGICAL_SECTOR_COUNT = 196608;
 
 type
 
-    { The sequential number of a SACD disc sector ("LSN"). }
-    TSectorNumber = 0..SACD_MAX_SECTOR_COUNT - 1;
+    {
+        The Logical Sector Number (LSN) - sequential number of a SACD
+        disc logical sector.
+    }
+    TLSNumber = 0..SACD_LOGICAL_SECTOR_COUNT - 1;
 
     {
         The raw data of a disc sector represents as a byte array. This
-        is a "Main Data" in a "Data Frame", see SACD Physical
-        Specification for more details.
+        is a "Main Data" in a "Data Frame". For more details, please
+        see Part 1 of Super Audio CD System Description (section 4.2.2).
     }
-    TSectorData = Array [0..SACD_SECTOR_LENGTH - 1] of Byte;
+    TLSData = Array [0..SACD_LOGICAL_SECTOR_LENGTH - 1] of Byte;
 
     { The abstract Logical Sector (LS) with its number and data. }
     TSACDSector = record
-        { Logical Sector Number (LSN), used to address the Sectors on the disc. }
-        Number: TSectorNumber;
-        { The raw data of a disc sector represents as a byte array. }
-        RawData: TSectorData;
 
-        { Returns a single byte by index. See RawData property. }
+        { Logical Sector Number (LSN), used to address the Sectors on
+          the disc. }
+        Number: TLSNumber;
+
+        { The raw data of a disc sector represents as a byte array. }
+        RawData: TLSData;
+
+        { Returns a single byte by index. See Data property. }
         function GetByte(Index: Integer): Byte;
+
         { Array property to quick access to the single bytes by index. }
         property Data[Index: Integer]: Byte read GetByte; default;
 
-        { Returns offset for current sector in bytes. }
+        { Returns offset of current sector in bytes. }
         function GetOffset(): Integer;
 
         { Returns string from Start position to zero terminated char. }
         function GetString(Start: Integer): String;
-        { Returns sector as a string (as is with all special character). }
+
+        { Returns sector as a string (as is, with all special character). }
         function ToString(): String; overload;
-        { Returns part of sector data from Start position as a string (as is
-          with all special character). }
+
+        { Returns part of sector data from Start position as a string
+          (as is, with all special character). }
         function ToString(Start, Count: Integer): String; overload;
 
         { Clear all sector data in this record. }
@@ -127,54 +138,77 @@ type
     PSACDSector = ^TSACDSector;
     TSACDSectors = array of TSACDSector;
 
+{--------------------------------------------------------------------}
+{ The SACD Volume Space of a disc is split into: File System Area,   }
+{ DTCP Area, EKB1 Area, Master TOC Area, Rev TOC Area, Audio Areas,  }
+{ Extension Area, EKB2 Area, Revocation Data Area and Extra Data     }
+{ Area.                                                              }
+{                                                                    }
+{ In discs according to the Super Audio CD Specification Version 1.3 }
+{ or lower, the EKB1 Area, the Rev TOC Area, the Extension Area,     }
+{ the EKB2 Area and the Revocation Data Area do not exist.           }
+{                                                                    }
+{ For more details, please see Part 2 of Super Audio CD System       }
+{ Description (section 2.2).                                         }
+{--------------------------------------------------------------------}
+const
 
-{--------------------------------------------------------------------}
-{ SACD Area.                                                         }
-{--------------------------------------------------------------------}
+    { The default length of SACD Area's header, in bytes. }
+    SACD_AREA_HEADER_LENGTH = 8;
+
 type
 
-    { The abstract area (a group of sequential sectors) on a SACD disc. }
+    {
+        The abstract Area (a group of sequential sectors) on a SACD
+        disc.
+    }
     TSACDArea = class (TObject)
     private
-        FFirstSector: Integer;      // See FirstSector property
-        FSectorCount: Integer;      // See SectorCount property
+        FCount: TLSNumber;          // See Count property
+        FFirst: TLSNumber;          // See First property
         FSectors: TSACDSectors;     // See Sectors property
     protected
-        { The default length of area header in bytes. }
-        const AREA_HEADER_LENGTH = 8;
-
         { See Header property. }
         function GetHeader(): String; virtual;
         { See Sectors property. }
-        function GetSector(Index : Integer): PSACDSector;
+        function GetSector(Index : TLSNumber): PSACDSector;
     public
-        { The header of this area. }
+
+        { The header of this Area. }
         property Header: String read GetHeader;
 
-        { The first sector number for this area. }
-        property FirstSector: Integer read FFirstSector;
-        { The number of sectors in this area. }
-        property SectorCount: Integer read FSectorCount;
+        { The number of sectors in this Area. }
+        property Count: TLSNumber read FCount;
+
+        { The first sector number of this Area. }
+        property First: TLSNumber read FFirst;
+
+        { The length this area, in sectors. }
+        //property Length: Integer read FLength;
+
         { The array of sectors in this area. }
-        property Sectors[Index : Integer]: PSACDSector read GetSector; default;
+        property Sectors[Index : TLSNumber]: PSACDSector read GetSector; default;
 
         { Returns true, if this object has a data. }
         function HasData(): Boolean;
 
         { Clear all sectos data. }
-        procedure ClearData(); virtual;
+        procedure Clear(); virtual;
 
         { Load area data from file. }
         procedure Load(var AFile: File); virtual;
 
         { Construct a new instance of TSACDArea class with specified parameters. }
-        constructor Create(FirstSector: Integer); virtual; overload;
+        constructor Create(First: TLSNumber); virtual; overload;
         { Construct a new instance of TSACDArea class with specified parameters. }
-        constructor Create(FirstSector, SectorCount: Integer); virtual; overload;
+        constructor Create(First, Count: TLSNumber); virtual; overload;
 
         {Free all related resources. }
         destructor Destroy; override;
     end;
+
+{--------------------------------------------------------------------}
+{--------------------------------------------------------------------}
 
 type
 
@@ -286,7 +320,7 @@ uses SysUtils, Mikhan.Util.StrUtils;
 { Returns offset for specified disc sector number. }
 function GetSectorOffset(SectorNumber: Integer): Integer;
 begin
-    Result := SectorNumber * SACD_SECTOR_LENGTH;
+    Result := SectorNumber * SACD_LOGICAL_SECTOR_LENGTH;
 end;
 
 { Converts an array of bytes to string. }
@@ -366,24 +400,23 @@ end;
     TSACDArea
 }
 
-constructor TSACDArea.Create(FirstSector: Integer);
+constructor TSACDArea.Create(First: TLSNumber);
 begin
     // By default, the length of area is 1 sector;
-    Create(FirstSector, 1);
+    Create(First, 1);
 end;
 
-constructor TSACDArea.Create(FirstSector, SectorCount: Integer);
+constructor TSACDArea.Create(First, Count: TLSNumber);
 begin
-    FFirstSector := FirstSector;
-    FSectorCount := SectorCount;
+    FFirst := First; FCount := Count;
 end;
 
 destructor TSACDArea.Destroy();
 begin
-    ClearData();
+    Clear();
 end;
 
-procedure TSACDArea.ClearData();
+procedure TSACDArea.Clear();
 begin
     SetLength(FSectors, 0);
 end;
@@ -392,12 +425,12 @@ function TSACDArea.GetHeader(): String;
 begin
     if HasData() then
         // TODO May be we can use TSACDSector.GetString here?
-        Result := Self[0].ToString(0, AREA_HEADER_LENGTH)
+        Result := Self[0].ToString(0, SACD_AREA_HEADER_LENGTH)
     else
         Result := Mikhan.Util.StrUtils.EMPTY;
 end;
 
-function TSACDArea.GetSector(Index : Integer): PSACDSector;
+function TSACDArea.GetSector(Index : TLSNumber): PSACDSector;
 begin
     Result := @FSectors[Index];
 end;
@@ -411,17 +444,17 @@ procedure TSACDArea.Load(var AFile: File);
 var i, sector, offset, size: integer;
 begin
     // Clear current data
-    ClearData();
-    SetLength(FSectors, SectorCount);
+    Clear();
+    SetLength(FSectors, Count);
 
     // Open inpurt file read and setting up size of read chunk
     // to 1 byte
     Reset(AFile, 1);
 
     // Read data
-    sector := FirstSector;
-    offset := GetSectorOffset(FirstSector);
-    size := SizeOf(TSectorData);
+    sector := First;
+    offset := GetSectorOffset(First);
+    size := SizeOf(TLSData);
     try
         Seek(AFile, offset);
         for i:= Low(FSectors) to High(FSectors) do
@@ -489,7 +522,7 @@ function TMasterTextArea.GetStringByPtr(PtrOffset: Integer): String;
 
     function GetPtr(Offset: Integer): Integer;
     begin
-        if Offset < SACD_SECTOR_LENGTH - 1 then
+        if Offset < SACD_LOGICAL_SECTOR_LENGTH - 1 then
             Result := BytesToInt(Self[0]^[Offset], Self[0]^[Offset + 1])
         else
             Result := -1;
