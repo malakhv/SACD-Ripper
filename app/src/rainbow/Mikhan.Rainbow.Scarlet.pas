@@ -184,9 +184,6 @@ type
         { The first sector number of this Area. }
         property First: TLSNumber read FFirst;
 
-        { The length this area, in sectors. }
-        //property Length: Integer read FLength;
-
         { The array of sectors in this area. }
         property Sectors[Index : TLSNumber]: PSACDSector read GetSector; default;
 
