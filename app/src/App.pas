@@ -66,6 +66,14 @@ var
     Sector: TSACDSector;
     i,j,k: integer;
 
+procedure PrintHelp();
+const INDENT = '   ';
+begin
+    WriteLn(APP_NAME, ' command options:');
+    WriteLn(INDENT, 'info SACD_FILE_NAME - print information abour SACD disc');
+    WriteLn(INDENT, '-v or --versio - print program version');
+end;
+
 {
     Print an information about SACD disc.
 }
@@ -140,6 +148,12 @@ begin
         WriteLn(APP_NAME);
         WriteLn(AppVer.ToString());
         Exit;
+    end;
+
+    // Program command: help
+    if AppArgs.HasHelp() then
+    begin
+        PrintHelp(); Exit;
     end;
 
     // Program command: info
