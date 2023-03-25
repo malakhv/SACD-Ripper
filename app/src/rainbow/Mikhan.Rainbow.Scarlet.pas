@@ -1,43 +1,41 @@
-{-----------------------------------------------------------------}
-{                                                                 }
-{                     SACD-Ripper project                         }
-{                                                                 }
-{  Copyright (C) 2022 Mikhail Malakhov <malakhv@gmail.com>        }
-{                                                                 }
-{  Unauthorized copying of this file, via any medium is           }
-{  strictly prohibited.                                           }
-{                                                                 }
-{       Confidential and Proprietary. All Rights Reserved.        }
-{                                                                 }
-{-----------------------------------------------------------------}
+{--------------------------------------------------------------------}
+{                                                                    }
+{                       SACD-Ripper project                          }
+{                                                                    }
+{  Copyright (C) 1996-2023 Mikhail.Malakhov <malakhv@gmail.com>      }
+{                                                                    }
+{  Unauthorized copying of this file, via any medium is              }
+{  strictly prohibited.                                              }
+{                                                                    }
+{         Confidential and Proprietary. All Rights Reserved.         }
+{                                                                    }
+{--------------------------------------------------------------------}
 
-{-----------------------------------------------------------------}
-{ The Unit includes some difinitions from Scarlet Book            }
-{ specification (part of Rainbow Books).                          }
-{                                                                 }
-{ Package: Mikhan.Rainbow                                         }
-{ Types: TODO                                                     }
-{                                                                 }
-{ Created: 14.08.2022                                             }
-{ Author: Mikhail.Malakhov                                        }
-{-----------------------------------------------------------------}
+{--------------------------------------------------------------------}
+{ The Unit includes some difinitions from Scarlet Book specification }
+{ (part of Rainbow Books).                                           }
+{                                                                    }
+{ Package: Mikhan.Rainbow                                            }
+{                                                                    }
+{ Created: 14.08.2022                                                }
+{ Author: Mikhail.Malakhov [malakhv@gmail.com|http://mikhan.me/]     }
+{--------------------------------------------------------------------}
 
-{-----------------------------------------------------------------}
-{ The Scarlet Book specification describes Super Audio Compact    }
-{ Disc format.                                                    }
-{                                                                 }
-{ Super Audio CD (SACD) is an optical disc format for audio       }
-{ storage introduced in 1999. It was developed jointly by Sony    }
-{ and Philips Electronics and intended to be the successor to the }
-{ Compact Disc (CD) format. The SACD format allows multiple audio }
-{ channels (i.e. surround sound or multichannel sound). It also   }
-{ provides a higher bit rate and longer playing time than a       }
-{ conventional CD.                                                }
-{                                                                 }
-{ An SACD is designed to be played on an SACD player. A hybrid    }
-{ SACD contains a Compact Disc Digital Audio (CDDA) layer and can }
-{ also be played on a standard CD player.                         }
-{-----------------------------------------------------------------}
+{--------------------------------------------------------------------}
+{ The Scarlet Book specification describes Super Audio Compact Disc  }
+{ format.                                                            }
+{                                                                    }
+{ Super Audio CD (SACD) is an optical disc format for audio storage  }
+{ introduced in 1999. It was developed jointly by Sony and Philips   }
+{ Electronics and intended to be the successor to the Compact Disc   }
+{ (CD) format. The SACD format allows multiple audio channels (i.e.  }
+{ surround sound or multichannel sound). It also provides a higher   }
+{ bit rate and longer playing time than a conventional CD.           }
+{                                                                    }
+{ An SACD is designed to be played on an SACD player. A hybrid SACD  }
+{ contains a Compact Disc Digital Audio (CDDA) layer and can also be }
+{ played on a standard CD player.                                    }
+{--------------------------------------------------------------------}
 
 unit Mikhan.Rainbow.Scarlet;
 
@@ -54,24 +52,30 @@ const
     { The max number of sectors in SACD disc. }
     SACD_MAX_SECTOR_COUNT = 123456; // TODO Need to specify
 
-{-----------------------------------------------------------------------------------}
-{ The SACD disc Logical Sector. The length of a Logical Sector must be 2048 bytes,  }
-{ which is equal to the length of a Physical Sector (PS). Each Logical Sector of a  }
-{ volume is identified by a unique Logical Sector Number (LSN). Logical Sector      }
-{ Numbers must be consecutive integers assigned in ascending order to the Physical  }
-{ Sectors on the disc. The Logical Sector Number 0 must be assigned to Sector Start }
-{ PSN of Physical Layer 0.                                                          }
-{                                                                                   }
-{ For more details, please see "Super Audio CD Part 2, Disc Layout" document.       }
-{-----------------------------------------------------------------------------------}
+{--------------------------------------------------------------------}
+{                The SACD disc Logical Sector (LS).                  }
+{                                                                    }
+{ The length of a Logical Sector must be 2048 bytes, which is equal  }
+{ to the length of a Physical Sector (PS). Each Logical Sector of a  }
+{ volume is identified by a unique Logical Sector Number (LSN).      }
+{                                                                    }
+{ Logical Sector Numbers must be consecutive integers assigned in    }
+{ ascending order to the Physical Sectors on the disc. The Logical   }
+{ Sector Number 0 must be assigned to Sector Start PSN of Physical   }
+{ Layer 0.                                                           }
+{                                                                    }
+{ For more details, please see "Super Audio CD Part 2, Disc Layout"  }
+{ document.                                                          }
+{--------------------------------------------------------------------}
 type
 
     { The sequential number of a SACD disc sector ("LSN"). }
     TSectorNumber = 0..SACD_MAX_SECTOR_COUNT - 1;
 
     {
-        The raw data of a disc sector represents as a byte array. This is a "Main Data"
-        in a "Data Frame", see SACD Physical Specification for more details.
+        The raw data of a disc sector represents as a byte array. This
+        is a "Main Data" in a "Data Frame", see SACD Physical
+        Specification for more details.
     }
     TSectorData = Array [0..SACD_SECTOR_LENGTH - 1] of Byte;
 
@@ -104,9 +108,10 @@ type
     PSACDSector = ^TSACDSector;
     TSACDSectors = array of TSACDSector;
 
-{-----------------------------------------------------------------------------------}
-{ SACD Area.                                                                        }
-{-----------------------------------------------------------------------------------}
+
+{--------------------------------------------------------------------}
+{ SACD Area.                                                         }
+{--------------------------------------------------------------------}
 type
 
     { The abstract area (a group of sequential sectors) on a SACD disc. }
