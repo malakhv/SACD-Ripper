@@ -102,6 +102,7 @@ type
         see Part 1 of Super Audio CD System Description (section 4.2.2).
     }
     TLSData = Array [0..SACD_LOGICAL_SECTOR_LENGTH - 1] of Byte;
+    PLSData = ^TLSData;
 
     { The abstract Logical Sector (LS) with its number and data. }
     TSACDSector = record
@@ -133,7 +134,7 @@ type
         function ToString(Start, Count: Integer): String; overload;
 
         { Clear all sector data in this record. }
-        procedure ClearData();
+        procedure Clear();
     end;
     PSACDSector = ^TSACDSector;
     TSACDSectors = array of TSACDSector;
@@ -226,6 +227,7 @@ type
         Genre: Integer;
     end;
 
+type
     {
         The Master TOC area (Master_TOC_0) contains general information on the disc, such as
         the size and location of the Audio Areas, album information, disc catalog number, disc
@@ -388,7 +390,7 @@ begin
     end;
 end;
 
-procedure TSACDSector.ClearData();
+procedure TSACDSector.Clear();
 var i: Integer;
 begin
     // TODO Need to optimization
@@ -500,13 +502,10 @@ begin
 end;
 
 function TMasterTocArea.GetAlbumInfo(): TMasterTocAlbum;
-var info: TMasterTocAlbum;
 begin
-    Result := info;
     if not HasData() then Exit;
-    info.SetSize := BytesToInt(Self[0]^[16], Self[0]^[17]);
-    info.Number := BytesToInt(Self[0]^[18], Self[0]^[19]);
-    Result := info;
+    Result.SetSize := BytesToInt(Self[0]^[16], Self[0]^[17]);
+    Result.Number := BytesToInt(Self[0]^[18], Self[0]^[19]);
 end;
 
 {

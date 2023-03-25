@@ -57,14 +57,14 @@ var
     AppVer: TSemVer;        // Program version
     AppArgs: TAppArgs;      // Program command line arguments
     AppLogs: TAppLogs;      // Program logs
-    Command: TArgString;    // The current command
+    //Command: TArgString;    // The current command
     InputFile: TFileName;   // Input file path
-    OutputFile: TFileName;  // Outpot file path
+    //OutputFile: TFileName;  // Outpot file path
 
 { Just for test }
-var
-    Sector: TSACDSector;
-    i,j,k: integer;
+//var
+    //Sector: TSACDSector;
+    //i,j,k: integer;
 
 procedure PrintHelp();
 const INDENT = '   ';
