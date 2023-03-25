@@ -12,7 +12,7 @@
 {--------------------------------------------------------------------}
 
 {--------------------------------------------------------------------}
-{ The Unit includes some difinitions from Scarlet Book specification }
+{ The Unit includes some difinitions from Scarlet Book Specification }
 { (part of Rainbow Books).                                           }
 {                                                                    }
 { Package: Mikhan.Rainbow                                            }
@@ -22,19 +22,36 @@
 {--------------------------------------------------------------------}
 
 {--------------------------------------------------------------------}
-{ The Scarlet Book specification describes Super Audio Compact Disc  }
-{ format.                                                            }
+{                       Super Audio CD                               }
 {                                                                    }
 { Super Audio CD (SACD) is an optical disc format for audio storage  }
 { introduced in 1999. It was developed jointly by Sony and Philips   }
 { Electronics and intended to be the successor to the Compact Disc   }
-{ (CD) format. The SACD format allows multiple audio channels (i.e.  }
-{ surround sound or multichannel sound). It also provides a higher   }
-{ bit rate and longer playing time than a conventional CD.           }
+{ (CD) format.                                                       }
+{                                                                    }
+{ The SACD format allows multiple audio channels (i.e. surround      }
+{ sound or multichannel sound). It also provides a higher bit rate   }
+{ and longer playing time than a conventional CD.                    }
 {                                                                    }
 { An SACD is designed to be played on an SACD player. A hybrid SACD  }
 { contains a Compact Disc Digital Audio (CDDA) layer and can also be }
 { played on a standard CD player.                                    }
+{--------------------------------------------------------------------}
+
+{--------------------------------------------------------------------}
+{                       Scarlet Book                                 }
+{                                                                    }
+{ The Scarlet Book Standard describes Super Audio Compact Disc       }
+{ format and represents a set of documents called Super Audio CD     }
+{ System Description.                                                }
+{                                                                    }
+{ The Super Audio CD System Description has three parts:             }
+{    - Part 1, Physical Specification.                               }
+{    - Part 2, Audio Specification.                                  }
+{    - Part 3, Copy Protection Specification.                        }
+{                                                                    }
+{ This Unit was develop folloving Part 1 and Part 2 of Super Audio   }
+{ CD System Description.                                             }
 {--------------------------------------------------------------------}
 
 unit Mikhan.Rainbow.Scarlet;
@@ -45,9 +62,6 @@ unit Mikhan.Rainbow.Scarlet;
 interface
 
 const
-
-    { The length of one sector on SACD disc in bytes. }
-    SACD_SECTOR_LENGTH = 2048;
 
     { The max number of sectors in SACD disc. }
     SACD_MAX_SECTOR_COUNT = 123456; // TODO Need to specify
@@ -67,6 +81,11 @@ const
 { For more details, please see "Super Audio CD Part 2, Disc Layout"  }
 { document.                                                          }
 {--------------------------------------------------------------------}
+const
+
+    { The length of one Logical Sector (LS) on SACD disc in bytes. }
+    SACD_SECTOR_LENGTH = 2048;
+
 type
 
     { The sequential number of a SACD disc sector ("LSN"). }

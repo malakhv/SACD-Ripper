@@ -1,0 +1,17 @@
+{--------------------------------------------------------------------}
+{ SACD discs have identical physical dimensions as standard compact  }
+{ discs. The areal density of the disc is the same as a DVD. There   }
+{ are three types of disc:                                           }
+{    - Single-Layer (SL): A disc with one 4.7 GB SACD layer playable }
+{      on Super Audio CD players only.                               }
+{    - Dual-Layer (DL): A disc with two SACD layers (total 8.5 GB)   }
+{      playable on Super Audio CD players only.                      }
+{    - Hybrid-Layer (HL): A disc with one 4.7 GB SACD layer and one  }
+{      other layer (conforming to the CD standard) is playable on    }
+{      normal CD players. This type of disc, specially designed for  }
+{      backwards compatibility with existing CD players.             }
+{                                                                    }
+{ Unlike Hybrid discs, both Single-Layer and Dual-Layer SACDs are    }
+{ incompatible with conventional CD players and cannot be played on  }
+{ them.                                                              }
+{--------------------------------------------------------------------}
