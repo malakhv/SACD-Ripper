@@ -506,6 +506,7 @@ begin
     if not HasData() then Exit;
     Result.SetSize := BytesToInt(Self[0]^[16], Self[0]^[17]);
     Result.Number := BytesToInt(Self[0]^[18], Self[0]^[19]);
+    Result.CatalogNumber := Trim(Self[0]^.ToString(24, 16));
 end;
 
 {--------------------------------------------------------------------}

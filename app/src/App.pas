@@ -102,6 +102,7 @@ begin
         Writeln(INDENT, 'Area Header: ', TextToc.Header);
     Writeln(INDENT, 'Format Version: ', MasterToc.SpecVersion.ToString);
     Writeln(INDENT, 'Disc Number: ', Album.Number,' (from ',Album.SetSize,')');
+    Writeln(INDENT, 'Disc Catalog Number: ', Album.CatalogNumber);
     Writeln(INDENT, 'Disc Title: ', TextToc.DiscTitle);
     Writeln(INDENT, 'Disc Artist: ', TextToc.DiscArtist);
     Writeln(INDENT, 'Disc Publisher: ', TextToc.DiscPublisher);
