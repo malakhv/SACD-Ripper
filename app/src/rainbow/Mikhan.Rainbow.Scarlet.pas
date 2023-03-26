@@ -142,6 +142,8 @@ type
     TSACDSectors = array of TSACDSector;
 
 {--------------------------------------------------------------------}
+{                       The SACD disc Area                           }
+{                                                                    }
 { The SACD Volume Space of a disc is split into: File System Area,   }
 { DTCP Area, EKB1 Area, Master TOC Area, Rev TOC Area, Audio Areas,  }
 { Extension Area, EKB2 Area, Revocation Data Area and Extra Data     }
@@ -198,10 +200,16 @@ type
         { Load area data from file. }
         procedure Load(var AFile: File); virtual;
 
-        { Construct a new instance of TSACDArea class with specified parameters. }
+        {
+            Construct a new instance of TSACDArea class with specified
+            parameters.
+        }
         constructor Create(First: TLSNumber); virtual; overload;
 
-        { Construct a new instance of TSACDArea class with specified parameters. }
+        {
+            Construct a new instance of TSACDArea class with specified
+            parameters.
+        }
         constructor Create(First, Size: TLSNumber); virtual; overload;
 
         {Free all related resources. }
@@ -209,8 +217,21 @@ type
     end;
 
 {--------------------------------------------------------------------}
+{                          Master TOC                                }
+{                                                                    }
+{ The Table of Contents (TOC) has a two level structure, the highest }
+{ level is the Master TOC, and the lower level is formed by the Area }
+{ TOC.                                                               }
+{                                                                    }
+{ The Master TOC contains Album and Disc information. The Area TOC   }
+{ contains Area and Track information. The Extra Data Area does not  }
+{ contain an Area TOC.                                               }
+{                                                                    }
+{ The Master TOC Area contains three identical copies of the Master  }
+{ TOC. The Master TOC has a fixed size of 10 Sectors. The three      }
+{ instances of the Master TOC are stored starting at LSN 510, 520    }
+{ and 530.                                                           }
 {--------------------------------------------------------------------}
-
 type
 
     { The SACD format specification version. }
@@ -493,6 +514,7 @@ var Ver: TSACDSpecVersion;
 begin
     Ver.Major := 0;
     Ver.Minor := 0;
+    //Result := TSACDSpecVersion(Self[0]^[SPEC_VERSION_OFFSET])^;
     if HasData() then
     begin
         Ver.Major := Self[0]^.GetByte(SPEC_VERSION_OFFSET);
