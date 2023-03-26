@@ -12,7 +12,7 @@
 {--------------------------------------------------------------------}
 
 {--------------------------------------------------------------------}
-{ The Unit includes some difinitions from Scarlet Book Specification }
+{ The Unit includes some definitions from Scarlet Book Specification }
 { (part of Rainbow Books).                                           }
 {                                                                    }
 { Package: Mikhan.Rainbow                                            }
@@ -61,6 +61,8 @@ unit Mikhan.Rainbow.Scarlet;
 
 {--------------------------------------------------------------------}
 {                       Definitions                                  }
+{ Album - An Album consists of one or more discs. All discs in an    }
+{         Album must have the same Album Catalog Number.             }
 {--------------------------------------------------------------------}
 
 interface
@@ -165,8 +167,8 @@ type
     }
     TSACDArea = class (TObject)
     private
-        FCount: TLSNumber;          // See Count property
         FFirst: TLSNumber;          // See First property
+        FSize: TLSNumber;           // See Size property
         FSectors: TSACDSectors;     // See Sectors property
     protected
         { See Header property. }
@@ -178,14 +180,14 @@ type
         { The header of this Area. }
         property Header: String read GetHeader;
 
-        { The number of sectors in this Area. }
-        property Count: TLSNumber read FCount;
-
         { The first sector number of this Area. }
         property First: TLSNumber read FFirst;
 
         { The array of sectors in this area. }
         property Sectors[Index : TLSNumber]: PSACDSector read GetSector; default;
+
+        { The size of this Area, in sectors. }
+        property Size: TLSNumber read FSize;
 
         { Returns true, if this object has a data. }
         function HasData(): Boolean;
@@ -198,8 +200,9 @@ type
 
         { Construct a new instance of TSACDArea class with specified parameters. }
         constructor Create(First: TLSNumber); virtual; overload;
+
         { Construct a new instance of TSACDArea class with specified parameters. }
-        constructor Create(First, Count: TLSNumber); virtual; overload;
+        constructor Create(First, Size: TLSNumber); virtual; overload;
 
         {Free all related resources. }
         destructor Destroy; override;
@@ -225,6 +228,7 @@ type
     end;
 
 type
+
     {
         The Master TOC area (Master_TOC_0) contains general information on the disc, such as
         the size and location of the Audio Areas, album information, disc catalog number, disc
@@ -310,16 +314,16 @@ type
 
 implementation
 
-uses SysUtils, Mikhan.Util.StrUtils;
+uses SysUtils, Mikhan.Util.StrUtils, Mikhan.Rainbow.Genres;
 
-{
-    Common things
-}
+{--------------------------------------------------------------------}
+{ Common things                                                      }
+{--------------------------------------------------------------------}
 
-{ Returns offset for specified disc sector number. }
-function GetSectorOffset(SectorNumber: Integer): Integer;
+{ Returns offset for specified disc LSN. }
+function GetSectorOffset(LSNumber: TLSNumber): Integer;
 begin
-    Result := SectorNumber * SACD_LOGICAL_SECTOR_LENGTH;
+    Result := LSNumber * SACD_LOGICAL_SECTOR_LENGTH;
 end;
 
 { Converts an array of bytes to string. }
@@ -343,9 +347,9 @@ begin
     Result := (Word(First) shl 8) or Second;
 end;
 
-{
-    TSACDSector
-}
+{--------------------------------------------------------------------}
+{ TSACDSector staff                                                  }
+{--------------------------------------------------------------------}
 
 function TSACDSector.GetByte(Index: Integer): Byte;
 begin
@@ -368,22 +372,20 @@ begin
 end;
 
 function TSACDSector.ToString(Start, Count: Integer): String;
-var pos: Integer;
 begin
-    // Check start position
-    if Start > 0 then
-        pos := Start
-    else
-        pos := Low(RawData); // In any case let's start from begining
+    // If Start is incorrect, let's start from beginning
+    if (Start < 0) or (Start >= High(TLSData)) then
+        Start := Low(TLSData);
     
     // Should convert all data?
-    if Count < 0 then Count := High(RawData);
+    if Count <= 0 then Count := High(TLSData);
+
     // Make a string
     Result := '';
     while Count > 0 do
     begin
-        Result := Result + Char(RawData[pos]);
-        Dec(count); Inc(pos);
+        Result := Result + Char(RawData[Start]);
+        Dec(Count); Inc(Start);
     end;
 end;
 
@@ -395,9 +397,9 @@ begin
         RawData[i] := 0;
 end;
 
-{
-    TSACDArea
-}
+{--------------------------------------------------------------------}
+{ TSACDArea staff                                                    }
+{--------------------------------------------------------------------}
 
 constructor TSACDArea.Create(First: TLSNumber);
 begin
@@ -405,9 +407,10 @@ begin
     Create(First, 1);
 end;
 
-constructor TSACDArea.Create(First, Count: TLSNumber);
+constructor TSACDArea.Create(First, Size: TLSNumber);
 begin
-    FFirst := First; FCount := Count;
+    FFirst := First;
+    FSize := Size;
 end;
 
 destructor TSACDArea.Destroy();
@@ -440,11 +443,11 @@ begin
 end;
 
 procedure TSACDArea.Load(var AFile: File);
-var i, sector, offset, size: integer;
+var i, sector, offset, sz: integer;
 begin
     // Clear current data
     Clear();
-    SetLength(FSectors, Count);
+    SetLength(FSectors, Size);
 
     // Open inpurt file read and setting up size of read chunk
     // to 1 byte
@@ -453,13 +456,13 @@ begin
     // Read data
     sector := First;
     offset := GetSectorOffset(First);
-    size := SizeOf(TLSData);
+    sz := SizeOf(TLSData);
     try
         Seek(AFile, offset);
         for i:= Low(FSectors) to High(FSectors) do
         begin
             FSectors[i].Number := sector;
-            BlockRead(AFile, FSectors[i].RawData, size);
+            BlockRead(AFile, FSectors[i].RawData, sz);
             Inc(sector);
         end;
     finally
@@ -467,18 +470,18 @@ begin
     end;
 end;
 
-{
-    TSACDSpecVersion
-}
+{--------------------------------------------------------------------}
+{ TSACDSpecVersion staff                                             }
+{--------------------------------------------------------------------}
 
 function TSACDSpecVersion.ToString(): String;
 begin
     Result := IntToStr(Self.Major) + '.' + IntToStr(Self.Minor);
 end;
 
-{
-    TMasterTocArea
-}
+{--------------------------------------------------------------------}
+{ TMasterTocArea staff                                               }
+{--------------------------------------------------------------------}
 
 constructor TMasterTocArea.Create();
 begin
@@ -505,9 +508,9 @@ begin
     Result.Number := BytesToInt(Self[0]^[18], Self[0]^[19]);
 end;
 
-{
-    TMasterTextArea
-}
+{--------------------------------------------------------------------}
+{ TMasterTextArea staff                                              }
+{--------------------------------------------------------------------}
 
 constructor TMasterTextArea.Create();
 begin
