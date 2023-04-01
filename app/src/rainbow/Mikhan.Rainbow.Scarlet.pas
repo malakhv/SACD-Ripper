@@ -58,6 +58,7 @@ unit Mikhan.Rainbow.Scarlet;
 
 {$mode delphi}
 {$h+}
+{$t+}
 
 {--------------------------------------------------------------------}
 {                       Definitions                                  }
@@ -235,11 +236,12 @@ type
 type
 
     { The SACD format specification version. }
-    TSACDSpecVersion = record
+    TSACDSpecVersion = packed record
         Major, Minor: Byte;
         { Represents SACD specification version as a human readable string. }
         function ToString(): String;
     end;
+    PSACDSpecVersion = ^TSACDSpecVersion;
 
     TMasterTocAlbum = record
         SetSize: Word;
@@ -510,17 +512,14 @@ begin
 end;
 
 function TMasterTocArea.GetSpecVersion(): TSACDSpecVersion;
-var Ver: TSACDSpecVersion;
+var PVer: PSACDSpecVersion;
 begin
-    Ver.Major := 0;
-    Ver.Minor := 0;
-    //Result := TSACDSpecVersion(Self[0]^[SPEC_VERSION_OFFSET])^;
     if HasData() then
     begin
-        Ver.Major := Self[0]^.GetByte(SPEC_VERSION_OFFSET);
-        Ver.Minor := Self[0]^.GetByte(SPEC_VERSION_OFFSET + 1);
+        PVer := PSACDSpecVersion(PByte(@(Self[0]^.RawData))
+            + SPEC_VERSION_OFFSET);
     end;
-    Result := Ver;
+    Result := PVer^;
 end;
 
 function TMasterTocArea.GetAlbumInfo(): TMasterTocAlbum;
