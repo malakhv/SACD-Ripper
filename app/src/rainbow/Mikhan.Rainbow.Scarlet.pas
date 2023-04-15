@@ -68,6 +68,8 @@ unit Mikhan.Rainbow.Scarlet;
 
 interface
 
+uses Mikhan.Rainbow.Genres;
+
 {--------------------------------------------------------------------}
 {                The SACD disc Logical Sector (LS).                  }
 {                                                                    }
@@ -247,7 +249,7 @@ type
         SetSize: Word;
         Number: Word;
         CatalogNumber: String;
-        Genre: Integer;
+        Genres: TSACDGenres;
     end;
 
 type
@@ -264,6 +266,8 @@ type
 
         { The offset of SACD format specification version in this area. }
         const SPEC_VERSION_OFFSET = 8;
+
+        const ALBUM_INFO_OFFSET = 16;
 
         { See SpecVersion property. }
         function GetSpecVersion(): TSACDSpecVersion;
@@ -337,7 +341,7 @@ type
 
 implementation
 
-uses SysUtils, Mikhan.Util.StrUtils, Mikhan.Rainbow.Genres;
+uses SysUtils, Mikhan.Util.StrUtils;
 
 {--------------------------------------------------------------------}
 { Common things                                                      }
@@ -523,11 +527,15 @@ begin
 end;
 
 function TMasterTocArea.GetAlbumInfo(): TMasterTocAlbum;
+var PGenres: PSACDGenres;
 begin
     if not HasData() then Exit;
     Result.SetSize := BytesToInt(Self[0]^[16], Self[0]^[17]);
     Result.Number := BytesToInt(Self[0]^[18], Self[0]^[19]);
     Result.CatalogNumber := Trim(Self[0]^.ToString(24, 16));
+    PGenres := PSACDGenres(PByte(@(Self[0]^.RawData))
+            + ALBUM_INFO_OFFSET + 24);
+    Result.Genres := PGenres^;
 end;
 
 {--------------------------------------------------------------------}
