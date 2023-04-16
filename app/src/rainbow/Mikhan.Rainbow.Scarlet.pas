@@ -240,14 +240,16 @@ type
     { The SACD format specification version. }
     TSACDSpecVersion = packed record
         Major, Minor: Byte;
-        { Represents SACD specification version as a human readable string. }
+        { Represents this version as a human readable string. }
         function ToString(): String;
     end;
     PSACDSpecVersion = ^TSACDSpecVersion;
 
+    { The information about Album in Master TOC area. }
+    // It should takes 48 bytes.
     TMasterTocAlbum = record
         SetSize: Word;
-        Number: Word;
+        SequenceNumber: Word;
         CatalogNumber: String;
         Genres: TSACDGenres;
     end;
@@ -267,7 +269,11 @@ type
         { The offset of SACD format specification version in this area. }
         const SPEC_VERSION_OFFSET = 8;
 
+        { The offset of SACD Album information in this area. }
         const ALBUM_INFO_OFFSET = 16;
+
+        { The offset of SACD Disc information in this area. }
+        const DISC_INFO_OFFSET = ALBUM_INFO_OFFSET + 48;
 
         { See SpecVersion property. }
         function GetSpecVersion(): TSACDSpecVersion;
@@ -372,6 +378,13 @@ end;
 function BytesToWord(First, Second: Byte): Word;
 begin
     Result := (Word(First) shl 8) or Second;
+end;
+
+{ Converts bytes in Word. }
+function ReverseBytes(const Value: Word): Word;
+begin
+    Result :=  (((Value and $FF00) shr 8)
+        or ((Value and $00FF) shl 8));
 end;
 
 {--------------------------------------------------------------------}
@@ -528,14 +541,22 @@ end;
 
 function TMasterTocArea.GetAlbumInfo(): TMasterTocAlbum;
 var PGenres: PSACDGenres;
+    I: Integer;
 begin
     if not HasData() then Exit;
-    Result.SetSize := BytesToInt(Self[0]^[16], Self[0]^[17]);
-    Result.Number := BytesToInt(Self[0]^[18], Self[0]^[19]);
+    Result.SetSize := BytesToWord(Self[0]^[16], Self[0]^[17]);
+    Result.SequenceNumber := BytesToWord(Self[0]^[18], Self[0]^[19]);
     Result.CatalogNumber := Trim(Self[0]^.ToString(24, 16));
+    // Genres
     PGenres := PSACDGenres(PByte(@(Self[0]^.RawData))
             + ALBUM_INFO_OFFSET + 24);
     Result.Genres := PGenres^;
+    // We shoult convert Index from big-endian to little-endian
+    for I := Low(Result.Genres) to High(Result.Genres) do
+    begin
+        Result.Genres[I].Index :=
+            ReverseBytes(Result.Genres[I].Index);
+    end;
 end;
 
 {--------------------------------------------------------------------}

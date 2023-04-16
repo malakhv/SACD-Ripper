@@ -61,12 +61,12 @@ type
     {
         The information about Genre.
     }
-    TSACDGenreCode = packed record
+    TSACDGenre = packed record
         { The Genre's table. }
         Table: Byte;
         { Reserved data. }
         Reserved: Byte;
-        { The Genre's index in table, in big-endian format. }
+        { The Genre's index in table. }
         Index: Word;
         { Returns Genre as a human readable string. }
         function GetGenre(): String;
@@ -77,11 +77,7 @@ type
     {
         The Album or Disc Genres.
     }
-    TSACDGenres = packed record
-        RawData: Array [1..4] of TSACDGenreCode;
-        function GetGenre(Index: Integer): TSACDGenreCode;
-        property Genres[Index: Integer]: TSACDGenreCode read GetGenre; default;
-    end;
+    TSACDGenres = Array [1..4] of TSACDGenre;
     PSACDGenres = ^TSACDGenres;
 
 implementation
@@ -122,11 +118,10 @@ begin
 end;
 
 {--------------------------------------------------------------------}
-{ TSACDGenreCode staff                                               }
+{ TSACDGenre staff                                                   }
 {--------------------------------------------------------------------}
 
-function TSACDGenreCode.GetGenre(): String;
-var Index: Word;
+function TSACDGenre.GetGenre(): String;
 begin
     // Right now, we support only General Genre Table
     if Self.Table <> 1 then
@@ -136,26 +131,15 @@ begin
     end;
 
     // Check Genre Index
-    Index := ReverseBytes(Self.Index);
-    if (Index <= Low(GENERAL_TABLE))
-        or (Index > High(GENERAL_TABLE)) then
+    if (Self.Index <= Low(GENERAL_TABLE))
+        or (Self.Index > High(GENERAL_TABLE)) then
     begin
         Result := GENERAL_TABLE[INDEX_UNKNOWN];
         Exit;
     end;
 
     // All is OK, let's return real genre
-    Result := GENERAL_TABLE[Index];
+    Result := GENERAL_TABLE[Self.Index];
 end;
-
-{--------------------------------------------------------------------}
-{ TSACDGenres staff                                                  }
-{--------------------------------------------------------------------}
-
-function TSACDGenres.GetGenre(Index: Integer): TSACDGenreCode;
-begin
-    Result := Self.RawData[Index];
-end;
-
 
 end.
