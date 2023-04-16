@@ -101,7 +101,7 @@ begin
     if Debug then
         Writeln(INDENT, 'Area Header: ', TextToc.Header);
     Writeln(INDENT, 'Format Version: ', MasterToc.SpecVersion.ToString);
-    Writeln(INDENT, 'Album Number: ', Album.SequenceNumber,' (from ',Album.SetSize,')');
+    Writeln(INDENT, 'Album Number: ', Album.SequenceNumber,' (from ', Album.SetSize,')');
     Writeln(INDENT, 'Album Catalog Number: ', Album.CatalogNumber);
     Writeln(INDENT, 'Album Genre: ', Album.Genres[1].Genre);
     Writeln(INDENT, 'Disc Title: ', TextToc.DiscTitle);

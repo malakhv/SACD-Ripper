@@ -57,8 +57,8 @@
 unit Mikhan.Rainbow.Scarlet;
 
 {$mode delphi}
-{$h+}
-{$t+}
+{$H+}
+{$T+}
 
 {--------------------------------------------------------------------}
 {                       Definitions                                  }
@@ -246,13 +246,14 @@ type
     PSACDSpecVersion = ^TSACDSpecVersion;
 
     { The information about Album in Master TOC area. }
-    // It should takes 48 bytes.
-    TMasterTocAlbum = record
-        SetSize: Word;
-        SequenceNumber: Word;
-        CatalogNumber: String;
-        Genres: TSACDGenres;
+    TMasterTocAlbum = record        // 48 bytes in total
+        SetSize: Word;              // 2 bytes
+        SequenceNumber: Word;       // 2 bytes
+        Reserved: DWord;            // 4 bytes
+        CatalogNumber: String[15];  // 16 bytes
+        Genres: TSACDGenres;        // 16 bytes
     end;
+    PMasterTocAlbum = ^TMasterTocAlbum;
 
 type
 
@@ -271,6 +272,9 @@ type
 
         { The offset of SACD Album information in this area. }
         const ALBUM_INFO_OFFSET = 16;
+
+        { The offset of SACD Album Catalog Number in this area. }
+        const ALBUM_CATALOG_NUMBER_OFFSET = ALBUM_INFO_OFFSET + 8;
 
         { The offset of SACD Disc information in this area. }
         const DISC_INFO_OFFSET = ALBUM_INFO_OFFSET + 48;
@@ -540,10 +544,27 @@ begin
 end;
 
 function TMasterTocArea.GetAlbumInfo(): TMasterTocAlbum;
-var PGenres: PSACDGenres;
-    I: Integer;
+var I: Integer;
+    PAlbum: PMasterTocAlbum;
 begin
     if not HasData() then Exit;
+    PAlbum := PMasterTocAlbum((PByte(@(Self[0]^.RawData))
+            + ALBUM_INFO_OFFSET));
+    Result := PAlbum^;
+    // We should convert some pieces of data from
+    // big-endian to little-endian
+    Result.SetSize := ReverseBytes(Result.SetSize);
+    Result.SequenceNumber := ReverseBytes(Result.SequenceNumber);
+    for I := Low(Result.Genres) to High(Result.Genres) do
+    begin
+        Result.Genres[I].Index :=
+            ReverseBytes(Result.Genres[I].Index);
+    end;
+    // Fix CatalogNumber string
+    Result.CatalogNumber := Trim(Self[0]^.ToString(
+        ALBUM_CATALOG_NUMBER_OFFSET, 16));
+
+    {if not HasData() then Exit;
     Result.SetSize := BytesToWord(Self[0]^[16], Self[0]^[17]);
     Result.SequenceNumber := BytesToWord(Self[0]^[18], Self[0]^[19]);
     Result.CatalogNumber := Trim(Self[0]^.ToString(24, 16));
@@ -556,7 +577,7 @@ begin
     begin
         Result.Genres[I].Index :=
             ReverseBytes(Result.Genres[I].Index);
-    end;
+    end;}
 end;
 
 {--------------------------------------------------------------------}
