@@ -203,37 +203,45 @@ type
         { Load area data from file. }
         procedure Load(var AFile: File); virtual;
 
-        {
-            Construct a new instance of TSACDArea class with specified
-            parameters.
-        }
+        { Construct a new instance of TSACDArea class with specified
+          parameters. }
         constructor Create(First: TLSNumber); virtual; overload;
 
-        {
-            Construct a new instance of TSACDArea class with specified
-            parameters.
-        }
+        { Construct a new instance of TSACDArea class with specified
+          parameters. }
         constructor Create(First, Size: TLSNumber); virtual; overload;
 
-        {Free all related resources. }
+        { Free all related resources. }
         destructor Destroy; override;
     end;
 
 {--------------------------------------------------------------------}
-{                          Master TOC                                }
+{                   The Table of Contents (TOC)                      }
 {                                                                    }
-{ The Table of Contents (TOC) has a two level structure, the highest }
-{ level is the Master TOC, and the lower level is formed by the Area }
-{ TOC.                                                               }
+{ There are two types of Table of Contents (TOC), the highest level  }
+{ is the Master TOC, and the several Area TOC for audio data.        }
 {                                                                    }
 { The Master TOC contains Album and Disc information. The Area TOC   }
-{ contains Area and Track information. The Extra Data Area does not  }
+{ contains Track information. The Extra Data Area does not           }
 { contain an Area TOC.                                               }
+{                                                                    }
+{ For more details, please see Part 2 of Super Audio CD System       }
+{ Description (sections 3.1 and 3.2).                                }
+{--------------------------------------------------------------------}
+
+{--------------------------------------------------------------------}
+{                          Master TOC Area                           }
 {                                                                    }
 { The Master TOC Area contains three identical copies of the Master  }
 { TOC. The Master TOC has a fixed size of 10 Sectors. The three      }
 { instances of the Master TOC are stored starting at LSN 510, 520    }
-{ and 530.                                                           }
+{ and 530. The structure of the Master TOC shows on following        }
+{ figure:                                                            }
+{                                                                    }
+{   +--------------+--------------------------------+------------+   }
+{   | Master TOC 0 | 8 Text Channels (Master Texts) | Manuf Info |   }
+{   +--------------+--------------------------------+------------+   }
+{                                                                    }
 {--------------------------------------------------------------------}
 type
 
@@ -268,7 +276,7 @@ type
         const MASTER_TOC_LENGTH = 10;
 
         { The offset of SACD format specification version in this area. }
-        const SPEC_VERSION_OFFSET = 8;
+        const SPEC_VERSION_OFFSET = SACD_AREA_HEADER_LENGTH;
 
         { The offset of SACD Album information in this area. }
         const ALBUM_INFO_OFFSET = 16;
