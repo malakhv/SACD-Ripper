@@ -254,7 +254,7 @@ type
     PSACDSpecVersion = ^TSACDSpecVersion;
 
     { The information about Album in Master TOC area. }
-    TMasterTocAlbum = record        // 48 bytes in total
+    TMasterTocAlbum = packed record // 48 bytes in total
         SetSize: Word;              // 2 bytes
         SequenceNumber: Word;       // 2 bytes
         Reserved: DWord;            // 4 bytes
