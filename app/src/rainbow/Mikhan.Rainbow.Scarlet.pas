@@ -122,11 +122,14 @@ type
         { Returns a single byte by index. See Data property. }
         function GetByte(Index: Integer): Byte;
 
+        { Returns offset of current sector in bytes. }
+        function GetOffset(): Integer;
+
         { Array property to quick access to the single bytes by index. }
         property Data[Index: Integer]: Byte read GetByte; default;
 
-        { Returns offset of current sector in bytes. }
-        function GetOffset(): Integer;
+        { Offset of current sector, in bytes. }
+        property Offset: Integer read GetOffset;
 
         { Returns string from Start position to zero terminated char. }
         function GetString(Start: Integer): String;
