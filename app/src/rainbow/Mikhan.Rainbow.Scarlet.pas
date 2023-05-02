@@ -392,7 +392,7 @@ begin
     Result := (Word(First) shl 8) or Second;
 end;
 
-{ Converts bytes in Word. }
+{ Reverse bytes in Word. }
 function ReverseBytes(const Value: Word): Word;
 begin
     Result :=  (((Value and $FF00) shr 8)
