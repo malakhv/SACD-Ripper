@@ -248,6 +248,20 @@ type
 {--------------------------------------------------------------------}
 type
 
+    {
+        Album or Disc Catalog Number. This string is padded at the
+        end with space characters ($20). If a Catalog Number is not
+        used, all bytes must be set to zero.
+    }
+    TCatalogNumber = String[15];
+
+    { A date format that used in SACD specification. }
+    { TDate = packed record
+        Year: Word;
+        Month, Day: Byte;
+        function ToString(): String;
+    end; }
+
     { The SACD format specification version. }
     TSACDSpecVersion = packed record
         Major, Minor: Byte;
@@ -256,15 +270,83 @@ type
     end;
     PSACDSpecVersion = ^TSACDSpecVersion;
 
-    { The information about Album in Master TOC area. }
-    TMasterTocAlbum = packed record // 48 bytes in total
-        SetSize: Word;              // 2 bytes
-        SequenceNumber: Word;       // 2 bytes
-        Reserved: DWord;            // 4 bytes
-        CatalogNumber: String[15];  // 16 bytes
-        Genres: TSACDGenres;        // 16 bytes
+    { The information about Album in Master TOC Area. }
+    TMasterTocAlbum = packed record     // 48 bytes in total
+        SetSize: Word;                  // 2 bytes
+        SequenceNumber: Word;           // 2 bytes
+        Reserved: DWord;                // 4 bytes
+        CatalogNumber: TCatalogNumber;  // 16 bytes
+        Genres: TSACDGenres;            // 16 bytes
     end;
     PMasterTocAlbum = ^TMasterTocAlbum;
+
+    { BytesPair = packed record
+        First: Byte;
+        Second: Byte;
+        procedure Reverse();
+    end;
+
+    BytesTrio = packed record
+        First: Byte;
+        Second: Byte;
+        Third: Byte;
+    end; }
+
+    { The information about SACD disc in Master TOC Area. }
+    TMasterTocDisc = packed record
+
+        { The LSN of the first Sector of Area TOC-1 in the 2-Channel
+          Stereo Area. If the 2-Channel Stereo Area is not present,
+          this value must be zero. }
+        ChTocAddress1: DWord;
+
+        { The LSN of the first Sector of Area TOC-2 in the 2-Channel
+          Stereo Area. If the 2-Channel Stereo Area is not present,
+          this value must be zero. }
+        ChTocAddress2: DWord;
+
+        { The LSN of the first Sector of Area TOC-1 in the Multi
+          Channel Area. If the Multi Channel Area is not present,
+          this value must be zero. }
+        McTocAddress1: DWord;
+
+        { The LSN of the first Sector of Area TOC-2 in the Multi
+          Channel Area. If the Multi Channel Area is not present,
+          this value must be zero. }
+        McTocAddress2: DWord;
+
+        { The information about SACD disc, Hybrid or not, for
+          example. }
+        DiscFlags: Byte;
+
+        { Just reserved to future using. }
+        Reserved1, Reserved2, Reserved3: Byte;
+
+        { The length in Sectors of Area TOC-A in the 2-Channel
+          Stereo Area. If the 2-Channel Stereo Area is not present,
+          this value must be zero. }
+        ChTocLength: Word;
+
+        { The length in Sectors of Area TOC-A in the Multi Channel
+          Area. If the Multi Channel Area is not present, this
+          value must be zero. }
+        McTocLength: Word;
+
+        { The catalog number of SACD disc that uniquely identifies
+          each disc in an Album. }
+        CatalogNumber: TCatalogNumber;
+
+        { The SACD disc genres. }
+        Genres: TSACDGenres;
+
+        { The creation date of the SACD disc. }
+        Date: DWord;
+
+        { Returns true, if this disc is Hybrid SACD. }
+        //function IsHybrid(): Boolean;
+
+    end;
+    PMasterTocDisc = ^TMasterTocDisc;
 
 type
 
@@ -290,6 +372,9 @@ type
         { The offset of SACD Disc information in this area. }
         const DISC_INFO_OFFSET = ALBUM_INFO_OFFSET + 48;
 
+        { The offset of SACD Album Catalog Number in this area. }
+        const DISC_CATALOG_NUMBER_OFFSET = DISC_INFO_OFFSET + 24;
+
         { See SpecVersion property. }
         function GetSpecVersion(): TSACDSpecVersion;
     public
@@ -297,6 +382,7 @@ type
         property SpecVersion: TSACDSpecVersion read GetSpecVersion;
         {}
         function GetAlbumInfo(): TMasterTocAlbum;
+        function GetDiscInfo(): TMasterTocDisc;
 
         constructor Create();
     end;
@@ -564,8 +650,35 @@ begin
     Result := PAlbum^;
     // We should convert some pieces of data from
     // big-endian to little-endian
-    Result.SetSize := ReverseBytes(Result.SetSize);
-    Result.SequenceNumber := ReverseBytes(Result.SequenceNumber);
+    Result.SetSize := SwapEndian(Result.SetSize);
+    Result.SequenceNumber := SwapEndian(Result.SequenceNumber);
+    for I := Low(Result.Genres) to High(Result.Genres) do
+    begin
+        Result.Genres[I].Index :=
+            SwapEndian(Result.Genres[I].Index);
+    end;
+    // Fix CatalogNumber string
+    Result.CatalogNumber := Trim(Self[0]^.ToString(
+        ALBUM_CATALOG_NUMBER_OFFSET, 16));
+end;
+
+function TMasterTocArea.GetDiscInfo(): TMasterTocDisc;
+var I: Integer;
+    PDisc: PMasterTocDisc;
+begin
+    if not HasData() then Exit;
+    PDisc := PMasterTocDisc((PByte(@(Self[0]^.RawData))
+            + DISC_INFO_OFFSET));
+    Result := PDisc^;
+    // We should convert some pieces of data from
+    // big-endian to little-endian
+    Result.ChTocAddress1 := SwapEndian(Result.ChTocAddress1);
+    Result.ChTocAddress2 := SwapEndian(Result.ChTocAddress2);
+    Result.McTocAddress1 := SwapEndian(Result.McTocAddress1);
+    Result.McTocAddress2 := SwapEndian(Result.McTocAddress2);
+    Result.ChTocLength := SwapEndian(Result.ChTocLength);
+    Result.McTocLength := SwapEndian(Result.McTocLength);
+    Result.Date := SwapEndian(Result.Date);
     for I := Low(Result.Genres) to High(Result.Genres) do
     begin
         Result.Genres[I].Index :=
@@ -573,22 +686,7 @@ begin
     end;
     // Fix CatalogNumber string
     Result.CatalogNumber := Trim(Self[0]^.ToString(
-        ALBUM_CATALOG_NUMBER_OFFSET, 16));
-
-    {if not HasData() then Exit;
-    Result.SetSize := BytesToWord(Self[0]^[16], Self[0]^[17]);
-    Result.SequenceNumber := BytesToWord(Self[0]^[18], Self[0]^[19]);
-    Result.CatalogNumber := Trim(Self[0]^.ToString(24, 16));
-    // Genres
-    PGenres := PSACDGenres(PByte(@(Self[0]^.RawData))
-            + ALBUM_INFO_OFFSET + 24);
-    Result.Genres := PGenres^;
-    // We shoult convert Index from big-endian to little-endian
-    for I := Low(Result.Genres) to High(Result.Genres) do
-    begin
-        Result.Genres[I].Index :=
-            ReverseBytes(Result.Genres[I].Index);
-    end;}
+        DISC_CATALOG_NUMBER_OFFSET, 16));
 end;
 
 {--------------------------------------------------------------------}

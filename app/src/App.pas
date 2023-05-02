@@ -88,6 +88,7 @@ var
     MasterToc: TMasterTocArea;
     TextToc: TMasterTextArea;
     Album: TMasterTocAlbum;
+    Disc: TMasterTocDisc;
     F: File;
 begin
     WriteLn();
@@ -97,13 +98,28 @@ begin
     MasterToc.Load(F);
     TextToc := TMasterTextArea.Create();
     TextToc.Load(F);
+
+    // Master TOC Album Info
     Album := MasterToc.GetAlbumInfo();
-    if Debug then
-        Writeln(INDENT, 'Area Header: ', TextToc.Header);
+    Writeln('Master TOC Album Info:');
     Writeln(INDENT, 'Format Version: ', MasterToc.SpecVersion.ToString);
     Writeln(INDENT, 'Album Number: ', Album.SequenceNumber,' (from ', Album.SetSize,')');
     Writeln(INDENT, 'Album Catalog Number: ', Album.CatalogNumber);
     Writeln(INDENT, 'Album Genre: ', Album.Genres[1].Genre);
+    WriteLn();
+
+    // Master TOC Disc Info
+    Disc := MasterToc.GetDiscInfo();
+    Writeln('Master TOC Disc Info:');
+    Writeln(INDENT, 'ChTocAddress1: ', Disc.ChTocAddress1);
+    Writeln(INDENT, 'ChTocAddress2: ', Disc.ChTocAddress2);
+    Writeln(INDENT, 'MCTocAddress1: ', Disc.MCTocAddress1);
+    Writeln(INDENT, 'MCTocAddress2: ', Disc.MCTocAddress2);
+    Writeln(INDENT, 'Disc Genre: ', Disc.Genres[1].Genre);
+    Writeln(INDENT, 'Disc Catalog Number: ', Disc.CatalogNumber);
+    WriteLn();
+
+    Writeln('Master Text TOC Info:');
     Writeln(INDENT, 'Disc Title: ', TextToc.DiscTitle);
     Writeln(INDENT, 'Disc Artist: ', TextToc.DiscArtist);
     Writeln(INDENT, 'Disc Publisher: ', TextToc.DiscPublisher);
