@@ -106,7 +106,7 @@ const
         'Spoken Word', 'World Music', 'Blues'
     );
 
-    // TODO Need to find information about thid table
+    // TODO Need to find information about this table
     //JAPANESE_TABLE: Array[INDEX_UNKNOWN..29] of String = (
     //)
 
