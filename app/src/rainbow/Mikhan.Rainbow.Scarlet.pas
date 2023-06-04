@@ -343,7 +343,7 @@ type
         Date: DWord;
 
         { Returns true, if this disc is Hybrid SACD. }
-        //function IsHybrid(): Boolean;
+        function IsHybrid(): Boolean;
 
     end;
     PMasterTocDisc = ^TMasterTocDisc;
@@ -687,6 +687,16 @@ begin
     // Fix CatalogNumber string
     Result.CatalogNumber := Trim(Self[0]^.ToString(
         DISC_CATALOG_NUMBER_OFFSET, 16));
+end;
+
+{--------------------------------------------------------------------}
+{ TMasterTocDisc staff                                               }
+{--------------------------------------------------------------------}
+
+function TMasterTocDisc.IsHybrid(): Boolean;
+const HYBRID_BIT = 7;
+begin
+    Result := ((Self.DiscFlags shr HYBRID_BIT) and 1) = 1;
 end;
 
 {--------------------------------------------------------------------}
