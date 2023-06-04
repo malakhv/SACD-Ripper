@@ -68,7 +68,7 @@ unit Mikhan.Rainbow.Scarlet;
 
 interface
 
-uses Mikhan.Rainbow.Genres;
+uses Mikhan.Rainbow.Types, Mikhan.Rainbow.Genres;
 
 {--------------------------------------------------------------------}
 {                The SACD disc Logical Sector (LS).                  }
@@ -340,7 +340,7 @@ type
         Genres: TSACDGenres;
 
         { The creation date of the SACD disc. }
-        Date: DWord;
+        Date: TDiscDate;
 
         { Returns true, if this disc is Hybrid SACD. }
         function IsHybrid(): Boolean;
@@ -678,7 +678,7 @@ begin
     Result.McTocAddress2 := SwapEndian(Result.McTocAddress2);
     Result.ChTocLength := SwapEndian(Result.ChTocLength);
     Result.McTocLength := SwapEndian(Result.McTocLength);
-    Result.Date := SwapEndian(Result.Date);
+    Result.Date.Year := SwapEndian(Result.Date.Year);
     for I := Low(Result.Genres) to High(Result.Genres) do
     begin
         Result.Genres[I].Index :=

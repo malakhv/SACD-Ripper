@@ -111,6 +111,7 @@ begin
     // Master TOC Disc Info
     Disc := MasterToc.GetDiscInfo();
     Writeln('Master TOC Disc Info:');
+    Writeln(INDENT, 'Creation: ', Disc.Date.ToString());
     Writeln(INDENT, 'Hybrid Disc: ', Disc.IsHybrid());
     Writeln(INDENT, 'ChTocAddress1: ', Disc.ChTocAddress1);
     Writeln(INDENT, 'ChTocAddress2: ', Disc.ChTocAddress2);
