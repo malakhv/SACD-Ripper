@@ -71,7 +71,7 @@ const INDENT = '   ';
 begin
     WriteLn(APP_NAME, ' command options:');
     WriteLn(INDENT, 'info SACD_FILE_NAME - print information abour SACD disc');
-    WriteLn(INDENT, '-v or --versio - print program version');
+    WriteLn(INDENT, '-v or --version - print program version');
 end;
 
 procedure PrintVersion();
