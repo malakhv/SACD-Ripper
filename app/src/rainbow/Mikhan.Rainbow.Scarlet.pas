@@ -298,22 +298,22 @@ type
         { The LSN of the first Sector of Area TOC-1 in the 2-Channel
           Stereo Area. If the 2-Channel Stereo Area is not present,
           this value must be zero. }
-        ChTocAddress1: DWord;
+        SChTocAddress1: DWord;
 
         { The LSN of the first Sector of Area TOC-2 in the 2-Channel
           Stereo Area. If the 2-Channel Stereo Area is not present,
           this value must be zero. }
-        ChTocAddress2: DWord;
+        SChTocAddress2: DWord;
 
         { The LSN of the first Sector of Area TOC-1 in the Multi
           Channel Area. If the Multi Channel Area is not present,
           this value must be zero. }
-        McTocAddress1: DWord;
+        MChTocAddress1: DWord;
 
         { The LSN of the first Sector of Area TOC-2 in the Multi
           Channel Area. If the Multi Channel Area is not present,
           this value must be zero. }
-        McTocAddress2: DWord;
+        MChTocAddress2: DWord;
 
         { The information about SACD disc, Hybrid or not, for
           example. }
@@ -672,10 +672,10 @@ begin
     Result := PDisc^;
     // We should convert some pieces of data from
     // big-endian to little-endian
-    Result.ChTocAddress1 := SwapEndian(Result.ChTocAddress1);
-    Result.ChTocAddress2 := SwapEndian(Result.ChTocAddress2);
-    Result.McTocAddress1 := SwapEndian(Result.McTocAddress1);
-    Result.McTocAddress2 := SwapEndian(Result.McTocAddress2);
+    Result.SChTocAddress1 := SwapEndian(Result.SChTocAddress1);
+    Result.SChTocAddress2 := SwapEndian(Result.SChTocAddress2);
+    Result.MChTocAddress1 := SwapEndian(Result.MChTocAddress1);
+    Result.MChTocAddress2 := SwapEndian(Result.MChTocAddress2);
     Result.ChTocLength := SwapEndian(Result.ChTocLength);
     Result.McTocLength := SwapEndian(Result.McTocLength);
     Result.Date.Year := SwapEndian(Result.Date.Year);

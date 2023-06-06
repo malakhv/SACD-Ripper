@@ -113,10 +113,10 @@ begin
     Writeln('Master TOC Disc Info:');
     Writeln(INDENT, 'Creation: ', Disc.Date.ToString());
     Writeln(INDENT, 'Hybrid Disc: ', Disc.IsHybrid());
-    Writeln(INDENT, 'ChTocAddress1: ', Disc.ChTocAddress1);
-    Writeln(INDENT, 'ChTocAddress2: ', Disc.ChTocAddress2);
-    Writeln(INDENT, 'MCTocAddress1: ', Disc.MCTocAddress1);
-    Writeln(INDENT, 'MCTocAddress2: ', Disc.MCTocAddress2);
+    Writeln(INDENT, 'SChTocAddress1: ', Disc.SChTocAddress1);
+    Writeln(INDENT, 'SChTocAddress2: ', Disc.SChTocAddress2);
+    Writeln(INDENT, 'MChTocAddress1: ', Disc.MChTocAddress1);
+    Writeln(INDENT, 'MChTocAddress2: ', Disc.MChTocAddress2);
     Writeln(INDENT, 'Disc Genre: ', Disc.Genres[1].Genre);
     Writeln(INDENT, 'Disc Catalog Number: ', Disc.CatalogNumber);
     WriteLn();
