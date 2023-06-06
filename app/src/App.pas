@@ -119,6 +119,7 @@ begin
     Writeln(INDENT, 'MChTocAddress2: ', Disc.MChTocAddress2);
     Writeln(INDENT, 'Disc Genre: ', Disc.Genres[1].Genre);
     Writeln(INDENT, 'Disc Catalog Number: ', Disc.CatalogNumber);
+    Writeln(INDENT, 'Disc Web Link: ', MasterToc.WebLink);
     WriteLn();
 
     Writeln('Master Text TOC Info:');
@@ -136,10 +137,10 @@ begin
     begin
         Writeln();
         Writeln('TMasterTocArea dump:');
-        TAppLogs.Dump(MasterToc[0]^.RawData, 128);
+        TAppLogs.Dump(MasterToc[0]^.RawData, 256);
         Writeln();
         Writeln('MasterTextArea[0] dump:');
-        TAppLogs.Dump(TextToc[0]^.RawData, 128);
+        TAppLogs.Dump(TextToc[0]^.RawData, 256);
     end;
 end;
 

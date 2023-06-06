@@ -353,11 +353,19 @@ type
         { The offset of SACD Album Catalog Number in this area. }
         const DISC_CATALOG_NUMBER_OFFSET = DISC_INFO_OFFSET + 24;
 
+        { The offset of SACD Disc Web Link Info this area. }
+        const DISC_WEB_LINK_OFFSET = 168;
+
         { See SpecVersion property. }
         function GetSpecVersion(): TSACDSpecVersion;
+
+        function GetDiscWebLink(): String;
     public
         { The SACD format specification version. }
         property SpecVersion: TSACDSpecVersion read GetSpecVersion;
+
+        property WebLink: String read GetDiscWebLink;
+
         {}
         function GetAlbumInfo(): TMasterTocAlbum;
         function GetDiscInfo(): TMasterTocDisc;
@@ -656,6 +664,11 @@ begin
     // Fix CatalogNumber string
     Result.CatalogNumber := Trim(Self[0]^.ToString(
         DISC_CATALOG_NUMBER_OFFSET, 16));
+end;
+
+function TMasterTocArea.GetDiscWebLink(): String;
+begin
+    Result := Self[0].GetString(DISC_WEB_LINK_OFFSET);
 end;
 
 {--------------------------------------------------------------------}

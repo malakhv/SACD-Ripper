@@ -56,6 +56,14 @@ type
     }
     TCatalogNumber = String[15];
 
+    {
+        The link to a web page with information about this SACD disc.
+        This string is a sequence of char followed by a zero byte
+        (null-terminated). A zero length is allowed, which contains
+        one zero byte. The maximum length is 128 bytes.
+    }
+    //TDiscWebLink = String[128];
+
 type
 
     {
