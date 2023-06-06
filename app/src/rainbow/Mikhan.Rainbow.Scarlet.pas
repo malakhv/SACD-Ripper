@@ -434,6 +434,20 @@ type
         constructor Create();
     end;
 
+    TMasterTocManuf = class (TSACDArea)
+    private
+        { The offset of significant data in this area. }
+        const AREA_DATA_OFFSET = SACD_AREA_HEADER_LENGTH;
+
+    protected
+
+    public
+
+        { Construct a new instance with default parameters. }
+        constructor Create();
+
+    end;
+
 
 //type
 //    TSacdFile = class(Tancestor)
@@ -753,6 +767,15 @@ end;
 function TMasterTextArea.DoGetDiscCopyright(): String;
 begin
     Result := Self.GetStringByPtr(DISC_COPYRIGHT_PTR_OFFSET);
+end;
+
+{--------------------------------------------------------------------}
+{ TMasterTocManuf staff                                              }
+{--------------------------------------------------------------------}
+
+constructor TMasterTocManuf.Create();
+begin
+    inherited Create(519);
 end;
 
 end.

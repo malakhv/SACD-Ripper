@@ -89,6 +89,7 @@ var
     TextToc: TMasterTextArea;
     Album: TMasterTocAlbum;
     Disc: TMasterTocDisc;
+    Manuf: TMasterTocManuf;
     F: File;
 begin
     WriteLn();
@@ -98,6 +99,8 @@ begin
     MasterToc.Load(F);
     TextToc := TMasterTextArea.Create();
     TextToc.Load(F);
+    Manuf := TMasterTocManuf.Create;
+    Manuf.Load(F);
 
     // Master TOC Album Info
     Album := MasterToc.GetAlbumInfo();
@@ -122,6 +125,7 @@ begin
     Writeln(INDENT, 'Disc Web Link: ', MasterToc.DiscWebLink);
     WriteLn();
 
+    // Master Text TOC Info
     Writeln('Master Text TOC Info:');
     Writeln(INDENT, 'Disc Title: ', TextToc.DiscTitle);
     Writeln(INDENT, 'Disc Artist: ', TextToc.DiscArtist);
@@ -132,6 +136,12 @@ begin
     Writeln(INDENT, 'Album Publisher: ', TextToc.AlbumPublisher);
     Writeln(INDENT, 'Album Copyright: ', TextToc.AlbumCopyright);
 
+    // Master TOC Manuf Info
+    Writeln('Master TOC Manuf Info:');
+    Writeln(INDENT, 'Header: ', Manuf.Header);
+    WriteLn();
+
+
     // Just for testing and debug
     if Debug then
     begin
@@ -141,6 +151,9 @@ begin
         Writeln();
         Writeln('MasterTextArea[0] dump:');
         TAppLogs.Dump(TextToc[0]^.RawData, 256);
+        Writeln();
+        Writeln('MasterManufArea[0] dump:');
+        TAppLogs.Dump(Manuf[0]^.RawData, 256);
     end;
 end;
 
