@@ -120,6 +120,8 @@ begin
     Writeln(INDENT, 'SChTocAddress2: ', Disc.SChTocAddress2);
     Writeln(INDENT, 'MChTocAddress1: ', Disc.MChTocAddress1);
     Writeln(INDENT, 'MChTocAddress2: ', Disc.MChTocAddress2);
+    Writeln(INDENT, 'SChTocLength: ', Disc.SChTocLength);
+    Writeln(INDENT, 'MChTocLength: ', Disc.MChTocLength);
     Writeln(INDENT, 'Disc Genre: ', Disc.Genres[1].Genre);
     Writeln(INDENT, 'Disc Catalog Number: ', Disc.CatalogNumber);
     Writeln(INDENT, 'Disc Web Link: ', MasterToc.DiscWebLink);

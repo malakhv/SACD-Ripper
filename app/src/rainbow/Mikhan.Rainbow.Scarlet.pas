@@ -303,12 +303,12 @@ type
         { The length in Sectors of Area TOC-A in the 2-Channel
           Stereo Area. If the 2-Channel Stereo Area is not present,
           this value must be zero. }
-        ChTocLength: Word;
+        SChTocLength: Word;
 
         { The length in Sectors of Area TOC-A in the Multi Channel
           Area. If the Multi Channel Area is not present, this
           value must be zero. }
-        McTocLength: Word;
+        MChTocLength: Word;
 
         { The catalog number of SACD disc that uniquely identifies
           each disc in an Album. }
@@ -683,8 +683,8 @@ begin
     Result.SChTocAddress2 := SwapEndian(Result.SChTocAddress2);
     Result.MChTocAddress1 := SwapEndian(Result.MChTocAddress1);
     Result.MChTocAddress2 := SwapEndian(Result.MChTocAddress2);
-    Result.ChTocLength := SwapEndian(Result.ChTocLength);
-    Result.McTocLength := SwapEndian(Result.McTocLength);
+    Result.SChTocLength := SwapEndian(Result.SChTocLength);
+    Result.MChTocLength := SwapEndian(Result.MChTocLength);
     Result.Date.Year := SwapEndian(Result.Date.Year);
     for I := Low(Result.Genres) to High(Result.Genres) do
     begin
