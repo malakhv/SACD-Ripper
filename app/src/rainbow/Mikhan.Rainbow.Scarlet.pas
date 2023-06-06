@@ -598,6 +598,16 @@ begin
 end;
 
 {--------------------------------------------------------------------}
+{ TMasterTocDisc staff                                               }
+{--------------------------------------------------------------------}
+
+function TMasterTocDisc.IsHybrid(): Boolean;
+const HYBRID_BIT = 7;
+begin
+    Result := ((Self.DiscFlags shr HYBRID_BIT) and 1) = 1;
+end;
+
+{--------------------------------------------------------------------}
 { TMasterTocArea staff                                               }
 {--------------------------------------------------------------------}
 
@@ -669,16 +679,6 @@ end;
 function TMasterTocArea.GetDiscWebLink(): String;
 begin
     Result := Self[0].GetString(DISC_WEB_LINK_OFFSET);
-end;
-
-{--------------------------------------------------------------------}
-{ TMasterTocDisc staff                                               }
-{--------------------------------------------------------------------}
-
-function TMasterTocDisc.IsHybrid(): Boolean;
-const HYBRID_BIT = 7;
-begin
-    Result := ((Self.DiscFlags shr HYBRID_BIT) and 1) = 1;
 end;
 
 {--------------------------------------------------------------------}
