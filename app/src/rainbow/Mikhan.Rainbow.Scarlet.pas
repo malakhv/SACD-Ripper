@@ -248,7 +248,7 @@ type
 {--------------------------------------------------------------------}
 type
 
-    { The information about Album in Master TOC Area. }
+    { The information about SACD Album in Master TOC Area. }
     TMasterTocAlbum = packed record     // 48 bytes in total
         SetSize: Word;                  // 2 bytes
         SequenceNumber: Word;           // 2 bytes
@@ -270,7 +270,7 @@ type
         Third: Byte;
     end; }
 
-    { The information about SACD disc in Master TOC Area. }
+    { The information about SACD Disc in Master TOC Area. }
     TMasterTocDisc = packed record
 
         { The LSN of the first Sector of Area TOC-1 in the 2-Channel
@@ -329,48 +329,54 @@ type
 type
 
     {
-        The Master TOC area (Master_TOC_0) contains general information on the disc, such as
-        the size and location of the Audio Areas, album information, disc catalog number, disc
-        genre and disc date. This area has 'SACDMTOC' signature.
+        The Master TOC area (Master_TOC_0) contains general information
+        on the disc, such as the size and location of the Audio Areas,
+        album information, disc catalog number, disc genre and disc
+        date. This area has 'SACDMTOC' signature.
     }
     TMasterTocArea = class (TSACDArea)
-    protected
+    private
         { The lenght of Master TOC in sectors. }
-        const MASTER_TOC_LENGTH = 10;
-
+        //const MASTER_TOC_LENGTH = 10;
         { The offset of SACD format specification version in this area. }
         const SPEC_VERSION_OFFSET = SACD_AREA_HEADER_LENGTH;
-
         { The offset of SACD Album information in this area. }
         const ALBUM_INFO_OFFSET = 16;
-
         { The offset of SACD Album Catalog Number in this area. }
         const ALBUM_CATALOG_NUMBER_OFFSET = ALBUM_INFO_OFFSET + 8;
-
         { The offset of SACD Disc information in this area. }
         const DISC_INFO_OFFSET = ALBUM_INFO_OFFSET + 48;
-
         { The offset of SACD Album Catalog Number in this area. }
         const DISC_CATALOG_NUMBER_OFFSET = DISC_INFO_OFFSET + 24;
-
         { The offset of SACD Disc Web Link Info this area. }
         const DISC_WEB_LINK_OFFSET = 168;
+    protected
+
+        { See DiscWebLink property. }
+        function GetDiscWebLink(): String;
 
         { See SpecVersion property. }
         function GetSpecVersion(): TSACDSpecVersion;
 
-        function GetDiscWebLink(): String;
     public
+
+        { The link to a web page with information about SACD disc. }
+        property DiscWebLink: String read GetDiscWebLink;
+
         { The SACD format specification version. }
         property SpecVersion: TSACDSpecVersion read GetSpecVersion;
 
-        property WebLink: String read GetDiscWebLink;
-
-        {}
+        { Returns the information about SACD Album which stored in
+          Master TOC Area. }
         function GetAlbumInfo(): TMasterTocAlbum;
+
+        { Returns the information about SACD Disc which stored in
+          Master TOC Area. }
         function GetDiscInfo(): TMasterTocDisc;
 
+        { Construct a new instance with default parameters. }
         constructor Create();
+
     end;
 
     {

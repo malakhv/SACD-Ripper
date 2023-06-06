@@ -119,7 +119,7 @@ begin
     Writeln(INDENT, 'MChTocAddress2: ', Disc.MChTocAddress2);
     Writeln(INDENT, 'Disc Genre: ', Disc.Genres[1].Genre);
     Writeln(INDENT, 'Disc Catalog Number: ', Disc.CatalogNumber);
-    Writeln(INDENT, 'Disc Web Link: ', MasterToc.WebLink);
+    Writeln(INDENT, 'Disc Web Link: ', MasterToc.DiscWebLink);
     WriteLn();
 
     Writeln('Master Text TOC Info:');
