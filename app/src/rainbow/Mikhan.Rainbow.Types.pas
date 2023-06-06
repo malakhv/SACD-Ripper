@@ -50,25 +50,45 @@ interface
 type
 
     {
+        Album or Disc Catalog Number. This string is padded at the
+        end with space characters ($20). If a Catalog Number is not
+        used, all bytes must be set to zero.
+    }
+    TCatalogNumber = String[15];
+
+type
+
+    {
+        The SACD format specification version.
+    }
+    TSACDSpecVersion = packed record
+        { The major version number of SACD specification. }
+        Major: Byte;
+        { The minor version number of SACD specification. }
+        Minor: Byte;
+        { Represents this version as a human readable string. }
+        function ToString(): String;
+    end;
+    PSACDSpecVersion = ^TSACDSpecVersion;
+
+type
+
+    {
         A date format that used in SACD specification. The value zero
         for Year, Month and Day is only allowed if a valid Date is
         not available.
     }
     TDiscDate = packed record
-        
         { The value of the Year field has a range of 0..65535. }
         Year: Word;
-        
         { The value of the Month field has a range of 0..12,
           with 1..12 meaning January. }
         Month: Byte;
-        
         { The value of the Day field has a range of 0..31. }
         Day: Byte;
-        
-        { Represents a date of SACD disc as a human readable string. }
+        { Represents a creation date of SACD disc as a human readable
+          string. }
         function ToString(): String;
-
     end;
 
 implementation
@@ -79,6 +99,16 @@ uses SysUtils;
 { Common things                                                      }
 {--------------------------------------------------------------------}
 
+// Empty
+
+{--------------------------------------------------------------------}
+{ TSACDSpecVersion staff                                             }
+{--------------------------------------------------------------------}
+
+function TSACDSpecVersion.ToString(): String;
+begin
+    Result := IntToStr(Self.Major) + '.' + IntToStr(Self.Minor);
+end;
 
 {--------------------------------------------------------------------}
 { TDiscDate staff                                                    }

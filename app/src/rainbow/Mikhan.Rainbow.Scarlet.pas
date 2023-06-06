@@ -248,28 +248,6 @@ type
 {--------------------------------------------------------------------}
 type
 
-    {
-        Album or Disc Catalog Number. This string is padded at the
-        end with space characters ($20). If a Catalog Number is not
-        used, all bytes must be set to zero.
-    }
-    TCatalogNumber = String[15];
-
-    { A date format that used in SACD specification. }
-    { TDate = packed record
-        Year: Word;
-        Month, Day: Byte;
-        function ToString(): String;
-    end; }
-
-    { The SACD format specification version. }
-    TSACDSpecVersion = packed record
-        Major, Minor: Byte;
-        { Represents this version as a human readable string. }
-        function ToString(): String;
-    end;
-    PSACDSpecVersion = ^TSACDSpecVersion;
-
     { The information about Album in Master TOC Area. }
     TMasterTocAlbum = packed record     // 48 bytes in total
         SetSize: Word;                  // 2 bytes
@@ -609,15 +587,6 @@ begin
     finally
         CloseFile(AFile);
     end;
-end;
-
-{--------------------------------------------------------------------}
-{ TSACDSpecVersion staff                                             }
-{--------------------------------------------------------------------}
-
-function TSACDSpecVersion.ToString(): String;
-begin
-    Result := IntToStr(Self.Major) + '.' + IntToStr(Self.Minor);
 end;
 
 {--------------------------------------------------------------------}
