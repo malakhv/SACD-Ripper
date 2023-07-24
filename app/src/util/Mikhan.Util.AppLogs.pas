@@ -34,7 +34,7 @@ type
 
     { The available logging levels. }
     TLogLevel = (
-        { Logging level: Not inportant information only for development time. }
+        { Logging level: Not inportant information, only for development time. }
         llVerbose,
         { Logging level: Information only for development, debugging and testing time. }
         llDebug,
