@@ -1,5 +1,16 @@
 #!/bin/sh
 
+PASCAL_KIT="./../../PascalKit/src/util"
+
+# Clear build (out) dir
 rm -R -f ./build
 mkdir -p build
-fpc ./src/App.pas -FEbuild -Fu./src/app -Fu./src/util -Fu./src/rainbow -osacd
+
+# Compile programm
+fpc ./src/App.pas \
+     -Fu./src/app \
+     -Fu./src/util \
+     -Fu./src/rainbow \
+     -Fu$PASCAL_KIT \
+     -FEbuild \
+     -osacd
