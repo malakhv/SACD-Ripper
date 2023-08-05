@@ -167,7 +167,7 @@ begin
     AppLogs := TAppLogs.Create('SACD');
 
     // Program Version
-    AppVer := TSemVer.Create(0, 1, 0, DEBUG);
+    AppVer := TSemVer.Create(DEBUG, 0, 1, 0);
 
     // Parse input arguments
     AppArgs := TAppArgs.Create();
