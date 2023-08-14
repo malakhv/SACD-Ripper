@@ -23,7 +23,7 @@ program sacd;
 
 uses
     SysUtils, Mikhan.Util.AppArgs, Mikhan.Util.AppLogs, Mikhan.Rainbow.Scarlet,
-    Mikhan.Util.AppVersion, Mikhan.Util.StrUtils;
+    Mikhan.Util.AppVersion, Mikhan.Util.StrUtils, Mikhan.Util.Dump;
 
 const
 
@@ -149,13 +149,13 @@ begin
     begin
         Writeln();
         Writeln('TMasterTocArea dump:');
-        TAppLogs.Dump(MasterToc[0]^.RawData, 256);
+        Dump(MasterToc[0]^.RawData, 256);
         Writeln();
         Writeln('MasterTextArea[0] dump:');
-        TAppLogs.Dump(TextToc[0]^.RawData, 256);
+        Dump(TextToc[0]^.RawData, 256);
         Writeln();
         Writeln('MasterManufArea[0] dump:');
-        TAppLogs.Dump(Manuf[0]^.RawData, 256);
+        Dump(Manuf[0]^.RawData, 256);
     end;
 end;
 
