@@ -190,16 +190,14 @@ begin                                               { Program Entry Point }
     AppArgs.Parse();
     if DEBUG then AppArgs.Print();
 
-    // Any actios for testing
+    // Any actios for testing?
     if AppArgs.Has(CMD_TEST) then
     begin
         // TODO Need to add Linux variant
-        //InputFile := TFileName(TEST_FILE_NAME_WIN);
-        //PrintInfo(InputFile, True);
         InputFile := TFileName(TEST_FILE_NAME_WIN);
-        WriteLn(Low(TLSData));
-        WriteLn(High(TLSData));
-
+        PrintInfo(InputFile, True);
+        //WriteLn(Low(TLSData));
+        //WriteLn(High(TLSData));
         Exit;
     end;
 
