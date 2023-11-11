@@ -1,58 +1,74 @@
-{--------------------------------------------------------------------}
-{                                                                    }
-{                       SACD-Ripper project                          }
-{                                                                    }
-{  Copyright (C) 1996-2023 Mikhail.Malakhov <malakhv@gmail.com>      }
-{                                                                    }
-{  Unauthorized copying of this file, via any medium is              }
-{  strictly prohibited.                                              }
-{                                                                    }
-{         Confidential and Proprietary. All Rights Reserved.         }
-{                                                                    }
-{--------------------------------------------------------------------}
+{-------------------------------------------------------------------------}
+{                                                                         }
+{                          SACD-Ripper project                            }
+{                                                                         }
+{  Copyright (C) 1996-2022 Mikhail Malakhov <malakhv@gmail.com>           }
+{                                                                         }
+{  Licensed under the Apache License, Version 2.0 (the "License").        }
+{  You may not use this file except in compliance with the License.       }
+{  You may obtain a copy of the License at                                }
+{                                                                         }
+{     http://www.apache.org/licenses/LICENSE-2.0                          }
+{                                                                         }
+{  Unless required by applicable law or agreed to in writing, software    }
+{  distributed under the License is distributed on an "AS IS" BASIS,      }
+{  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or        }
+{  implied.                                                               }
+{                                                                         }
+{  See the License for the specific language governing permissions and    }
+{  limitations under the License.                                         }
+{                                                                         }
+{-------------------------------------------------------------------------}
 
-{--------------------------------------------------------------------}
-{ The Unit includes some definitions from Scarlet Book Specification }
-{ (part of Rainbow Books).                                           }
-{                                                                    }
-{ Package: Mikhan.Rainbow                                            }
-{                                                                    }
-{ Created: 14.08.2022                                                }
-{ Author: Mikhail.Malakhov [malakhv@gmail.com|http://mikhan.me/]     }
-{--------------------------------------------------------------------}
+{-------------------------------------------------------------------------}
+{ The Unit includes some definitions from Scarlet Book Specification      }
+{ (part of Rainbow Books).                                                }
+{                                                                         }
+{ Package: Mikhan.Rainbow                                                 }
+{                                                                         }
+{ Created: 14.08.2022                                                     }
+{ Author: Mikhail.Malakhov [malakhv@gmail.com|http://mikhan.me/]          }
+{-------------------------------------------------------------------------}
 
-{--------------------------------------------------------------------}
-{                       Super Audio CD                               }
-{                                                                    }
-{ Super Audio CD (SACD) is an optical disc format for audio storage  }
-{ introduced in 1999. It was developed jointly by Sony and Philips   }
-{ Electronics and intended to be the successor to the Compact Disc   }
-{ (CD) format.                                                       }
-{                                                                    }
-{ The SACD format allows multiple audio channels (i.e. surround      }
-{ sound or multichannel sound). It also provides a higher bit rate   }
-{ and longer playing time than a conventional CD.                    }
-{                                                                    }
-{ An SACD is designed to be played on an SACD player. A hybrid SACD  }
-{ contains a Compact Disc Digital Audio (CDDA) layer and can also be }
-{ played on a standard CD player.                                    }
-{--------------------------------------------------------------------}
+{-------------------------------------------------------------------------}
+{                          Super Audio CD                                 }
+{                                                                         }
+{ Super Audio CD (SACD) is an optical disc format for audio storage       }
+{ introduced in 1999. It was developed jointly by Sony and Philips        }
+{ Electronics and intended to be the successor to the Compact Disc (CD)   }
+{ format.                                                                 }
+{                                                                         }
+{ The SACD format allows multiple audio channels (i.e. surround sound or  }
+{ multichannel sound). It also provides a higher bit rate and longer      }
+{ playing time than a conventional CD.                                    }
+{                                                                         }
+{ An SACD is designed to be played on an SACD player. A hybrid SACD       }
+{ contains a Compact Disc Digital Audio (CDDA) layer and can also be      }
+{ played on a standard CD player.                                         }
+{-------------------------------------------------------------------------}
 
-{--------------------------------------------------------------------}
-{                       Scarlet Book                                 }
-{                                                                    }
-{ The Scarlet Book Standard describes Super Audio Compact Disc       }
-{ format and represents a set of documents called Super Audio CD     }
-{ System Description.                                                }
-{                                                                    }
-{ The Super Audio CD System Description has three parts:             }
-{    - Part 1, Physical Specification.                               }
-{    - Part 2, Audio Specification.                                  }
-{    - Part 3, Copy Protection Specification.                        }
-{                                                                    }
-{ This Unit was develop folloving Part 1 and Part 2 of Super Audio   }
-{ CD System Description.                                             }
-{--------------------------------------------------------------------}
+{-------------------------------------------------------------------------}
+{                              Scarlet Book                               }
+{                                                                         }
+{ The Scarlet Book Standard describes Super Audio Compact Disc format and }
+{ represents a set of documents called Super Audio CD System Description. }
+{                                                                         }
+{ The Super Audio CD System Description has three parts:                  }
+{    - Part 1, Physical Specification.                                    }
+{    - Part 2, Audio Specification.                                       }
+{    - Part 3, Copy Protection Specification.                             }
+{                                                                         }
+{ This Unit was develop folloving Part 1 and Part 2 of Super Audio CD     }
+{ System Description.                                                     }
+{-------------------------------------------------------------------------}
+
+{-------------------------------------------------------------------------}
+{                           Common Definitions                            }
+{                                                                         }
+{ Album - An Album consists of one or more discs. All discs in an Album   }
+{         must have the same Album Catalog Number.                        }
+{                                                                         }
+{-------------------------------------------------------------------------}
 
 unit Mikhan.Rainbow.Scarlet;
 
@@ -60,31 +76,24 @@ unit Mikhan.Rainbow.Scarlet;
 {$H+}
 {$T+}
 
-{--------------------------------------------------------------------}
-{                       Definitions                                  }
-{ Album - An Album consists of one or more discs. All discs in an    }
-{         Album must have the same Album Catalog Number.             }
-{--------------------------------------------------------------------}
-
-interface
+interface                                             { Interface section }
 
 uses Mikhan.Rainbow.Types, Mikhan.Rainbow.Genres;
 
-{--------------------------------------------------------------------}
-{                The SACD disc Logical Sector (LS).                  }
-{                                                                    }
-{ The length of a Logical Sector must be 2048 bytes, which is equal  }
-{ to the length of a Physical Sector (PS). Each Logical Sector of a  }
-{ volume is identified by a unique Logical Sector Number (LSN).      }
-{                                                                    }
-{ Logical Sector Numbers must be consecutive integers assigned in    }
-{ ascending order to the Physical Sectors on the disc. The Logical   }
-{ Sector Number 0 must be assigned to Sector Start PSN of Physical   }
-{ Layer 0.                                                           }
-{                                                                    }
-{ For more details, please see Part 2 of Super Audio CD System       }
-{ Description.                                                       }
-{--------------------------------------------------------------------}
+{-------------------------------------------------------------------------}
+{                   The SACD disc Logical Sector (LS)                     }
+{                                                                         }
+{ The length of a Logical Sector must be 2048 bytes, which is equal to    }
+{ the length of a Physical Sector (PS). Each Logical Sector of a volume   }
+{ is identified by a unique Logical Sector Number (LSN).                  }
+{                                                                         }
+{ Logical Sector Numbers must be consecutive integers assigned in         }
+{ ascending order to the Physical Sectors on the disc. The Logical Sector }
+{ Number 0 must be assigned to Sector Start PSN of Physical Layer 0.      }
+{                                                                         }
+{ For more details, please see Part 2 of Super Audio CD System            }
+{ Description.                                                            }
+{-------------------------------------------------------------------------}
 const
 
     { The length of one Logical Sector (LS) on SACD disc, in bytes. }
@@ -147,21 +156,20 @@ type
     PSACDSector = ^TSACDSector;
     TSACDSectors = array of TSACDSector;
 
-{--------------------------------------------------------------------}
-{                       The SACD disc Area                           }
-{                                                                    }
-{ The SACD Volume Space of a disc is split into: File System Area,   }
-{ DTCP Area, EKB1 Area, Master TOC Area, Rev TOC Area, Audio Areas,  }
-{ Extension Area, EKB2 Area, Revocation Data Area and Extra Data     }
-{ Area.                                                              }
-{                                                                    }
-{ In discs according to the Super Audio CD Specification Version 1.3 }
-{ or lower, the EKB1 Area, the Rev TOC Area, the Extension Area,     }
-{ the EKB2 Area and the Revocation Data Area do not exist.           }
-{                                                                    }
-{ For more details, please see Part 2 of Super Audio CD System       }
-{ Description (section 2.2).                                         }
-{--------------------------------------------------------------------}
+{-------------------------------------------------------------------------}
+{                          The SACD disc Area                             }
+{                                                                         }
+{ The SACD Volume Space of a disc is split into: File System Area, DTCP   }
+{ Area, EKB1 Area, Master TOC Area, Rev TOC Area, Audio Areas, Extension  }
+{ Area, EKB2 Area, Revocation Data Area and Extra Data Area.              }
+{                                                                         }
+{ In discs according to the Super Audio CD Specification Version 1.3 or   }
+{ lower, the EKB1 Area, the Rev TOC Area, the Extension Area, the EKB2    }
+{ Area and the Revocation Data Area do not exist.                         }
+{                                                                         }
+{ For more details, please see Part 2 of Super Audio CD System            }
+{ Description (section 2.2).                                              }
+{-------------------------------------------------------------------------}
 const
 
     { The default length of SACD Area's header, in bytes. }
@@ -192,7 +200,8 @@ type
         property First: TLSNumber read FFirst;
 
         { The array of sectors in this area. }
-        property Sectors[Index : TLSNumber]: PSACDSector read GetSector; default;
+        property Sectors[Index : TLSNumber]: PSACDSector read
+            GetSector; default;
 
         { The size of this Area, in sectors. }
         property Size: TLSNumber read FSize;
@@ -218,34 +227,33 @@ type
         destructor Destroy; override;
     end;
 
-{--------------------------------------------------------------------}
-{                   The Table of Contents (TOC)                      }
-{                                                                    }
-{ There are two types of Table of Contents (TOC), the highest level  }
-{ is the Master TOC, and the several Area TOC for audio data.        }
-{                                                                    }
-{ The Master TOC contains Album and Disc information. The Area TOC   }
-{ contains Track information. The Extra Data Area does not           }
-{ contain an Area TOC.                                               }
-{                                                                    }
-{ For more details, please see Part 2 of Super Audio CD System       }
-{ Description (sections 3.1 and 3.2).                                }
-{--------------------------------------------------------------------}
+{-------------------------------------------------------------------------}
+{                       The Table of Contents (TOC)                       }
+{                                                                         }
+{ There are two types of Table of Contents (TOC), the highest level is    }
+{ the Master TOC, and the several Area TOC for audio data.                }
+{                                                                         }
+{ The Master TOC contains Album and Disc information. The Area TOC        }
+{ contains Track information. The Extra Data Area does not contain an     }
+{ Area TOC.                                                               }
+{                                                                         }
+{ For more details, please see Part 2 of Super Audio CD System            }
+{ Description (sections 3.1 and 3.2).                                     }
+{-------------------------------------------------------------------------}
 
-{--------------------------------------------------------------------}
-{                          Master TOC Area                           }
-{                                                                    }
-{ The Master TOC Area contains three identical copies of the Master  }
-{ TOC. The Master TOC has a fixed size of 10 Sectors. The three      }
-{ instances of the Master TOC are stored starting at LSN 510, 520    }
-{ and 530. The structure of the Master TOC shows on following        }
-{ figure:                                                            }
-{                                                                    }
-{   +--------------+--------------------------------+------------+   }
-{   | Master TOC 0 | 8 Text Channels (Master Texts) | Manuf Info |   }
-{   +--------------+--------------------------------+------------+   }
-{                                                                    }
-{--------------------------------------------------------------------}
+{-------------------------------------------------------------------------}
+{                             Master TOC Area                             }
+{                                                                         }
+{ The Master TOC Area contains three identical copies of the Master TOC.  }
+{ The Master TOC has a fixed size of 10 Sectors. The three instances of   }
+{ the Master TOC are stored starting at LSN 510, 520, 530. The structure  }
+{ of the Master TOC shows on following figure:                            }
+{                                                                         }
+{     +--------------+--------------------------------+------------+      }
+{     | Master TOC 0 | 8 Text Channels (Master Texts) | Manuf Info |      }
+{     +--------------+--------------------------------+------------+      }
+{                                                                         }
+{-------------------------------------------------------------------------}
 type
 
     { The information about SACD Album in Master TOC Area. }
@@ -380,9 +388,10 @@ type
     end;
 
     {
-        The Master Text area (Master_Text) contains all general text information that is related
-        with the Album and with the Disc. The size of this area is one SACD sector. This area
-        has 'SACDText' signature. This area is a part of Master TOC.
+        The Master Text area (Master_Text) contains all general text
+        information that is related with the Album and with the Disc. The
+        size of this area is one SACD sector. This area has 'SACDText'
+        signature. This area is a part of Master TOC.
     }
     TMasterTextArea = class (TSACDArea)
     protected
@@ -391,24 +400,32 @@ type
 
         { The offset of Album data in this area. }
         const ALBUM_DATA_OFFSET = AREA_DATA_OFFSET;
-        { The offset of pointer (2 bytes) to Album Title string in this area. }
+        { The offset of pointer (2 bytes) to Album Title string in
+            this area. }
         const ALBUM_TITLE_PTR_OFFSET = ALBUM_DATA_OFFSET;
-        { The offset of pointer (2 bytes) to Album Artist string in this area. }
+        { The offset of pointer (2 bytes) to Album Artist string in
+            this area. }
         const ALBUM_ARTIST_PTR_OFFSET = ALBUM_DATA_OFFSET + 2;
-        { The offset of pointer (2 bytes) to Album Publisher string in this area. }
+        { The offset of pointer (2 bytes) to Album Publisher string in
+            this area. }
         const ALBUM_PUBLISHER_PTR_OFFSET = ALBUM_DATA_OFFSET + 4;
-        { The offset of pointer (2 bytes) to Album Copyright string in this area. }
+        { The offset of pointer (2 bytes) to Album Copyright string in
+            this area. }
         const ALBUM_COPYRIGHT_PTR_OFFSET = ALBUM_DATA_OFFSET + 6;
 
         { The offset of Disc data in this area. }
         const DISC_DATA_OFFSET = AREA_DATA_OFFSET + 14;
-        { The offset of pointer (2 bytes) to Disc Title string in this area. }
+        { The offset of pointer (2 bytes) to Disc Title string in
+            this area. }
         const DISC_TITLE_PTR_OFFSET = DISC_DATA_OFFSET + 2;
-        { The offset of pointer (2 bytes) to Disc Artist string in this area. }
+        { The offset of pointer (2 bytes) to Disc Artist string in
+            this area. }
         const DISC_ARTIST_PTR_OFFSET = DISC_DATA_OFFSET + 4;
-        { The offset of pointer (2 bytes) to Disc Publisher string in this area. }
+        { The offset of pointer (2 bytes) to Disc Publisher string in
+            this area. }
         const DISC_PUBLISHER_PTR_OFFSET = DISC_DATA_OFFSET + 6;
-        { The offset of pointer (2 bytes) to Disc Copyright string in this area. }
+        { The offset of pointer (2 bytes) to Disc Copyright string in
+            this area. }
         const DISC_COPYRIGHT_PTR_OFFSET = DISC_DATA_OFFSET + 8;
 
         function DoGetAlbumTitle(): String;
@@ -452,13 +469,13 @@ type
 //type
 //    TSacdFile = class(Tancestor)
 
-implementation
+implementation                                   { Implementation section }
 
 uses SysUtils, Mikhan.Util.StrUtils;
 
-{--------------------------------------------------------------------}
-{ Common things                                                      }
-{--------------------------------------------------------------------}
+{-------------------------------------------------------------------------}
+{ Common things                                                           }
+{-------------------------------------------------------------------------}
 
 { Returns offset for specified disc LSN. }
 function GetSectorOffset(LSNumber: TLSNumber): Integer;
@@ -494,9 +511,9 @@ begin
         or ((Value and $00FF) shl 8));
 end;
 
-{--------------------------------------------------------------------}
-{ TSACDSector staff                                                  }
-{--------------------------------------------------------------------}
+{-------------------------------------------------------------------------}
+{ TSACDSector staff                                                       }
+{-------------------------------------------------------------------------}
 
 function TSACDSector.GetByte(Index: Integer): Byte;
 begin
@@ -544,9 +561,9 @@ begin
         RawData[i] := 0;
 end;
 
-{--------------------------------------------------------------------}
-{ TSACDArea staff                                                    }
-{--------------------------------------------------------------------}
+{-------------------------------------------------------------------------}
+{ TSACDArea staff                                                         }
+{-------------------------------------------------------------------------}
 
 constructor TSACDArea.Create(First: TLSNumber);
 begin
@@ -617,9 +634,9 @@ begin
     end;
 end;
 
-{--------------------------------------------------------------------}
+{-------------------------------------------------------------------------}
 { TMasterTocDisc staff                                               }
-{--------------------------------------------------------------------}
+{-------------------------------------------------------------------------}
 
 function TMasterTocDisc.IsHybrid(): Boolean;
 const HYBRID_BIT = 7;
@@ -627,9 +644,9 @@ begin
     Result := ((Self.DiscFlags shr HYBRID_BIT) and 1) = 1;
 end;
 
-{--------------------------------------------------------------------}
-{ TMasterTocArea staff                                               }
-{--------------------------------------------------------------------}
+{-------------------------------------------------------------------------}
+{ TMasterTocArea staff                                                    }
+{-------------------------------------------------------------------------}
 
 constructor TMasterTocArea.Create();
 begin
@@ -701,9 +718,9 @@ begin
     Result := Self[0].GetString(DISC_WEB_LINK_OFFSET);
 end;
 
-{--------------------------------------------------------------------}
-{ TMasterTextArea staff                                              }
-{--------------------------------------------------------------------}
+{-------------------------------------------------------------------------}
+{ TMasterTextArea staff                                                   }
+{-------------------------------------------------------------------------}
 
 constructor TMasterTextArea.Create();
 begin
@@ -769,9 +786,9 @@ begin
     Result := Self.GetStringByPtr(DISC_COPYRIGHT_PTR_OFFSET);
 end;
 
-{--------------------------------------------------------------------}
-{ TMasterTocManuf staff                                              }
-{--------------------------------------------------------------------}
+{-------------------------------------------------------------------------}
+{ TMasterTocManuf staff                                                   }
+{-------------------------------------------------------------------------}
 
 constructor TMasterTocManuf.Create();
 begin
@@ -779,3 +796,7 @@ begin
 end;
 
 end.
+
+{-------------------------------------------------------------------------}
+{ END                                                                     }
+{-------------------------------------------------------------------------}

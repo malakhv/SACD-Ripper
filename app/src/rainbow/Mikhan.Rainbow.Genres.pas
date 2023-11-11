@@ -1,61 +1,68 @@
-{--------------------------------------------------------------------}
-{                                                                    }
-{                       SACD-Ripper project                          }
-{                                                                    }
-{  Copyright (C) 1996-2023 Mikhail.Malakhov <malakhv@gmail.com>      }
-{                                                                    }
-{  Unauthorized copying of this file, via any medium is              }
-{  strictly prohibited.                                              }
-{                                                                    }
-{         Confidential and Proprietary. All Rights Reserved.         }
-{                                                                    }
-{--------------------------------------------------------------------}
+{-------------------------------------------------------------------------}
+{                                                                         }
+{                          SACD-Ripper project                            }
+{                                                                         }
+{  Copyright (C) 1996-2023 Mikhail Malakhov <malakhv@gmail.com>           }
+{                                                                         }
+{  Licensed under the Apache License, Version 2.0 (the "License").        }
+{  You may not use this file except in compliance with the License.       }
+{  You may obtain a copy of the License at                                }
+{                                                                         }
+{     http://www.apache.org/licenses/LICENSE-2.0                          }
+{                                                                         }
+{  Unless required by applicable law or agreed to in writing, software    }
+{  distributed under the License is distributed on an "AS IS" BASIS,      }
+{  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or        }
+{  implied.                                                               }
+{                                                                         }
+{  See the License for the specific language governing permissions and    }
+{  limitations under the License.                                         }
+{                                                                         }
+{-------------------------------------------------------------------------}
 
-{--------------------------------------------------------------------}
-{ The Unit includes some definitions from Scarlet Book Specification }
-{ (part of Rainbow Books) exactly Genres Specifications.             }
-{                                                                    }
-{ For more details about Scarlet Book Specification and Super Audio  }
-{ CD, please see Mikhan.Rainbow.Scarlet Unit.                        }
-{                                                                    }
-{ Package: Mikhan.Rainbow                                            }
-{                                                                    }
-{ Created: 26.03.2023                                                }
-{ Author: Mikhail.Malakhov [malakhv@gmail.com|http://mikhan.me/]     }
-{--------------------------------------------------------------------}
+{-------------------------------------------------------------------------}
+{ The Unit includes some definitions from Scarlet Book Specification      }
+{ (part of Rainbow Books) exactly Genres Specifications.                  }
+{                                                                         }
+{ For more details about Scarlet Book Specification and Super Audio CD,   }
+{ please see Mikhan.Rainbow.Scarlet Unit.                                 }
+{                                                                         }
+{ Package: Mikhan.Rainbow                                                 }
+{                                                                         }
+{ Created: 26.03.2023                                                     }
+{ Author: Mikhail.Malakhov [malakhv@gmail.com|http://mikhan.me/]          }
+{-------------------------------------------------------------------------}
 
-{--------------------------------------------------------------------}
-{                       Scarlet Book                                 }
-{                                                                    }
-{ The Scarlet Book Standard describes Super Audio Compact Disc       }
-{ format and represents a set of documents called Super Audio CD     }
-{ System Description.                                                }
-{                                                                    }
-{ The Super Audio CD System Description has three parts:             }
-{    - Part 1, Physical Specification.                               }
-{    - Part 2, Audio Specification.                                  }
-{    - Part 3, Copy Protection Specification.                        }
-{                                                                    }
-{ This Unit was develop folloving Part 2 of Super Audio CD System    }
-{ Description.                                                       }
-{--------------------------------------------------------------------}
+{-------------------------------------------------------------------------}
+{                              Scarlet Book                               }
+{                                                                         }
+{ The Scarlet Book Standard describes Super Audio Compact Disc format and }
+{ represents a set of documents called Super Audio CD System Description. }
+{                                                                         }
+{ The Super Audio CD System Description has three parts:                  }
+{    - Part 1, Physical Specification.                                    }
+{    - Part 2, Audio Specification.                                       }
+{    - Part 3, Copy Protection Specification.                             }
+{                                                                         }
+{ This Unit was develop folloving Part 2 of Super Audio CD System         }
+{ Description.                                                            }
+{-------------------------------------------------------------------------}
 
 unit Mikhan.Rainbow.Genres;
 
 {$mode delphi}
 {$h+}
 
-interface
+interface                                             { Interface section }
 
-{--------------------------------------------------------------------}
-{                           Music Genre                              }
-{ A music genre is a conventional category that identifies some      }
-{ pieces of music as belonging to a shared tradition or set of       }
-{ conventions.                                                       }
-{                                                                    }
-{ For more details about SACD Genre format, please see Part 2 of     }
-{ Super Audio CD System Description (section 1.7.2.2 and Annex B).   }
-{--------------------------------------------------------------------}
+{-------------------------------------------------------------------------}
+{                             Music Genre                                 }
+{ A music genre is a conventional category that identifies some pieces of }
+{ music as belonging to a shared tradition or set of conventions.         }
+{                                                                         }
+{ For more details about SACD Genre format, please see Part 2 of Super    }
+{ Audio CD System Description (section 1.7.2.2 and Annex B).              }
+{-------------------------------------------------------------------------}
 type
 
     {
@@ -80,11 +87,11 @@ type
     TSACDGenres = Array [1..4] of TSACDGenre;
     PSACDGenres = ^TSACDGenres;
 
-implementation
+implementation                                   { Implementation section }
 
-{--------------------------------------------------------------------}
-{ Common things                                                      }
-{--------------------------------------------------------------------}
+{-------------------------------------------------------------------------}
+{ Common things                                                           }
+{-------------------------------------------------------------------------}
 
 const
 
@@ -117,9 +124,9 @@ begin
         or ((Value and $00FF) shl 8));
 end;
 
-{--------------------------------------------------------------------}
-{ TSACDGenre staff                                                   }
-{--------------------------------------------------------------------}
+{-------------------------------------------------------------------------}
+{ TSACDGenre staff                                                        }
+{-------------------------------------------------------------------------}
 
 function TSACDGenre.GetGenre(): String;
 begin
@@ -143,3 +150,7 @@ begin
 end;
 
 end.
+
+{-------------------------------------------------------------------------}
+{ END                                                                     }
+{-------------------------------------------------------------------------}
