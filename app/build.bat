@@ -16,7 +16,7 @@ IF EXIST build\ (
 )
 mkdir build
 
-fpc.bat ./src/App.pas -FEbuild ^
+fpc.bat ./src/Program.pas -FEbuild ^
     -Fu./src/app ^
     -Fu./src/util ^
     -Fu./src/rainbow ^

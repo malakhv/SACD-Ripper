@@ -7,7 +7,7 @@ rm -R -f ./build
 mkdir -p build
 
 # Compile programm
-fpc ./src/App.pas \
+fpc ./src/Program.pas \
      -Fu./src/app \
      -Fu./src/util \
      -Fu./src/rainbow \
