@@ -22,8 +22,9 @@ program sacd;
 {$h+}
 
 uses
-    SysUtils, Mikhan.Util.AppArgs, Mikhan.Util.AppLogs, Mikhan.Rainbow.Scarlet,
-    Mikhan.Util.AppVersion, Mikhan.Util.StrUtils, Mikhan.Util.Dump;
+    SysUtils, Classes, Mikhan.Util.AppArgs, Mikhan.Util.AppLogs,
+    Mikhan.Rainbow.Scarlet, Mikhan.Util.AppVersion, Mikhan.Util.StrUtils,
+    Mikhan.Util.Dump;
 
 const
 
@@ -60,6 +61,7 @@ var
     //Command: TArgString;    // The current command
     InputFile: TFileName;   // Input file path
     //OutputFile: TFileName;  // Outpot file path
+    InStream: TStream;
 
 { Just for test }
 //var
@@ -90,17 +92,32 @@ var
     Album: TMasterTocAlbum;
     Disc: TMasterTocDisc;
     Manuf: TMasterTocManuf;
-    F: File;
 begin
     WriteLn();
     WriteLn('SACD: ', AFile);
-    AssignFile(F, AFile);
+
     MasterToc := TMasterTocArea.Create();
-    MasterToc.Load(F);
     TextToc := TMasterTextArea.Create();
-    TextToc.Load(F);
     Manuf := TMasterTocManuf.Create;
-    Manuf.Load(F);
+
+    try
+        try
+            InStream := TFileStream.Create(AFile, fmOpenRead);
+            MasterToc.Load(InStream);
+            TextToc.Load(InStream);
+            Manuf.Load(InStream);
+        except
+            WriteLn('Cannot create file stream');
+            Exit;
+        end;
+    finally
+        try
+            InStream.Free();
+        except
+            WriteLn('Close ERROR!');
+        end;
+        WriteLn('Close OK!');
+    end;
 
     // Master TOC Album Info
     Album := MasterToc.GetAlbumInfo();
@@ -143,13 +160,13 @@ begin
     Writeln(INDENT, 'Header: ', Manuf.Header);
     WriteLn();
 
-
     // Just for testing and debug
     if Debug then
     begin
         Writeln();
         Writeln('TMasterTocArea dump:');
         Dump(MasterToc[0]^.RawData, 256);
+        Dump(MasterToc[1]^.RawData, 256);
         Writeln();
         Writeln('MasterTextArea[0] dump:');
         Dump(TextToc[0]^.RawData, 256);

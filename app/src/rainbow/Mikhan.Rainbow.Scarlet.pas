@@ -78,7 +78,7 @@ unit Mikhan.Rainbow.Scarlet;
 
 interface                                             { Interface section }
 
-uses Mikhan.Rainbow.Types, Mikhan.Rainbow.Genres;
+uses Classes, Mikhan.Rainbow.Types, Mikhan.Rainbow.Genres;
 
 {-------------------------------------------------------------------------}
 {                   The SACD disc Logical Sector (LS)                     }
@@ -193,7 +193,8 @@ type
         function GetSector(Index : TLSNumber): PSACDSector;
     public
 
-        { The header of this Area. }
+        { The header of this Area. In current implementation this is
+            header of first sector. }
         property Header: String read GetHeader;
 
         { The first sector number of this Area. }
@@ -212,8 +213,11 @@ type
         { Clear all sectos data. }
         procedure Clear(); virtual;
 
-        { Load area data from file. }
-        procedure Load(var AFile: File); virtual;
+        { Load area data from a file. }
+        procedure Load(var AFile: File); overload; virtual;
+
+        { Load area data from a stream. }
+        procedure Load(const AStream: TStream); overload; virtual;
 
         { Construct a new instance of TSACDArea class with specified
           parameters. }
@@ -512,7 +516,7 @@ begin
 end;
 
 {-------------------------------------------------------------------------}
-{ TSACDSector staff                                                       }
+{ TSACDSector                                                             }
 {-------------------------------------------------------------------------}
 
 function TSACDSector.GetByte(Index: Integer): Byte;
@@ -567,14 +571,13 @@ end;
 
 constructor TSACDArea.Create(First: TLSNumber);
 begin
-    // By default, the length of area is 1 sector;
+    // By default, the size of area is 1 sector;
     Create(First, 1);
 end;
 
 constructor TSACDArea.Create(First, Size: TLSNumber);
 begin
-    FFirst := First;
-    FSize := Size;
+    FFirst := First; FSize := Size;
 end;
 
 destructor TSACDArea.Destroy();
@@ -590,7 +593,6 @@ end;
 function TSACDArea.GetHeader(): String;
 begin
     if HasData() then
-        // TODO May be we can use TSACDSector.GetString here?
         Result := Self[0].ToString(0, SACD_AREA_HEADER_LENGTH)
     else
         Result := Mikhan.Util.StrUtils.EMPTY;
@@ -631,6 +633,32 @@ begin
         end;
     finally
         CloseFile(AFile);
+    end;
+end;
+
+procedure TSACDArea.Load(const AStream: TStream);
+var Offset, Current, i: Integer;
+begin
+    // Clear current data
+    Clear();
+    SetLength(FSectors, Self.Size);
+
+    // Empty input?
+    if AStream.Size <= 0 then Exit;
+
+    // Read raw data
+    Current := First;
+    Offset := GetSectorOffset(Self.First);
+    try
+        if Offset > 0 then AStream.Seek(Offset, soBeginning);
+        for i:= Low(FSectors) to High(FSectors) do
+        begin
+            FSectors[i].Number := Current;
+            AStream.ReadBuffer(FSectors[i].RawData, SizeOf(TLSData));
+            Inc(Current);
+        end;
+    except
+        Clear(); Raise;
     end;
 end;
 
