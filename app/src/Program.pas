@@ -34,8 +34,8 @@ program sacd;                                                   { Program }
 {$h+}
 
 uses
-    SysUtils, Classes, ProgVer, Mikhan.Util.AppArgs, Mikhan.Util.AppLogs,
-    Mikhan.Rainbow.Scarlet, Mikhan.Util.AppVersion, Mikhan.Util.StrUtils,
+    SysUtils, Classes, ProgVer, ProgMsg, Mikhan.Util.StrUtils,
+    Mikhan.Util.AppArgs, Mikhan.Util.AppLogs, Mikhan.Rainbow.Scarlet,
     Mikhan.Util.Dump;
 
 const
@@ -74,14 +74,6 @@ var
     AppLogs: TAppLogs;      // Program logs
     InputFile: TFileName;   // Input file path
 
-procedure PrintHelp();
-const INDENT = '   ';
-begin
-    WriteLn(PROG_NAME, ' command options:');
-    WriteLn(INDENT, 'info SACD_FILE_NAME - print info abour SACD disc');
-    WriteLn(INDENT, '-v or --version - print program version');
-end;
-
 {
     Prints program version.
 }
@@ -119,7 +111,7 @@ begin
             TextToc.Load(InStream);
             Manuf.Load(InStream);
         except
-            WriteLn('Cannot create file stream');
+            WriteLn(ProgMsg.MSG_CANNOT_READ_DATA);
             Exit;
         end;
     finally
@@ -220,7 +212,7 @@ begin                                               { Program Entry Point }
     // Program command: help
     if AppArgs.HasHelp() then
     begin
-        PrintHelp(); Exit;
+        PrintHelp(PROG_NAME); Exit;
     end;
 
     // Program command: info
