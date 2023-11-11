@@ -1,43 +1,59 @@
-{-----------------------------------------------------------------}
-{                                                                 }
-{                     SACD-Ripper project                         }
-{                                                                 }
-{  Copyright (C) 2022 Mikhail Malakhov <malakhv@gmail.com>        }
-{                                                                 }
-{  Unauthorized copying of this file, via any medium is           }
-{  strictly prohibited.                                           }
-{                                                                 }
-{       Confidential and Proprietary. All Rights Reserved.        }
-{                                                                 }
-{-----------------------------------------------------------------}
+{-------------------------------------------------------------------------}
+{                                                                         }
+{                          SACD-Ripper project                            }
+{                                                                         }
+{  Copyright (C) 1996-2022 Mikhail Malakhov <malakhv@gmail.com>           }
+{                                                                         }
+{  Licensed under the Apache License, Version 2.0 (the "License").        }
+{  You may not use this file except in compliance with the License.       }
+{  You may obtain a copy of the License at                                }
+{                                                                         }
+{     http://www.apache.org/licenses/LICENSE-2.0                          }
+{                                                                         }
+{  Unless required by applicable law or agreed to in writing, software    }
+{  distributed under the License is distributed on an "AS IS" BASIS,      }
+{  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or        }
+{  implied.                                                               }
+{                                                                         }
+{  See the License for the specific language governing permissions and    }
+{  limitations under the License.                                         }
+{                                                                         }
+{-------------------------------------------------------------------------}
 
-{
-    The simple program to test Pascal lenguage.
-    Author: Mikhail.Malakhov
-}
-program sacd;
+{-------------------------------------------------------------------------}
+{ The SACD-Ripper utility to ripping audio content from SACD image files. }
+{                                                                         }
+{ Created: 14.08.2022                                                     }
+{ Author: Mikhail.Malakhov [malakhv@gmail.com|http://mikhan.me/]          }
+{-------------------------------------------------------------------------}
+
+program sacd;                                                   { Program }
 
 // Compiler options
 {$mode delphi}
 {$h+}
 
 uses
-    SysUtils, Classes, Mikhan.Util.AppArgs, Mikhan.Util.AppLogs,
+    SysUtils, Classes, ProgVer, Mikhan.Util.AppArgs, Mikhan.Util.AppLogs,
     Mikhan.Rainbow.Scarlet, Mikhan.Util.AppVersion, Mikhan.Util.StrUtils,
     Mikhan.Util.Dump;
 
 const
 
-    { The common debug flag. }
-    DEBUG = True;
-
     { The name of this program. }
-    APP_NAME = 'SACD-Ripper';
+    PROG_NAME = 'SACD-Ripper';
 
-    { The default log separator. }
-    LOG_SEP = '---------------------------------------------------------';
+    { The author of this program. }
+    PROG_AUTHOR = 'Mikhail.Malakhov';
 
-{ Program commands }
+    { The copyright string. }
+    PROG_COPYRIGHT = 'Copyright (C) 1996-2023 Mikhail Malakhov ' +
+        '<malakhv@gmail.com>';
+
+    { The common debug flag. }
+    DEBUG = False;
+
+{ Program command line arguments (commands and options) }
 const
 
     { Program command: Print information about SACD disc. }
@@ -52,33 +68,28 @@ const
     { An input file to testing. }
     TEST_FILE_NAME_WIN = 'D:\Media\DireStraits.iso';
 
-{ Global scope }
-
+{ Global Scope }
 var
-    AppVer: TSemVer;        // Program version
     AppArgs: TAppArgs;      // Program command line arguments
     AppLogs: TAppLogs;      // Program logs
-    //Command: TArgString;    // The current command
     InputFile: TFileName;   // Input file path
-    //OutputFile: TFileName;  // Outpot file path
-    InStream: TStream;
-
-{ Just for test }
-//var
-    //Sector: TSACDSector;
-    //i,j,k: integer;
 
 procedure PrintHelp();
 const INDENT = '   ';
 begin
-    WriteLn(APP_NAME, ' command options:');
-    WriteLn(INDENT, 'info SACD_FILE_NAME - print information abour SACD disc');
+    WriteLn(PROG_NAME, ' command options:');
+    WriteLn(INDENT, 'info SACD_FILE_NAME - print info abour SACD disc');
     WriteLn(INDENT, '-v or --version - print program version');
 end;
 
+{
+    Prints program version.
+}
 procedure PrintVersion();
 begin
-    WriteLn(AppVer.ToString());
+    WriteLn(PROG_NAME);
+    WriteLn(ProgVer.GetVersion(DEBUG));
+    WriteLn(PROG_COPYRIGHT);
 end;
 
 {
@@ -87,6 +98,7 @@ end;
 procedure PrintInfo(AFile: TFileName; Debug: Boolean);
 const INDENT = '   - ';
 var
+    InStream: TStream;
     MasterToc: TMasterTocArea;
     TextToc: TMasterTextArea;
     Album: TMasterTocAlbum;
@@ -176,15 +188,10 @@ begin
     end;
 end;
 
-//
-// Program entry point
-//
-begin
+begin                                               { Program Entry Point }
+
     // Program Logs
     AppLogs := TAppLogs.Create('SACD');
-
-    // Program Version
-    AppVer := TSemVer.Create(DEBUG, 0, 1, 0);
 
     // Parse input arguments
     AppArgs := TAppArgs.Create();
