@@ -34,7 +34,7 @@ program sacd;                                                   { Program }
 {$h+}
 
 uses
-    SysUtils, Classes, ProgVer, ProgMsg, Mikhan.Util.StrUtils,
+    SysUtils, Classes, ProgVer, ProgMsg, Reports, Mikhan.Util.StrUtils,
     Mikhan.Util.AppArgs, Mikhan.Util.AppLogs, Mikhan.Rainbow.Scarlet,
     Mikhan.Util.Dump;
 
@@ -93,8 +93,8 @@ var
     InStream: TStream;
     MasterToc: TMasterTocArea;
     TextToc: TMasterTextArea;
-    Album: TMasterTocAlbum;
-    Disc: TMasterTocDisc;
+    //Album: TMasterTocAlbum;
+    //Disc: TMasterTocDisc;
     Manuf: TMasterTocManuf;
 begin
     WriteLn();
@@ -120,32 +120,11 @@ begin
         except
             WriteLn('Close ERROR!');
         end;
-        WriteLn('Close OK!');
+        //WriteLn('Close OK!');
     end;
 
     // Master TOC Album Info
-    Album := MasterToc.GetAlbumInfo();
-    Writeln('Master TOC Album Info:');
-    Writeln(INDENT, 'Format Version: ', MasterToc.SpecVersion.ToString);
-    Writeln(INDENT, 'Album Number: ', Album.SequenceNumber,' (from ', Album.SetSize,')');
-    Writeln(INDENT, 'Album Catalog Number: ', Album.CatalogNumber);
-    Writeln(INDENT, 'Album Genre: ', Album.Genres[1].Genre);
-    WriteLn();
-
-    // Master TOC Disc Info
-    Disc := MasterToc.GetDiscInfo();
-    Writeln('Master TOC Disc Info:');
-    Writeln(INDENT, 'Creation: ', Disc.Date.ToString());
-    Writeln(INDENT, 'Hybrid Disc: ', Disc.IsHybrid());
-    Writeln(INDENT, 'SChTocAddress1: ', Disc.SChTocAddress1);
-    Writeln(INDENT, 'SChTocAddress2: ', Disc.SChTocAddress2);
-    Writeln(INDENT, 'MChTocAddress1: ', Disc.MChTocAddress1);
-    Writeln(INDENT, 'MChTocAddress2: ', Disc.MChTocAddress2);
-    Writeln(INDENT, 'SChTocLength: ', Disc.SChTocLength);
-    Writeln(INDENT, 'MChTocLength: ', Disc.MChTocLength);
-    Writeln(INDENT, 'Disc Genre: ', Disc.Genres[1].Genre);
-    Writeln(INDENT, 'Disc Catalog Number: ', Disc.CatalogNumber);
-    Writeln(INDENT, 'Disc Web Link: ', MasterToc.DiscWebLink);
+    Reports.PrintMasterToc(MasterToc, piAll);
     WriteLn();
 
     // Master Text TOC Info
