@@ -51,7 +51,7 @@ const
         '<malakhv@gmail.com>';
 
     { The common debug flag. }
-    DEBUG = False;
+    DEBUG = True;
 
 { Program command line arguments (commands and options) }
 const
@@ -93,8 +93,6 @@ var
     InStream: TStream;
     MasterToc: TMasterTocArea;
     TextToc: TMasterTextArea;
-    //Album: TMasterTocAlbum;
-    //Disc: TMasterTocDisc;
     Manuf: TMasterTocManuf;
 begin
     WriteLn();
@@ -124,37 +122,24 @@ begin
     end;
 
     // Master TOC Album Info
-    Reports.PrintMasterToc(MasterToc, piAll);
+    Reports.PrintDiskInfo(MasterToc, TextToc, piAll, True);
     WriteLn();
-
-    // Master Text TOC Info
-    Writeln('Master Text TOC Info:');
-    Writeln(INDENT, 'Disc Title: ', TextToc.DiscTitle);
-    Writeln(INDENT, 'Disc Artist: ', TextToc.DiscArtist);
-    Writeln(INDENT, 'Disc Publisher: ', TextToc.DiscPublisher);
-    Writeln(INDENT, 'Disc Copyright: ', TextToc.DiscCopyright);
-    Writeln(INDENT, 'Album Title: ', TextToc.AlbumTitle);
-    Writeln(INDENT, 'Album Artist: ', TextToc.AlbumArtist);
-    Writeln(INDENT, 'Album Publisher: ', TextToc.AlbumPublisher);
-    Writeln(INDENT, 'Album Copyright: ', TextToc.AlbumCopyright);
 
     // Master TOC Manuf Info
-    Writeln('Master TOC Manuf Info:');
-    Writeln(INDENT, 'Header: ', Manuf.Header);
-    WriteLn();
+    //Writeln('Master TOC Manuf Info:');
+    //Writeln(INDENT, 'Header: ', Manuf.Header);
+    //WriteLn();
 
     // Just for testing and debug
     if Debug then
     begin
-        Writeln();
         Writeln('TMasterTocArea dump:');
-        Dump(MasterToc[0]^.RawData, 256);
-        Dump(MasterToc[1]^.RawData, 256);
+        Dump(MasterToc[0]^.RawData, 0, 256, dfChar);
         Writeln();
-        Writeln('MasterTextArea[0] dump:');
+        Writeln('MasterTextArea dump:');
         Dump(TextToc[0]^.RawData, 256);
         Writeln();
-        Writeln('MasterManufArea[0] dump:');
+        Writeln('MasterManufArea dump:');
         Dump(Manuf[0]^.RawData, 256);
     end;
 end;
@@ -174,9 +159,7 @@ begin                                               { Program Entry Point }
     begin
         // TODO Need to add Linux variant
         InputFile := TFileName(TEST_FILE_NAME_WIN);
-        PrintInfo(InputFile, True);
-        //WriteLn(Low(TLSData));
-        //WriteLn(High(TLSData));
+        PrintInfo(InputFile, DEBUG);
         Exit;
     end;
 

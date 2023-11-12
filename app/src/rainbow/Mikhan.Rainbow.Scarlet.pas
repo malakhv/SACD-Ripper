@@ -73,8 +73,8 @@
 unit Mikhan.Rainbow.Scarlet;
 
 {$mode delphi}
-{$H+}
-{$T+}
+//{$H+}
+//{$T+}
 
 interface                                             { Interface section }
 
@@ -566,7 +566,7 @@ begin
 end;
 
 {-------------------------------------------------------------------------}
-{ TSACDArea staff                                                         }
+{ TSACDArea                                                               }
 {-------------------------------------------------------------------------}
 
 constructor TSACDArea.Create(First: TLSNumber);
@@ -663,7 +663,7 @@ begin
 end;
 
 {-------------------------------------------------------------------------}
-{ TMasterTocDisc staff                                               }
+{ TMasterTocDisc                                                          }
 {-------------------------------------------------------------------------}
 
 function TMasterTocDisc.IsHybrid(): Boolean;
@@ -673,7 +673,7 @@ begin
 end;
 
 {-------------------------------------------------------------------------}
-{ TMasterTocArea staff                                                    }
+{ TMasterTocArea                                                          }
 {-------------------------------------------------------------------------}
 
 constructor TMasterTocArea.Create();
@@ -747,7 +747,7 @@ begin
 end;
 
 {-------------------------------------------------------------------------}
-{ TMasterTextArea staff                                                   }
+{ TMasterTextArea                                                         }
 {-------------------------------------------------------------------------}
 
 constructor TMasterTextArea.Create();
@@ -815,7 +815,7 @@ begin
 end;
 
 {-------------------------------------------------------------------------}
-{ TMasterTocManuf staff                                                   }
+{ TMasterTocManuf                                                         }
 {-------------------------------------------------------------------------}
 
 constructor TMasterTocManuf.Create();

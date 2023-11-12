@@ -38,84 +38,91 @@ interface
 uses Mikhan.Rainbow.Scarlet;
 
 type 
-    TPrintedInfo = (piAll, piAlbum, piDisc);
-    TOutType = (otAll, otMain);
+    TPrintedInfo = (piAlbum, piDisc, piAll);
 
-procedure PrintMasterToc(const Source: TMasterTocArea;
-    const Print: TPrintedInfo);
+procedure PrintDiskInfo(const MasterToc: TMasterTocArea;
+    const MasterText: TMasterTextArea; PrintInfo: TPrintedInfo;
+    PrintTechInfo: Boolean);
 
 implementation
 
 const
-    IND = '   ';
+    TAB = '    ';
     HEADER =   '+-------------------------------------------------------+';
     PRNT_END = '---------------------------------------------------------';
 
-procedure PrintMasterToc(const Source: TMasterTocArea;
-    const Print: TPrintedInfo);
-
-    procedure PrintAlbum();
-    var Album: TMasterTocAlbum;
-    begin
-        Album := Source.GetAlbumInfo();
-        
-        Writeln(HEADER);
-        Writeln('| TOC Album Info',
-            '                                        |');
-        Writeln(HEADER); Writeln();
-
-        {Writeln(IND, 'Format Version:            ',
-            Source.SpecVersion.ToString); }
-        Writeln(IND, 'Album Number:              ',
-            Album.SequenceNumber, ' (from ', Album.SetSize,')');
-        Writeln(IND, 'Album Genre:               ',
-            Album.Genres[1].Genre);
-        Writeln(IND, 'Album Catalog Number:      ',
-            Album.CatalogNumber);
-    end;
-
-    procedure PrintDisc();
-    var Disc: TMasterTocDisc;
-    begin
-        Disc := Source.GetDiscInfo();
-        
-        Writeln(HEADER);
-        Writeln('| TOC Disc Info',
-            '                                         |');
-        Writeln(HEADER); Writeln();
-
-        Writeln(IND, 'Creation:                  ', Disc.Date.ToString());
-        Writeln(IND, 'Hybrid Disc:               ', Disc.IsHybrid());
-        Writeln(IND, 'Disc Genre:                ', Disc.Genres[1].Genre);
-        Writeln(IND, 'Disc Catalog Number:       ', Disc.CatalogNumber);
-        Writeln(IND, 'Disc Web Link:             ', Source.DiscWebLink);
-        Writeln();
-        Writeln(IND, 'SChTocAddress1:            ', Disc.SChTocAddress1);
-        Writeln(IND, 'SChTocAddress2:            ', Disc.SChTocAddress2);
-        Writeln(IND, 'MChTocAddress1:            ', Disc.MChTocAddress1);
-        Writeln(IND, 'MChTocAddress2:            ', Disc.MChTocAddress2);
-        Writeln(IND, 'SChTocLength:              ', Disc.SChTocLength);
-        Writeln(IND, 'MChTocLength:              ', Disc.MChTocLength);
-    end;
-
+procedure PrintAlbum(const MasterToc: TMasterTocArea;
+    const MasterText: TMasterTextArea; PrintTechInfo: Boolean);
+var Album: TMasterTocAlbum;
 begin
+    Album := MasterToc.GetAlbumInfo();
 
-    if Print = TPrintedInfo.piAlbum then
-    begin
-        PrintAlbum(); Writeln(HEADER);
-    end;
+    Writeln(HEADER);
+    Writeln('| Album Info',
+        '                                            |');
+    Writeln(HEADER); Writeln();
 
-    if Print = TPrintedInfo.piDisc then
-    begin
-        PrintDisc(); Writeln(HEADER);
-    end;
-    
-    if Print = piAll then
-    begin
-        PrintAlbum(); WriteLn(); PrintDisc(); WriteLn();
-        Writeln(HEADER);
-    end;
+    if (PrintTechInfo) then
+        Writeln(TAB, 'Format Version:          ',
+            MasterToc.SpecVersion.ToString);
 
+    Writeln(TAB, 'Album Number:            ',
+    Album.SequenceNumber, ' (from ', Album.SetSize,')');
+    Writeln(TAB, 'Album Genre:             ', Album.Genres[1].Genre);
+    Writeln(TAB, 'Album Title:             ', MasterText.AlbumTitle);
+    Writeln(TAB, 'Album Artist:            ', MasterText.AlbumArtist);
+    Writeln(TAB, 'Album Publisher:         ', MasterText.AlbumPublisher);
+    Writeln(TAB, 'Album Copyright:         ', MasterText.AlbumCopyright);
+    Writeln(TAB, 'Album Catalog Number:    ', Album.CatalogNumber);
+    Writeln();
+end;
+
+procedure PrintDisc(const MasterToc: TMasterTocArea;
+    const MasterText: TMasterTextArea; PrintTechInfo: Boolean);
+var Disc: TMasterTocDisc;
+begin
+    Disc := MasterToc.GetDiscInfo();
+
+    Writeln(HEADER);
+    Writeln('| TOC Disc Info',
+        '                                         |');
+    Writeln(HEADER); Writeln();
+
+    Writeln(TAB, 'Creation:                ', Disc.Date.ToString());
+    Writeln(TAB, 'Hybrid Disc:             ', Disc.IsHybrid());
+    Writeln(TAB, 'Disc Genre:              ', Disc.Genres[1].Genre);
+
+    Writeln(TAB, 'Disc Title:              ', MasterText.DiscTitle);
+    Writeln(TAB, 'Disc Artist:             ', MasterText.DiscArtist);
+    Writeln(TAB, 'Disc Publisher:          ', MasterText.DiscPublisher);
+    Writeln(TAB, 'Disc Copyright:          ', MasterText.DiscCopyright);
+
+    Writeln(TAB, 'Disc Catalog Number:     ', Disc.CatalogNumber);
+    Writeln(TAB, 'Disc Web Link:           ', MasterToc.DiscWebLink);
+    Writeln();
+
+    if PrintTechInfo then
+    begin
+        Writeln(TAB, 'SChTocAddress1:          ', Disc.SChTocAddress1);
+        Writeln(TAB, 'SChTocAddress2:          ', Disc.SChTocAddress2);
+        Writeln(TAB, 'MChTocAddress1:          ', Disc.MChTocAddress1);
+        Writeln(TAB, 'MChTocAddress2:          ', Disc.MChTocAddress2);
+        Writeln(TAB, 'SChTocLength:            ', Disc.SChTocLength);
+        Writeln(TAB, 'MChTocLength:            ', Disc.MChTocLength);
+        Writeln();
+    end;
+end;
+
+procedure PrintDiskInfo(const MasterToc: TMasterTocArea;
+    const MasterText: TMasterTextArea; PrintInfo: TPrintedInfo;
+    PrintTechInfo: Boolean);
+begin
+    if (PrintInfo = piAlbum) or (PrintInfo = piAll) then
+        PrintAlbum(MasterToc, MasterText, PrintTechInfo);
+
+    if (PrintInfo = piDisc) or (PrintInfo = piAll) then
+        PrintDisc(MasterToc, MasterText, PrintTechInfo);
+    Writeln(HEADER);
 end;
 
 end.
