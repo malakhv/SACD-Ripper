@@ -65,8 +65,11 @@ const
 { Any stuff for debug and testing }
 const
 
-    { An input file to testing. }
+    { An input file to testing, windows. }
     TEST_FILE_NAME_WIN = 'D:\Media\DireStraits.iso';
+
+    { An input file to testing, linux. }
+    TEST_FILE_NAME_NIX = '/home/mikhan/Music/Blackout/Scorpions.iso';
 
 { Global Scope }
 var
@@ -137,7 +140,7 @@ begin
         Dump(MasterToc[0]^.RawData, 0, 256, dfChar);
         Writeln();
         Writeln('MasterTextArea dump:');
-        Dump(TextToc[0]^.RawData, 256);
+        Dump(TextToc[0]^.RawData, 0, 256, dfChar);
         Writeln();
         Writeln('MasterManufArea dump:');
         Dump(Manuf[0]^.RawData, 256);
@@ -158,7 +161,7 @@ begin                                               { Program Entry Point }
     if AppArgs.Has(CMD_TEST) then
     begin
         // TODO Need to add Linux variant
-        InputFile := TFileName(TEST_FILE_NAME_WIN);
+        InputFile := TFileName(TEST_FILE_NAME_NIX);
         PrintInfo(InputFile, DEBUG);
         Exit;
     end;
