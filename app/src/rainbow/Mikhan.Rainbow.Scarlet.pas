@@ -94,6 +94,7 @@ uses Classes, Mikhan.Rainbow.Types, Mikhan.Rainbow.Genres;
 { For more details, please see Part 2 of Super Audio CD System            }
 { Description.                                                            }
 {-------------------------------------------------------------------------}
+
 const
 
     { The length of one Logical Sector (LS) on SACD disc, in bytes. }
