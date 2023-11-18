@@ -80,6 +80,8 @@ end;
 procedure PrintDisc(const MasterToc: TMasterTocArea;
     const MasterText: TMasterTextArea; PrintTechInfo: Boolean);
 var Disc: TMasterTocDisc;
+    Channels: TTextChannels;
+    I: Integer;
 begin
     Disc := MasterToc.GetDiscInfo();
 
@@ -103,6 +105,7 @@ begin
 
     if PrintTechInfo then
     begin
+        Channels := MasterToc.GetTextChannels();
         Writeln(TAB, 'SChTocAddress1:          ', Disc.SChTocAddress1);
         Writeln(TAB, 'SChTocAddress2:          ', Disc.SChTocAddress2);
         Writeln(TAB, 'MChTocAddress1:          ', Disc.MChTocAddress1);
@@ -110,6 +113,13 @@ begin
         Writeln(TAB, 'SChTocLength:            ', Disc.SChTocLength);
         Writeln(TAB, 'MChTocLength:            ', Disc.MChTocLength);
         Writeln();
+        Writeln(TAB, 'TextChannels:            ', Channels.Count);
+        for I := 1 to Channels.Count do
+        begin
+        Writeln(TAB, TAB, 'Channel:             ', I);
+        Writeln(TAB, TAB, TAB, 'LangCode:        ', Channels.Channels[I].LangCode);
+        Writeln(TAB, TAB, TAB, 'CharSet:         ', Channels.Channels[I].CharSetCode);
+        end;
     end;
 end;
 

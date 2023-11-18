@@ -137,6 +137,8 @@ begin
     if Debug then
     begin
         Writeln('TMasterTocArea dump:');
+        Dump(MasterToc[0]^.RawData, 0, 256, dfHex);
+        Writeln();
         Dump(MasterToc[0]^.RawData, 0, 256, dfChar);
         Writeln();
         Writeln('MasterTextArea dump:');
