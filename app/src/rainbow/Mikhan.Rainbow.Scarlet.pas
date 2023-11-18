@@ -480,25 +480,26 @@ type
         part of Master TOC.
     }
     TMasterTextArea = class (TSACDArea)
-    protected
-        function DoGetAlbumTitle(): String;
-        function DoGetAlbumArtist(): String;
-        function DoGetAlbumPublisher(): String;
-        function DoGetAlbumCopyright(): String;
-        function DoGetDiscTitle(): String;
-        function DoGetDiscArtist(): String;
-        function DoGetDiscPublisher(): String;
-        function DoGetDiscCopyright(): String;
+    private
         function GetStringByPtr(PtrOffset: Integer): String;
+    protected
+        function GetAlbumTitle(): String;
+        function GetAlbumArtist(): String;
+        function GetAlbumPublisher(): String;
+        function GetAlbumCopyright(): String;
+        function GetDiscTitle(): String;
+        function GetDiscArtist(): String;
+        function GetDiscPublisher(): String;
+        function GetDiscCopyright(): String;
     public
-        property AlbumTitle: String read DoGetAlbumTitle;
-        property AlbumArtist: String read DoGetAlbumArtist;
-        property AlbumPublisher: String read DoGetAlbumPublisher;
-        property AlbumCopyright: String read DoGetAlbumCopyright;
-        property DiscTitle: String read DoGetDiscTitle;
-        property DiscArtist: String read DoGetDiscArtist;
-        property DiscPublisher: String read DoGetDiscPublisher;
-        property DiscCopyright: String read DoGetDiscCopyright;
+        property AlbumTitle: String read GetAlbumTitle;
+        property AlbumArtist: String read GetAlbumArtist;
+        property AlbumPublisher: String read GetAlbumPublisher;
+        property AlbumCopyright: String read GetAlbumCopyright;
+        property DiscTitle: String read GetDiscTitle;
+        property DiscArtist: String read GetDiscArtist;
+        property DiscPublisher: String read GetDiscPublisher;
+        property DiscCopyright: String read GetDiscCopyright;
         constructor Create();
     end;
 
@@ -888,42 +889,42 @@ begin
     Result := Self[0].GetString(start);
 end;
 
-function TMasterTextArea.DoGetAlbumArtist(): String;
+function TMasterTextArea.GetAlbumArtist(): String;
 begin
     Result := Self.GetStringByPtr(TEXT_ALBUM_ARTIST_PTR_OFFSET);
 end;
 
-function TMasterTextArea.DoGetAlbumTitle(): String;
+function TMasterTextArea.GetAlbumTitle(): String;
 begin
     Result := Self.GetStringByPtr(TEXT_ALBUM_TITLE_PTR_OFFSET);
 end;
 
-function TMasterTextArea.DoGetAlbumPublisher(): String;
+function TMasterTextArea.GetAlbumPublisher(): String;
 begin
     Result := Self.GetStringByPtr(TEXT_ALBUM_PUBLISHER_PTR_OFFSET);
 end;
 
-function TMasterTextArea.DoGetAlbumCopyright(): String;
+function TMasterTextArea.GetAlbumCopyright(): String;
 begin
     Result := Self.GetStringByPtr(TEXT_ALBUM_COPYRIGHT_PTR_OFFSET);
 end;
 
-function TMasterTextArea.DoGetDiscTitle(): String;
+function TMasterTextArea.GetDiscTitle(): String;
 begin
     Result := Self.GetStringByPtr(TEXT_DISC_TITLE_PTR_OFFSET);
 end;
 
-function TMasterTextArea.DoGetDiscArtist(): String;
+function TMasterTextArea.GetDiscArtist(): String;
 begin
     Result := Self.GetStringByPtr(TEXT_DISC_ARTIST_PTR_OFFSET);
 end;
 
-function TMasterTextArea.DoGetDiscPublisher(): String;
+function TMasterTextArea.GetDiscPublisher(): String;
 begin
     Result := Self.GetStringByPtr(TEXT_DISC_PUBLISHER_PTR_OFFSET);
 end;
 
-function TMasterTextArea.DoGetDiscCopyright(): String;
+function TMasterTextArea.GetDiscCopyright(): String;
 begin
     Result := Self.GetStringByPtr(TEXT_DISC_COPYRIGHT_PTR_OFFSET);
 end;

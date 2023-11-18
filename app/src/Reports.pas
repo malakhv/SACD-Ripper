@@ -86,8 +86,8 @@ begin
     Disc := MasterToc.GetDiscInfo();
 
     Writeln(HEADER);
-    Writeln('| TOC Disc Info',
-        '                                         |');
+    Writeln('| Disc Info',
+        '                                             |');
     Writeln(HEADER); Writeln();
 
     Writeln(TAB, 'Creation:                ', Disc.Date.ToString());
