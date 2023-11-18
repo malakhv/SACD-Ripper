@@ -407,9 +407,10 @@ type
 
     {
         Text_Channels: The definition of the Text Channels used in the Master
-            TOC. All Master_Text must be according to the definitions in
-            Text_Channels.
+        TOC. All Master_Text must be according to the definitions in
+        Text_Channels.
     }
+    // May be TMasterTocText?
     TTextChannels = packed record  // 40 bytes in total
 
         { N_Text_Channels: The used Text Channels. This field must be encoded
@@ -444,8 +445,6 @@ type
 
         { See TextChannelsCount property. }
         //function GetTextChannelsCount(): Byte;
-
-    protected
 
     public
 
@@ -663,8 +662,7 @@ begin
     Clear();
     SetLength(FSectors, Size);
 
-    // Open inpurt file read and setting up size of read chunk
-    // to 1 byte
+    // Open input file read and setting up size of read chunk to 1 byte
     Reset(AFile, 1);
 
     // Read data
