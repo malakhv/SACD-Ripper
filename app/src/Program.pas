@@ -161,7 +161,7 @@ begin                                               { Program Entry Point }
     if AppArgs.Has(CMD_TEST) then
     begin
         // TODO Need to add Linux variant
-        InputFile := TFileName(TEST_FILE_NAME_NIX);
+        InputFile := TFileName(TEST_FILE_NAME_WIN);
         PrintInfo(InputFile, DEBUG);
         Exit;
     end;
