@@ -374,7 +374,7 @@ type
         Genres: TSACDGenres;  // 16 bytes
 
         { Disc_Date: The creation date of the SACD disc. }
-        Date: TDiscDate;  // 4 bytes
+        Date: TSACDDate;  // 4 bytes
 
         { Reserved: Just reserved to future using. }
         Reserved4, Reserved5, Reserved6, Reserved7: Byte;  // 4 bytes
@@ -441,7 +441,7 @@ type
         function GetDiscWebLink(): String;
 
         { See SpecVersion property. }
-        function GetSpecVersion(): TSACDSpecVersion;
+        function GetSpecVersion(): TSACDVersion;
 
         { See TextChannelsCount property. }
         //function GetTextChannelsCount(): Byte;
@@ -452,7 +452,7 @@ type
         property DiscWebLink: String read GetDiscWebLink;
 
         { The SACD format specification version. }
-        property SpecVersion: TSACDSpecVersion read GetSpecVersion;
+        property SpecVersion: TSACDVersion read GetSpecVersion;
 
         { The numbers of Text Channels in this Area. }
         //property TextChannelsCount: Byte read GetTextChannelsCount;
@@ -759,12 +759,12 @@ begin
     inherited Create(510);
 end;
 
-function TMasterTocArea.GetSpecVersion(): TSACDSpecVersion;
-var PVer: PSACDSpecVersion;
+function TMasterTocArea.GetSpecVersion(): TSACDVersion;
+var PVer: PSACDVersion;
 begin
     if HasData() then
     begin
-        PVer := PSACDSpecVersion(PByte(@(Self[0]^.RawData))
+        PVer := PSACDVersion(PByte(@(Self[0]^.RawData))
             + MASTER_TOC_SPEC_VERSION_OFFSET);
     end;
     Result := PVer^;
