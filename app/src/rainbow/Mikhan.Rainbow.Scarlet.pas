@@ -283,12 +283,6 @@ type
 type
 
     {
-        N_Text_Channels: The sequential number of a Text Channel. The used Text
-        Channels must be encoded starting with Text Channel Number 1.
-    }
-    //type TTCNumber = 0..8;
-
-    {
         Album_Info: The information about SACD Album in Master TOC Area (48
         bytes in total).
     }
