@@ -46,6 +46,8 @@ procedure PrintDiskInfo(const MasterToc: TMasterTocArea;
 
 implementation
 
+uses Mikhan.Rainbow.Types;
+
 const
     TAB = '    ';
     HEADER =   '+-------------------------------------------------------+';
@@ -80,7 +82,7 @@ end;
 procedure PrintDisc(const MasterToc: TMasterTocArea;
     const MasterText: TMasterTextArea; PrintTechInfo: Boolean);
 var Disc: TMasterTocDisc;
-    Channels: TTextChannels;
+    Channels: TSACDTextChannels;
     I: Integer;
 begin
     Disc := MasterToc.GetDiscInfo();

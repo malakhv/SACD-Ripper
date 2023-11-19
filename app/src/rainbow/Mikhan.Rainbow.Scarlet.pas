@@ -388,47 +388,6 @@ type
 type
 
     {
-        The information about appropriate Text Channel. See TTextChannel.
-    }
-    TTextChannelInfo = packed record // 4 bytes in total
-
-        { Language_Code: The ISO 639 Language Code that is used with
-            appropriate Text Channel. The value $0000 is not allowed. }
-        LangCode: Array [0..1] of Char;  // 2 bytes
-
-        { Character_Set_Code: The character set used for appropriate Text
-            Channel. }
-        CharSetCode: Byte;  // 1 byte
-
-        { Reserved: Just reserved to future using. }
-        Reserved: Byte;  // 1 byte
-
-    end;
-
-    {
-        Text_Channels: The definition of the Text Channels used in the Master
-        TOC. All Master_Text must be according to the definitions in
-        Text_Channels.
-    }
-    // May be TMasterTocText?
-    TTextChannels = packed record  // 40 bytes in total
-
-        { N_Text_Channels: The used Text Channels. This field must be encoded
-            starting with Text Channel Number equal to 1. }
-        Count: Byte;  // 1 byte
-
-        { Reserved: Just reserved to future using. }
-        Reserved: Array [1..7] of Byte;  // 7 bytes
-
-        { See TTextChannelInfo. }
-        Channels: Array [1..8] of TTextChannelInfo; // 32 bytes (8 * 4)
-
-    end;
-    PTTextChannels = ^TTextChannels;
-
-type
-
-    {
         The Master TOC area (Master_TOC_0) contains general information on the
         disc, such as the size and location of the Audio Areas, album info,
         disc catalog number, disc genre and disc date. This area has 'SACDMTOC'
@@ -466,7 +425,7 @@ type
         function GetDiscInfo(): TMasterTocDisc;
 
         { Returns the definitions of Text Channels in this Area. }
-        function GetTextChannels(): TTextChannels;
+        function GetTextChannels(): TSACDTextChannels;
 
         { Construct a new instance with default parameters. }
         constructor Create();
@@ -815,11 +774,11 @@ begin
         MASTER_TOC_DISC_CATALOG_NUMBER_OFFSET, 16));
 end;
 
-function TMasterTocArea.GetTextChannels(): TTextChannels;
-var PChannels: PTTextChannels;
+function TMasterTocArea.GetTextChannels(): TSACDTextChannels;
+var PChannels: PSACDTextChannels;
 begin
     if not HasData() then Exit;
-    PChannels := PTTextChannels((PByte(@(Self[0]^.RawData))
+    PChannels := PSACDTextChannels((PByte(@(Self[0]^.RawData))
         + MASTER_TOC_TEXT_CHANNELS_OFFSET));
     Result := PChannels^;
 end;

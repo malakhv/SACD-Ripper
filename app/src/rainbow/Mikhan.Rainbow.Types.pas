@@ -107,6 +107,49 @@ type
     end;
     PSACDVersion = ^TSACDVersion;
 
+type
+
+    {
+        The Text Channel's data. Text in the TOC using one language / character
+        set combination. One Text Channel can only use one character set. See
+        also TSACDTextChannels.
+    }
+    TSACDTextChannel = packed record // 4 bytes in total
+
+        { Language_Code: The ISO 639 Language Code that is used with
+            appropriate Text Channel. The value $0000 is not allowed. }
+        LangCode: Array [0..1] of Char;  // 2 bytes
+
+        { Character_Set_Code: The character set used for appropriate Text
+            Channel. }
+        CharSetCode: Byte;  // 1 byte
+
+        { Reserved: Just reserved to future using. }
+        Reserved: Byte;  // 1 byte
+
+    end;
+
+    {
+        Text_Channels: The definition of the Text Channels used in the Master
+        TOC and the Area TOC. All Master_Text must be according to the
+        definitions in Text_Channels. See also TSACDTextChannel.
+    }
+    TSACDTextChannels = packed record  // 40 bytes in total
+
+        { N_Text_Channels: The number of Text Channels used. The maximum
+            allowed value is 8. A value of zero is allowed. This value must be
+            equal to the number of used Text Channels. }
+        Count: Byte;  // 1 byte
+
+        { Reserved: Just reserved to future using. }
+        Reserved: Array [1..7] of Byte;  // 7 bytes
+
+        { Array of Text Channels. See TSACDTextChannel. }
+        Channels: Array [1..8] of TSACDTextChannel; // 32 bytes (8 * 4)
+
+    end;
+    PSACDTextChannels = ^TSACDTextChannels;
+
 implementation                                                { IMPLEMENTETION }
 
 uses SysUtils;
