@@ -118,9 +118,8 @@ begin
         Writeln(TAB, 'TextChannels:            ', Channels.Count);
         for I := 1 to Channels.Count do
         begin
-        Writeln(TAB, TAB, 'Channel:             ', I);
-        Writeln(TAB, TAB, TAB, 'LangCode:        ', Channels.Channels[I].LangCode);
-        Writeln(TAB, TAB, TAB, 'CharSet:         ', Channels.Channels[I].CharSetCode);
+            Write(TAB, TAB, 'Channel ', I,':           ');
+            Writeln(Channels.Channels[I].ToString());
         end;
     end;
 end;

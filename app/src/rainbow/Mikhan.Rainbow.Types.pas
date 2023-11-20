@@ -127,6 +127,9 @@ type
         { Reserved: Just reserved to future using. }
         Reserved: Byte;  // 1 byte
 
+        { Represents a Text Channel data as a human readable string. }
+        function ToString(): String;
+
     end;
 
     {
@@ -180,6 +183,15 @@ end;
 function TSACDVersion.ToString(): String;
 begin
     Result := IntToStr(Self.Major) + '.' + IntToStr(Self.Minor);
+end;
+
+{------------------------------------------------------------------------------}
+{ TSACDTextChannel                                                             }
+{------------------------------------------------------------------------------}
+
+function TSACDTextChannel.ToString(): String;
+begin
+    Result := Self.LangCode + ' (' + IntToStr(Self.CharSetCode) + ')';
 end;
 
 end.                                                                     { END }
