@@ -109,6 +109,8 @@ type
 
 type
 
+    TSACDLangCode = String[3];
+
     {
         The Text Channel's data. Text in the TOC using one language / character
         set combination. One Text Channel can only use one character set. See
@@ -118,7 +120,8 @@ type
 
         { Language_Code: The ISO 639 Language Code that is used with
             appropriate Text Channel. The value $0000 is not allowed. }
-        LangCode: Array [0..1] of Char;  // 2 bytes
+        //LangCode: Array [0..1] of Char;  // 2 bytes
+        LangCode: TSACDLangCode;
 
         { Character_Set_Code: The character set used for appropriate Text
             Channel. }
