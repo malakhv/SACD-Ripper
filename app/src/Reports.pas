@@ -1,39 +1,38 @@
-{-------------------------------------------------------------------------}
-{                                                                         }
-{                          SACD-Ripper project                            }
-{                                                                         }
-{  Copyright (C) 1996-2022 Mikhail Malakhov <malakhv@gmail.com>           }
-{                                                                         }
-{  Licensed under the Apache License, Version 2.0 (the "License").        }
-{  You may not use this file except in compliance with the License.       }
-{  You may obtain a copy of the License at                                }
-{                                                                         }
-{     http://www.apache.org/licenses/LICENSE-2.0                          }
-{                                                                         }
-{  Unless required by applicable law or agreed to in writing, software    }
-{  distributed under the License is distributed on an "AS IS" BASIS,      }
-{  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or        }
-{  implied.                                                               }
-{                                                                         }
-{  See the License for the specific language governing permissions and    }
-{  limitations under the License.                                         }
-{                                                                         }
-{-------------------------------------------------------------------------}
+{------------------------------------------------------------------------------}
+{                                                                              }
+{                             SACD-Ripper project                              }
+{                                                                              }
+{  Copyright (C) 1996-2023 Mikhail Malakhov <malakhv@gmail.com>                }
+{                                                                              }
+{  Licensed under the Apache License, Version 2.0 (the "License"). You may     }
+{  not use this file except in compliance with the License. You may obtain     }
+{  a copy of the License at                                                    }
+{                                                                              }
+{     http://www.apache.org/licenses/LICENSE-2.0                               }
+{                                                                              }
+{  Unless required by applicable law or agreed to in writing, software         }
+{  distributed under the License is distributed on an "AS IS" BASIS, WITHOUT   }
+{  WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.            }
+{                                                                              }
+{  See the License for the specific language governing permissions and         }
+{  limitations under the License.                                              }
+{                                                                              }
+{------------------------------------------------------------------------------}
 
-{-------------------------------------------------------------------------}
-{ The Unit contains stuff to print and export information about SACD      }
-{ disc.                                                                   }
-{                                                                         }
-{ Created: 11.11.2023                                                     }
-{ Author: Mikhail.Malakhov                                                }
-{-------------------------------------------------------------------------}
+{------------------------------------------------------------------------------}
+{ The Unit contains stuff to print and export information about SACD disc.     }
+{                                                                              }
+{ Project: SACD-Ripper                                                         }
+{ Created: 11.11.2023                                                          }
+{ Author: Mikhail.Malakhov                                                     }
+{------------------------------------------------------------------------------}
 
-unit Reports;
+unit Reports;                                                           { UNIT }
 
 {$mode delphi}
 {$h+}
 
-interface
+interface                                                          { INTERFACE }
 
 uses Mikhan.Rainbow.Scarlet;
 
@@ -44,7 +43,7 @@ procedure PrintDiskInfo(const MasterToc: TMasterTocArea;
     const MasterText: TMasterTextArea; PrintInfo: TPrintedInfo;
     PrintTechInfo: Boolean);
 
-implementation
+implementation                                                { IMPLEMENTETION }
 
 uses Mikhan.Rainbow.Types;
 
@@ -136,8 +135,6 @@ begin
     Writeln(HEADER);
 end;
 
-end.
+end.                                                                     { END }
 
-{-------------------------------------------------------------------------}
-{ END                                                                     }
-{-------------------------------------------------------------------------}
+{------------------------------------------------------------------------------}

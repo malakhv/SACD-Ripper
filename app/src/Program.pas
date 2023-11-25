@@ -1,35 +1,35 @@
-{-------------------------------------------------------------------------}
-{                                                                         }
-{                          SACD-Ripper project                            }
-{                                                                         }
-{  Copyright (C) 1996-2022 Mikhail Malakhov <malakhv@gmail.com>           }
-{                                                                         }
-{  Licensed under the Apache License, Version 2.0 (the "License").        }
-{  You may not use this file except in compliance with the License.       }
-{  You may obtain a copy of the License at                                }
-{                                                                         }
-{     http://www.apache.org/licenses/LICENSE-2.0                          }
-{                                                                         }
-{  Unless required by applicable law or agreed to in writing, software    }
-{  distributed under the License is distributed on an "AS IS" BASIS,      }
-{  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or        }
-{  implied.                                                               }
-{                                                                         }
-{  See the License for the specific language governing permissions and    }
-{  limitations under the License.                                         }
-{                                                                         }
-{-------------------------------------------------------------------------}
+{------------------------------------------------------------------------------}
+{                                                                              }
+{                             SACD-Ripper project                              }
+{                                                                              }
+{  Copyright (C) 1996-2023 Mikhail Malakhov <malakhv@gmail.com>                }
+{                                                                              }
+{  Licensed under the Apache License, Version 2.0 (the "License"). You may     }
+{  not use this file except in compliance with the License. You may obtain     }
+{  a copy of the License at                                                    }
+{                                                                              }
+{     http://www.apache.org/licenses/LICENSE-2.0                               }
+{                                                                              }
+{  Unless required by applicable law or agreed to in writing, software         }
+{  distributed under the License is distributed on an "AS IS" BASIS, WITHOUT   }
+{  WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.            }
+{                                                                              }
+{  See the License for the specific language governing permissions and         }
+{  limitations under the License.                                              }
+{                                                                              }
+{------------------------------------------------------------------------------}
 
-{-------------------------------------------------------------------------}
-{ The SACD-Ripper utility to ripping audio content from SACD image files. }
-{                                                                         }
-{ Created: 14.08.2022                                                     }
-{ Author: Mikhail.Malakhov [malakhv@gmail.com|http://mikhan.me/]          }
-{-------------------------------------------------------------------------}
+{------------------------------------------------------------------------------}
+{ The SACD-Ripper utility is a small program to retrieve information and       }
+{ ripping audio content from from SACD image files.                            }
+{                                                                              }
+{ Project: SACD-Ripper                                                         }
+{ Created: 14.08.2022                                                          }
+{ Author: Mikhail.Malakhov                                                     }
+{------------------------------------------------------------------------------}
 
-program sacd;                                                   { Program }
+program sacd;                                                        { PROGRAM }
 
-// Compiler options
 {$mode delphi}
 {$h+}
 
@@ -88,7 +88,7 @@ begin
 end;
 
 {
-    Print an information about SACD disc.
+    Print information about SACD disc.
 }
 procedure PrintInfo(AFile: TFileName; Debug: Boolean);
 const INDENT = '   - ';
@@ -149,7 +149,7 @@ begin
     end;
 end;
 
-begin                                               { Program Entry Point }
+begin                                                            { ENTRY POINT }
 
     // Program Logs
     AppLogs := TAppLogs.Create('SACD');
@@ -194,4 +194,6 @@ begin                                               { Program Entry Point }
         Exit;
     end;
 
-end.
+end.                                                                     { END }
+
+{------------------------------------------------------------------------------}
