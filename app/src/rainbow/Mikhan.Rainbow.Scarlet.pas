@@ -78,7 +78,7 @@ unit Mikhan.Rainbow.Scarlet;                                            { UNIT }
 
 interface                                                          { INTERFACE }
 
-uses Classes, Mikhan.Rainbow.Types, Mikhan.Rainbow.Genres;
+uses Classes, Mikhan.Rainbow.Types;
 
 {------------------------------------------------------------------------------}
 {                      The SACD disc Logical Sector (LS)                       }
