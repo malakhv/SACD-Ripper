@@ -55,6 +55,7 @@ const
 procedure PrintAlbum(const MasterToc: TMasterTocArea;
     const MasterText: TMasterTextArea; PrintTechInfo: Boolean);
 var Album: TMasterTocAlbum;
+var I: Integer;
 begin
     Album := MasterToc.GetAlbumInfo();
 
@@ -69,7 +70,9 @@ begin
 
     Writeln(TAB, 'Album Number:            ',
     Album.SequenceNumber, ' (from ', Album.SetSize,')');
-    Writeln(TAB, 'Album Genre:             ', Album.Genres[1].Genre);
+
+    for I := Low(Album.Genres) to High(Album.Genres) do
+        Writeln(TAB, 'Album Genre ', I, ':           ', Album.Genres[I].Genre);
     Writeln(TAB, 'Album Title:             ', MasterText.AlbumTitle);
     Writeln(TAB, 'Album Artist:            ', MasterText.AlbumArtist);
     Writeln(TAB, 'Album Publisher:         ', MasterText.AlbumPublisher);
@@ -93,7 +96,8 @@ begin
 
     Writeln(TAB, 'Creation:                ', Disc.Date.ToString());
     Writeln(TAB, 'Hybrid Disc:             ', Disc.IsHybrid());
-    Writeln(TAB, 'Disc Genre:              ', Disc.Genres[1].Genre);
+    for I := Low(Disc.Genres) to High(Disc.Genres) do
+        Writeln(TAB, 'Disc Genre ', I, ':            ', Disc.Genres[1].Genre);
 
     Writeln(TAB, 'Disc Title:              ', MasterText.DiscTitle);
     Writeln(TAB, 'Disc Artist:             ', MasterText.DiscArtist);
