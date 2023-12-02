@@ -49,7 +49,6 @@
 { Description.                                                                 }
 {------------------------------------------------------------------------------}
 
-
 unit Mikhan.Rainbow.Types;                                              { UNIT }
 
 {$MODE DELPHI}
@@ -264,8 +263,7 @@ const
     );
 
     // TODO Need to find information about this table
-    //JAPANESE_TABLE: Array[INDEX_UNKNOWN..29] of String = (
-    //)
+    //JAPANESE_TABLE: Array[INDEX_UNKNOWN..29] of String = ();
 
 function TSACDGenre.GetGenre(): String;
 begin
