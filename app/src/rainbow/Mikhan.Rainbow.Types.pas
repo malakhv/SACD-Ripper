@@ -107,9 +107,31 @@ type
     end;
     PSACDVersion = ^TSACDVersion;
 
+{------------------------------------------------------------------------------}
+{                                Text Channel                                  }
+{                                                                              }
+{ Text Channels contains the definition of the Text Channels used in the TOC.  }
+{ All text in Text (in TOC) must be according to the definitions in Text       }
+{ Channels. Text Channels contains language / character set combination for    }
+{ each Text in TOC.                                                            }
+{                                                                              }
+{ For more details about Text Channels, Text Channel, please see Part 2 of     }
+{ Super Audio CD System Description (sections 1.7.2.8 and 3.1.1.4).            }
+{------------------------------------------------------------------------------}
+
 type
 
-    TSACDLangCode = String[3];
+
+    {
+        Language_Code: The ISO 639 Language Code that is used with Text
+        Channel. All text in Text Channel must be according to this Language
+        Code. The value $0000 is not allowed.
+    }
+    TSACDLangCode = packed record // 2 bytes in total
+        RawData: Array[1..2] of Char;
+        { Represents a Language Code as a human readable string. }
+        function ToString(): String;
+    end;
 
     {
         The Text Channel's data. Text in the TOC using one language / character
@@ -120,12 +142,11 @@ type
 
         { Language_Code: The ISO 639 Language Code that is used with
             appropriate Text Channel. The value $0000 is not allowed. }
-        //LangCode: Array [0..1] of Char;  // 2 bytes
         LangCode: TSACDLangCode;
 
         { Character_Set_Code: The character set used for appropriate Text
             Channel. }
-        CharSetCode: Byte;  // 1 byte
+        CharSet: Byte;  // 1 byte
 
         { Reserved: Just reserved to future using. }
         Reserved: Byte;  // 1 byte
@@ -189,12 +210,21 @@ begin
 end;
 
 {------------------------------------------------------------------------------}
+{ TSACDLangCode                                                                }
+{------------------------------------------------------------------------------}
+
+function TSACDLangCode.ToString(): String;
+begin
+    Result := Self.RawData[1] + Self.RawData[2];
+end;
+
+{------------------------------------------------------------------------------}
 { TSACDTextChannel                                                             }
 {------------------------------------------------------------------------------}
 
 function TSACDTextChannel.ToString(): String;
 begin
-    Result := Self.LangCode + ' (' + IntToStr(Self.CharSetCode) + ')';
+    Result := Self.LangCode.ToString() + ' (' + IntToStr(Self.CharSet) + ')';
 end;
 
 end.                                                                     { END }
