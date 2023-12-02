@@ -64,7 +64,7 @@ type
         space characters ($20). If a Catalog Number is not used, all bytes
         must be set to zero.
     }
-    TCatalogNumber = String[15];
+    TSACDCatalogNumber = String[15]; // 16 bytes
 
     {
         The link to a web page with information about this SACD disc. This

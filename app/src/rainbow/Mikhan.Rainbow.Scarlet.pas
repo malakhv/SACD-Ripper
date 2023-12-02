@@ -305,7 +305,7 @@ type
         { Album_Catalog_Number: The catalog number of this album. All discs in
             one Album must have the same catalog number. This fields must be
             padded at the end with bytes with space characters (#20). }
-        CatalogNumber: TCatalogNumber; // 16 bytes
+        CatalogNumber: TSACDCatalogNumber; // 16 bytes
 
         { Album_Genre: The genres associated with this Super Audio CD Album
             (min 0 and max 4). It is recommended that all discs in one Album
@@ -360,7 +360,7 @@ type
 
         { Disc_Catalog_Number: The catalog number of SACD disc that uniquely
             identifies each disc in an Album. }
-        CatalogNumber: TCatalogNumber;  // 16 bytes
+        CatalogNumber: TSACDCatalogNumber;  // 16 bytes
 
         { Disc_Genre: The genres associated with this Super Audio CD Album
             (min 0 and max 4). It is recommended that all discs in one Album
