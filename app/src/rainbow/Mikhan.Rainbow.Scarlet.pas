@@ -27,6 +27,8 @@
 { Package: Mikhan.Rainbow                                                      }
 { Types: TLSNumber, TSACDSector, TMasterTocArea                                }
 {                                                                              }
+{ Dependencies: Mikhan.Util.StrUtils, Mikhan.Rainbow.Types                     }
+{                                                                              }
 { Created: 14.08.2022                                                          }
 { Authors: Mikhail.Malakhov                                                    }
 {------------------------------------------------------------------------------}
@@ -65,9 +67,35 @@
 {------------------------------------------------------------------------------}
 {                                 Definitions                                  }
 {                                                                              }
-{ Album - An Album consists of one or more discs. All discs in an Album        }
-{         must have the same Album Catalog Number.                             }
+{ Album    - An Album consists of one or more discs. All discs in an Album     }
+{            must have the same Album Catalog Number.                          }
 {                                                                              }
+{ DSD      - Direct Stream Digital, the one bit audio signal. A DSD signal can }
+{            either be DST Coded DSD, or Plain DSD.                            }
+{                                                                              }
+{ EOS      - End of Sector.                                                    }
+{                                                                              }
+{ Frame    - A block of data belonging to a certain Time Code. The data can be }
+{            either Audio Data, Supplementary Data, Padding or it can be       }
+{            Multiplexed. The playing time of a Frame is 1/75 Sec.             }
+{                                                                              }
+{ Reserved - All fields labeled Reserved are reserved for future               }
+{            standardization. All Reserved fields must be set to zero.         }
+{                                                                              }
+{ Sector   - The 2048 bytes of Main Data in a Data Frame (for more details see }
+{            Part 1 of Super Audio CD System Description (chapters 4.2.2 and   }
+{            4.2.7).                                                           }
+{                                                                              }
+{ TNO      - Track Number. A Track Number is the sequence number of a Track.   }
+{            The first Track Number in an Audio Area is one. The maximum       }
+{            number of Tracks in an Audio Area is 255.                         }
+{                                                                              }
+{ TOC      - Table Of Contents. Album and disc related information is stored   }
+{            in the Master TOC. Area and track related information is stored   }
+{            in the Area TOC.                                                  }
+{                                                                              }
+{ Track    - A Track is a contiguous area on the disc with audio information   }
+{            and with one and the same Track Number.                           }
 {------------------------------------------------------------------------------}
 
 unit Mikhan.Rainbow.Scarlet;                                            { UNIT }
