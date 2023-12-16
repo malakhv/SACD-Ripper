@@ -106,7 +106,7 @@ unit Mikhan.Rainbow.Scarlet;                                            { UNIT }
 
 interface                                                          { INTERFACE }
 
-uses Classes, Mikhan.Rainbow.Types;
+uses SysUtils, Classes, Mikhan.Rainbow.Types;
 
 {------------------------------------------------------------------------------}
 {                      The SACD disc Logical Sector (LS)                       }
@@ -265,6 +265,9 @@ type
 
         { Clear all sectos data. }
         procedure Clear(); virtual;
+
+        { Print a dump of this SACD Area. }
+        procedure Dump(Header: String; AsText: Boolean; Limit: Integer);
 
         { Load area data from a file. }
         procedure Load(var AFile: File); overload; virtual;
@@ -453,6 +456,7 @@ type
         constructor Create();
 
     end;
+    PMasterTocArea = ^TMasterTocArea;
 
     {
         The Master Text area (Master_Text) contains all general text info that
@@ -498,13 +502,139 @@ type
 
     end;
 
+{------------------------------------------------------------------------------}
+{                                    SACD                                      }
+{                                                                              }
+{------------------------------------------------------------------------------}
+type
+
+    TSACDOnImageLoad = procedure (const FileName: TFileName) of object;
+
+    {
+        The SACD image. This class contains properties and methods to retrieve
+        information from SACD image file.
+    }
+    TSACDImage = class(TPersistent)
+    private
+        FFileName: TFileName;           // See FileName property
+        FMasterToc: TMasterTocArea;     // See MasterToc property
+        FTextToc: TMasterTextArea;      // See TextToc property
+        FOnLoad: TSACDOnImageLoad;      // See OnLoad property
+    protected
+        { Loads data from known SACD image file. }
+        function Load(): Boolean;
+        { See See OnLoad property. }
+        procedure DoLoad();
+    public
+
+        { The known SACD image file name. }
+        property FileName: TFileName read FFileName;
+
+        { The Master TOC Area data. }
+        property MasterToc: TMasterTocArea read FMasterToc;
+
+        { The Text TOC Area data (into Mater TOC). }
+        property TextToc: TMasterTextArea read FTextToc;
+
+        { Call when data was loaded from SACD image file. }
+        property OnLoad: TSACDOnImageLoad read FOnLoad;
+
+        { Loads data from specified file. }
+        function LoadFromFile(FileName: TFileName): Boolean;
+
+        { Clears all data into this instance. }
+        procedure Clear();
+
+        { Prints a dump of this instance. }
+        procedure Dump();
+
+        { Construct a new instance with default parameters. }
+        constructor Create(); virtual; overload;
+
+        { Construct a new instance with specified parameters. }
+        constructor Create(FileName: TFileName); virtual; overload;
+
+        { Destroys all resources related with this instance. }
+        destructor Destroy(); override;
+
+    end;
 
 //type
 //    TSacdFile = class(Tancestor)
 
 implementation                                                { IMPLEMENTETION }
 
-uses SysUtils, Mikhan.Util.StrUtils;
+uses Mikhan.Util.StrUtils, Mikhan.Util.Dump;
+
+{------------------------------------------------------------------------------}
+{ TSACDImage                                                                   }
+{------------------------------------------------------------------------------}
+
+constructor TSACDImage.Create();
+begin
+    inherited;
+    FMasterToc := TMasterTocArea.Create();
+    FTextToc := TMasterTextArea.Create();
+end;
+
+constructor TSACDImage.Create(FileName: TFileName);
+begin
+    Create();
+    FFileName := FileName;
+end;
+
+destructor TSACDImage.Destroy();
+begin
+    Clear();
+    inherited;
+end;
+
+procedure TSACDImage.Clear();
+begin
+    FMasterToc.Clear();
+    FTextToc.Clear();
+    FFileName := EMPTY;
+end;
+
+function TSACDImage.Load(): Boolean;
+var InStream: TStream;
+begin
+    Result := True;
+    try
+        try
+            InStream := TFileStream.Create(Self.FileName, fmOpenRead);
+            FMasterToc.Load(InStream);
+            FTextToc.Load(InStream);
+        except
+            Clear(); Result := False;
+        end;
+    finally
+        try
+            InStream.Free();
+        except
+            Clear(); Result := False;
+        end;
+    end;
+    if Result then DoLoad();
+end;
+
+function TSACDImage.LoadFromFile(FileName: TFileName): Boolean;
+begin
+    FFileName := FileName;
+    Result := Load();
+end;
+
+procedure TSACDImage.DoLoad();
+begin
+    //if FOnLoad <> Nil then FOnLoad(FFileName);
+end;
+
+procedure TSACDImage.Dump();
+begin
+    FMasterToc.Dump('Master TOC Area', False, 256);
+    Writeln();
+    FMasterToc.Dump('Master Text Area', False, 256);
+end;
 
 {------------------------------------------------------------------------------}
 { Common                                                                       }
@@ -617,6 +747,32 @@ end;
 procedure TSACDArea.Clear();
 begin
     SetLength(FSectors, 0);
+end;
+
+procedure TSACDArea.Dump(Header: String; AsText: Boolean; Limit: Integer);
+var I: Integer;
+    Sector: TSACDSector;
+    Title: String;
+begin
+    // No data, No Cry ;)
+    if not HasData() then
+    begin
+        WriteLn(Header, ' - has no data'); Exit;
+    end;
+
+    // Make a title
+    if not IsEmpty(Header) then
+        Title := Header + ' - Sector '
+    else
+        Title := 'SACD Area - Sector ';
+
+    // Dump all sectors
+    for I := Low(FSectors) to High(FSectors) do
+    begin
+        WriteLn(Title, FSectors[I].Number);
+        Mikhan.Util.Dump.Dump(FSectors[I].RawData, 0, Limit, dfHex);
+        WriteLn();
+    end;
 end;
 
 function TSACDArea.GetHeader(): String;

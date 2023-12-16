@@ -91,61 +91,20 @@ end;
     Print information about SACD disc.
 }
 procedure PrintInfo(AFile: TFileName; Debug: Boolean);
-const INDENT = '   - ';
 var
-    InStream: TStream;
-    MasterToc: TMasterTocArea;
-    TextToc: TMasterTextArea;
-    Manuf: TMasterTocManuf;
+    SACDImg: TSACDImage;
 begin
     WriteLn();
     WriteLn('SACD: ', AFile);
-
-    MasterToc := TMasterTocArea.Create();
-    TextToc := TMasterTextArea.Create();
-    Manuf := TMasterTocManuf.Create;
-
-    try
-        try
-            InStream := TFileStream.Create(AFile, fmOpenRead);
-            MasterToc.Load(InStream);
-            TextToc.Load(InStream);
-            Manuf.Load(InStream);
-        except
-            WriteLn(ProgMsg.MSG_CANNOT_READ_DATA);
-            Exit;
-        end;
-    finally
-        try
-            InStream.Free();
-        except
-            WriteLn('Close ERROR!');
-        end;
-        //WriteLn('Close OK!');
-    end;
-
+    SACDImg := TSACDImage.Create();
+    SACDImg.LoadFromFile(AFile);
     // Master TOC Album Info
-    Reports.PrintDiskInfo(MasterToc, TextToc, piAll, True);
+    Reports.PrintDiskInfo(SACDImg.MasterToc, SACDImg.TextToc, piAll, True);
     WriteLn();
-
-    // Master TOC Manuf Info
-    //Writeln('Master TOC Manuf Info:');
-    //Writeln(INDENT, 'Header: ', Manuf.Header);
-    //WriteLn();
-
     // Just for testing and debug
     if Debug then
     begin
-        Writeln('TMasterTocArea dump:');
-        Dump(MasterToc[0]^.RawData, 0, 256, dfHex);
-        Writeln();
-        Dump(MasterToc[0]^.RawData, 0, 256, dfChar);
-        Writeln();
-        Writeln('MasterTextArea dump:');
-        Dump(TextToc[0]^.RawData, 0, 256, dfChar);
-        Writeln();
-        Writeln('MasterManufArea dump:');
-        Dump(Manuf[0]^.RawData, 256);
+        SACDImg.Dump();
     end;
 end;
 
