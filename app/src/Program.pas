@@ -91,15 +91,13 @@ end;
     Print information about SACD disc.
 }
 procedure PrintInfo(AFile: TFileName; Debug: Boolean);
-var
-    SACDImg: TSACDImage;
+var SACDImg: TSACDImage;
 begin
     WriteLn();
     WriteLn('SACD: ', AFile);
     SACDImg := TSACDImage.Create();
     SACDImg.LoadFromFile(AFile);
-    // Master TOC Album Info
-    Reports.PrintDiskInfo(SACDImg.MasterToc, SACDImg.TextToc, piAll, True);
+    Reports.PrintSACD(SACDImg, piAll, True);
     WriteLn();
     // Just for testing and debug
     if Debug then

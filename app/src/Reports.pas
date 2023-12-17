@@ -39,8 +39,10 @@ uses Mikhan.Rainbow.Scarlet;
 type 
     TPrintedInfo = (piAlbum, piDisc, piAll);
 
-procedure PrintDiskInfo(const MasterToc: TMasterTocArea;
-    const MasterText: TMasterTextArea; PrintInfo: TPrintedInfo;
+{
+    Prints information about SACD.
+}
+procedure PrintSACD(const SACDImg: TSACDImage; PrintInfo: TPrintedInfo;
     PrintTechInfo: Boolean);
 
 implementation                                                { IMPLEMENTETION }
@@ -52,11 +54,15 @@ const
     HEADER =   '+-------------------------------------------------------+';
     PRNT_END = '---------------------------------------------------------';
 
-procedure PrintAlbum(const MasterToc: TMasterTocArea;
-    const MasterText: TMasterTextArea; PrintTechInfo: Boolean);
-var Album: TMasterTocAlbum;
-var I: Integer;
+procedure PrintAlbum(const SACDImg: TSACDImage; PrintTechInfo: Boolean);
+var
+    MasterToc: TMasterTocArea;
+    MasterText: TMasterTextArea;
+    Album: TMasterTocAlbum;
+    I: Integer;
 begin
+    MasterToc := SACDImg.MasterToc;
+    MasterText := SACDImg.MasterText;
     Album := MasterToc.GetAlbumInfo();
 
     Writeln(HEADER);
@@ -81,12 +87,16 @@ begin
     Writeln();
 end;
 
-procedure PrintDisc(const MasterToc: TMasterTocArea;
-    const MasterText: TMasterTextArea; PrintTechInfo: Boolean);
-var Disc: TMasterTocDisc;
+procedure PrintDisc(const SACDImg: TSACDImage; PrintTechInfo: Boolean);
+var
+    MasterToc: TMasterTocArea;
+    MasterText: TMasterTextArea;
+    Disc: TMasterTocDisc;
     Channels: TSACDTextChannels;
     I: Integer;
 begin
+    MasterToc := SACDImg.MasterToc;
+    MasterText := SACDImg.MasterText;
     Disc := MasterToc.GetDiscInfo();
 
     Writeln(HEADER);
@@ -127,15 +137,14 @@ begin
     end;
 end;
 
-procedure PrintDiskInfo(const MasterToc: TMasterTocArea;
-    const MasterText: TMasterTextArea; PrintInfo: TPrintedInfo;
+procedure PrintSACD(const SACDImg: TSACDImage; PrintInfo: TPrintedInfo;
     PrintTechInfo: Boolean);
 begin
     if (PrintInfo = piAlbum) or (PrintInfo = piAll) then
-        PrintAlbum(MasterToc, MasterText, PrintTechInfo);
+        PrintAlbum(SACDImg, PrintTechInfo);
 
     if (PrintInfo = piDisc) or (PrintInfo = piAll) then
-        PrintDisc(MasterToc, MasterText, PrintTechInfo);
+        PrintDisc(SACDImg, PrintTechInfo);
     Writeln(HEADER);
 end;
 

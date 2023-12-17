@@ -170,6 +170,9 @@ type
         { Offset of current sector, in bytes. }
         property Offset: Integer read GetOffset;
 
+        { Returns integer by offset. }
+        function GetInt(Offset: Integer): Integer;
+
         { Returns string from Start position to zero terminated char. }
         function GetString(Start: Integer): String;
 
@@ -254,8 +257,8 @@ type
         { The name of this SACD Area (Master TOC, for example). }
         property Name: String read FName;
 
-        { The header of this Area. In current implementation this is
-            header of first sector. }
+        { The header of this Area. In current implementation this is header
+            of first sector. }
         property Header: String read GetHeader;
 
         { The first sector number of this Area. }
@@ -268,14 +271,16 @@ type
         { The size of this Area, in sectors. }
         property Size: TLSNumber read FSize;
 
-        { Returns true, if this object has a data. }
+        { Returns true, if this instance has a data. }
         function HasData(): Boolean;
 
-        { Clear all sectos data. }
+        { Clears all sectors' data. }
         procedure Clear(); virtual;
 
         { Print a dump of this SACD Area. }
         procedure Dump(AsText: Boolean; Limit: Integer); overload;
+
+        { Print a dump of this SACD Area. }
         procedure Dump(Header: String; AsText: Boolean;
             Limit: Integer); overload;
 
@@ -431,16 +436,10 @@ type
     }
     TMasterTocArea = class (TSACDArea)
     protected
-
         { See DiscWebLink property. }
         function GetDiscWebLink(): String;
-
         { See SpecVersion property. }
         function GetSpecVersion(): TSACDVersion;
-
-        { See TextChannelsCount property. }
-        //function GetTextChannelsCount(): Byte;
-
     public
 
         { The link to a web page with information about SACD disc. }
@@ -449,15 +448,12 @@ type
         { The SACD format specification version. }
         property SpecVersion: TSACDVersion read GetSpecVersion;
 
-        { The numbers of Text Channels in this Area. }
-        //property TextChannelsCount: Byte read GetTextChannelsCount;
-
-        { Returns the information about SACD Album which stored in Master
-            TOC Area. }
+        { Returns the information about SACD Album which stored in Master TOC
+            Area. }
         function GetAlbumInfo(): TMasterTocAlbum;
 
-        { Returns the information about SACD Disc which stored in Master
-            TOC Area. }
+        { Returns the information about SACD Disc which stored in Master TOC
+            Area. }
         function GetDiscInfo(): TMasterTocDisc;
 
         { Returns the definitions of Text Channels in this Area. }
@@ -519,6 +515,9 @@ type
 {------------------------------------------------------------------------------}
 type
 
+    {
+        Event: Call when data was loaded from SACD image file.
+    }
     TSACDOnImageLoad = procedure (Sender: TObject;
         const FileName: TFileName) of object;
 
@@ -530,12 +529,12 @@ type
     private
         FFileName: TFileName;           // See FileName property
         FMasterToc: TMasterTocArea;     // See MasterToc property
-        FTextToc: TMasterTextArea;      // See TextToc property
+        FMasterText: TMasterTextArea;   // See TextToc property
         FOnLoad: TSACDOnImageLoad;      // See OnLoad property
     protected
         { Loads data from known SACD image file. }
         function Load(): Boolean;
-        { See See OnLoad property. }
+        { See OnLoad property. }
         procedure DoLoad();
     public
 
@@ -546,7 +545,7 @@ type
         property MasterToc: TMasterTocArea read FMasterToc;
 
         { The Text TOC Area data (into Mater TOC). }
-        property TextToc: TMasterTextArea read FTextToc;
+        property MasterText: TMasterTextArea read FMasterText;
 
         { Call when data was loaded from SACD image file. }
         property OnLoad: TSACDOnImageLoad read FOnLoad;
@@ -586,7 +585,7 @@ constructor TSACDImage.Create();
 begin
     inherited;
     FMasterToc := TMasterTocArea.Create();
-    FTextToc := TMasterTextArea.Create();
+    FMasterText := TMasterTextArea.Create();
 end;
 
 constructor TSACDImage.Create(FileName: TFileName);
@@ -604,7 +603,7 @@ end;
 procedure TSACDImage.Clear();
 begin
     FMasterToc.Clear();
-    FTextToc.Clear();
+    FMasterText.Clear();
     FFileName := EMPTY;
 end;
 
@@ -616,7 +615,7 @@ begin
         try
             InStream := TFileStream.Create(Self.FileName, fmOpenRead);
             FMasterToc.Load(InStream);
-            FTextToc.Load(InStream);
+            FMasterText.Load(InStream);
         except
             Clear(); Result := False;
         end;
@@ -639,14 +638,14 @@ end;
 procedure TSACDImage.DoLoad();
 begin
     if Assigned(FOnLoad) then FOnLoad(Self, FFileName);
-    //if FOnLoad <> Nil then FOnLoad(FFileName);
 end;
 
 procedure TSACDImage.Dump();
 begin
     FMasterToc.Dump(False, 256);
     Writeln();
-    FTextToc.Dump(False, 256);
+    FMasterText.Dump(False, 256);
+    FMasterText.Dump(True, 256);
 end;
 
 {------------------------------------------------------------------------------}
@@ -683,8 +682,7 @@ end;
 { Reverse bytes in Word. }
 function ReverseBytes(const Value: Word): Word;
 begin
-    Result :=  (((Value and $FF00) shr 8)
-        or ((Value and $00FF) shl 8));
+    Result := (((Value and $FF00) shr 8) or ((Value and $00FF) shl 8));
 end;
 
 {------------------------------------------------------------------------------}
@@ -701,6 +699,13 @@ begin
     Result := GetSectorOffset(Number);
 end;
 
+function TSACDSector.GetInt(Offset: Integer): Integer;
+begin
+    Result := 0;
+    if Offset > SACD_LOGICAL_SECTOR_LENGTH - 2 then Exit;
+    Result := BytesToInt(RawData[Offset], RawData[Offset + 1]);
+end;
+
 function TSACDSector.GetString(Start: Integer): String;
 begin
     Result := String(PAnsiChar(@RawData[Start]));
@@ -714,8 +719,7 @@ end;
 function TSACDSector.ToString(Start, Count: Integer): String;
 begin
     // If Start is incorrect, let's start from beginning
-    if (Start < 0) or (Start >= High(TLSData)) then
-        Start := Low(TLSData);
+    if (Start < 0) or (Start >= High(TLSData)) then Start := Low(TLSData);
     
     // Should convert all data?
     if Count <= 0 then Count := High(TLSData);
@@ -733,19 +737,20 @@ procedure TSACDSector.Clear();
 var i: Integer;
 begin
     // TODO Need to optimization
-    for i := Low(RawData) to High(RawData) do
-        RawData[i] := 0;
+    for i := Low(RawData) to High(RawData) do RawData[i] := 0;
 end;
 
 procedure TSACDSector.Dump(Header: String; AsText: Boolean; Limit: Integer);
 var Title: String;
+    Format: TDumpOutFormat;
 begin
     if not IsEmpty(Header) then
         Title := Header
     else
         Title := 'SACD Sector';
     WriteLn(Title, ' ',Self.Number);
-    Mikhan.Util.Dump.Dump(Self.RawData, 0, Limit, dfHex);
+    if (AsText) then Format := dfChar else Format := dfHex;
+    Mikhan.Util.Dump.Dump(Self.RawData, 0, Limit, Format);
 end;
 
 {------------------------------------------------------------------------------}
@@ -761,8 +766,7 @@ end;
 constructor TSACDArea.Create(AName: String; First, Size: TLSNumber);
 begin
     inherited Create();
-    FName := AName;
-    FFirst := First; FSize := Size;
+    FName := AName; FFirst := First; FSize := Size;
 end;
 
 destructor TSACDArea.Destroy();
@@ -1051,7 +1055,7 @@ begin
     Result := '';
     if not HasData() then Exit;
     start := GetPtr(PtrOffset);
-    if start = 0 then Exit;
+    if start <= 0 then Exit;
     Result := Self[0].GetString(start);
 end;
 
