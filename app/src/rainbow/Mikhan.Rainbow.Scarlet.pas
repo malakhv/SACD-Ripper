@@ -182,6 +182,10 @@ type
 
         { Clear all sector data in this record. }
         procedure Clear();
+
+        { Print a dump of this SACD Sector. }
+        procedure Dump(Header: String; AsText: Boolean; Limit: Integer);
+
     end;
     PSACDSector = ^TSACDSector;
     TSACDSectors = array of TSACDSector;
@@ -236,6 +240,7 @@ type
     }
     TSACDArea = class (TObject)
     private
+        FName: String;              // See Name property
         FFirst: TLSNumber;          // See First property
         FSize: TLSNumber;           // See Size property
         FSectors: TSACDSectors;     // See Sectors property
@@ -245,6 +250,9 @@ type
         { See Sectors property. }
         function GetSector(Index : TLSNumber): PSACDSector;
     public
+
+        { The name of this SACD Area (Master TOC, for example). }
+        property Name: String read FName;
 
         { The header of this Area. In current implementation this is
             header of first sector. }
@@ -267,7 +275,9 @@ type
         procedure Clear(); virtual;
 
         { Print a dump of this SACD Area. }
-        procedure Dump(Header: String; AsText: Boolean; Limit: Integer);
+        procedure Dump(AsText: Boolean; Limit: Integer); overload;
+        procedure Dump(Header: String; AsText: Boolean;
+            Limit: Integer); overload;
 
         { Load area data from a file. }
         procedure Load(var AFile: File); overload; virtual;
@@ -277,11 +287,12 @@ type
 
         { Construct a new instance of TSACDArea class with specified
             parameters. }
-        constructor Create(First: TLSNumber); virtual; overload;
+        constructor Create(AName: String; First: TLSNumber); virtual; overload;
 
         { Construct a new instance of TSACDArea class with specified
             parameters. }
-        constructor Create(First, Size: TLSNumber); virtual; overload;
+        constructor Create(AName: String; First,
+            Size: TLSNumber); virtual; overload;
 
         { Free all related resources. }
         destructor Destroy; override;
@@ -508,7 +519,8 @@ type
 {------------------------------------------------------------------------------}
 type
 
-    TSACDOnImageLoad = procedure (const FileName: TFileName) of object;
+    TSACDOnImageLoad = procedure (Sender: TObject;
+        const FileName: TFileName) of object;
 
     {
         The SACD image. This class contains properties and methods to retrieve
@@ -626,14 +638,15 @@ end;
 
 procedure TSACDImage.DoLoad();
 begin
+    if Assigned(FOnLoad) then FOnLoad(Self, FFileName);
     //if FOnLoad <> Nil then FOnLoad(FFileName);
 end;
 
 procedure TSACDImage.Dump();
 begin
-    FMasterToc.Dump('Master TOC Area', False, 256);
+    FMasterToc.Dump(False, 256);
     Writeln();
-    FMasterToc.Dump('Master Text Area', False, 256);
+    FTextToc.Dump(False, 256);
 end;
 
 {------------------------------------------------------------------------------}
@@ -724,18 +737,31 @@ begin
         RawData[i] := 0;
 end;
 
+procedure TSACDSector.Dump(Header: String; AsText: Boolean; Limit: Integer);
+var Title: String;
+begin
+    if not IsEmpty(Header) then
+        Title := Header
+    else
+        Title := 'SACD Sector';
+    WriteLn(Title, ' ',Self.Number);
+    Mikhan.Util.Dump.Dump(Self.RawData, 0, Limit, dfHex);
+end;
+
 {------------------------------------------------------------------------------}
 { TSACDArea                                                                    }
 {------------------------------------------------------------------------------}
 
-constructor TSACDArea.Create(First: TLSNumber);
+constructor TSACDArea.Create(AName: String; First: TLSNumber);
 begin
     // By default, the size of area is 1 sector;
-    Create(First, 1);
+    Create(AName, First, 1);
 end;
 
-constructor TSACDArea.Create(First, Size: TLSNumber);
+constructor TSACDArea.Create(AName: String; First, Size: TLSNumber);
 begin
+    inherited Create();
+    FName := AName;
     FFirst := First; FSize := Size;
 end;
 
@@ -749,9 +775,13 @@ begin
     SetLength(FSectors, 0);
 end;
 
+procedure TSACDArea.Dump(AsText: Boolean; Limit: Integer);
+begin
+    Self.Dump(Mikhan.Util.StrUtils.EMPTY, AsText, Limit);
+end;
+
 procedure TSACDArea.Dump(Header: String; AsText: Boolean; Limit: Integer);
 var I: Integer;
-    Sector: TSACDSector;
     Title: String;
 begin
     // No data, No Cry ;)
@@ -762,17 +792,16 @@ begin
 
     // Make a title
     if not IsEmpty(Header) then
-        Title := Header + ' - Sector '
+        Title := Header + ' - Sector'
     else
-        Title := 'SACD Area - Sector ';
+        if not IsEmpty(FName) then
+            Title := FName + ' - Sector'
+        else
+            Title := 'SACD Area - Sector';
 
     // Dump all sectors
     for I := Low(FSectors) to High(FSectors) do
-    begin
-        WriteLn(Title, FSectors[I].Number);
-        Mikhan.Util.Dump.Dump(FSectors[I].RawData, 0, Limit, dfHex);
-        WriteLn();
-    end;
+        FSectors[I].Dump(Title, AsText, Limit);
 end;
 
 function TSACDArea.GetHeader(): String;
@@ -893,7 +922,7 @@ const
 
 constructor TMasterTocArea.Create();
 begin
-    inherited Create(510);
+    inherited Create('Master TOC', 510);
 end;
 
 function TMasterTocArea.GetSpecVersion(): TSACDVersion;
@@ -1004,7 +1033,7 @@ const
 
 constructor TMasterTextArea.Create();
 begin
-    inherited Create(511);
+    inherited Create('Master Text', 511);
 end;
 
 function TMasterTextArea.GetStringByPtr(PtrOffset: Integer): String;
@@ -1072,7 +1101,7 @@ end;
 
 constructor TMasterTocManuf.Create();
 begin
-    inherited Create(519);
+    inherited Create('Master TOC Manuf', 519);
 end;
 
 end.                                                                     { END }
