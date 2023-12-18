@@ -788,7 +788,7 @@ procedure TSACDArea.Dump(Header: String; AsText: Boolean; Limit: Integer);
 var I: Integer;
     Title: String;
 begin
-    // No data, No Cry ;)
+    // No Data, No Cry ;)
     if not HasData() then
     begin
         WriteLn(Header, ' - has no data'); Exit;
