@@ -70,10 +70,6 @@ begin
         '                                            |');
     Writeln(HEADER); Writeln();
 
-    if (PrintTechInfo) then
-        Writeln(TAB, 'Format Version:          ',
-            MasterToc.SpecVersion.ToString);
-
     Writeln(TAB, 'Album Number:            ',
     Album.SequenceNumber, ' (from ', Album.SetSize,')');
 
@@ -122,11 +118,10 @@ begin
 
     if PrintTechInfo then
     begin
-        Channels := MasterToc.GetTextChannels();
-        Writeln(TAB, '2CH_TOC_1_Address:       ', Disc.SChTocAddress1);
-        Writeln(TAB, '2CH_TOC_2_Address:       ', Disc.SChTocAddress2);
-        Writeln(TAB, 'MC_TOC_1_Address:        ', Disc.MChTocAddress1);
-        Writeln(TAB, 'MC_TOC_2_Address:        ', Disc.MChTocAddress2);
+        Writeln(TAB, '2CH_TOC_1_Address:       ', Disc.SChToc1);
+        Writeln(TAB, '2CH_TOC_2_Address:       ', Disc.SChToc2);
+        Writeln(TAB, 'MC_TOC_1_Address:        ', Disc.MChToc1);
+        Writeln(TAB, 'MC_TOC_2_Address:        ', Disc.MChToc2);
         Writeln(TAB, '2CH_TOC_Length:          ', Disc.SChTocLength);
         Writeln(TAB, 'MC_TOC_Length:           ', Disc.MChTocLength);
         Writeln(TAB, '2CH_TOC_3_Address:       ', Disc2.SChToc3);
@@ -144,12 +139,17 @@ begin
         Writeln(TAB, 'Rev_Area_Start_Address:  ', Disc2.RevAreaStart);
         Writeln(TAB, 'Rev_Area_End_Address:    ', Disc2.RevAreaEnd);
         Writeln();
+        Channels := MasterToc.GetTextChannels();
         Writeln(TAB, 'TextChannels:            ', Channels.Count);
         for I := 1 to Channels.Count do
         begin
             Write(TAB, TAB, 'Channel ', I,':           ');
             Writeln(Channels.Channels[I].ToString());
         end;
+        Writeln();
+        Writeln(TAB, 'Spec Version:            ',
+            MasterToc.SpecVersion.ToString);
+        Writeln();
     end;
 end;
 

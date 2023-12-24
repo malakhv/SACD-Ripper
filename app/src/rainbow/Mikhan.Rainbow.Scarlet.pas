@@ -381,22 +381,22 @@ type
         { 2CH_TOC_1_Address: The LSN of the first Sector of Area TOC-1 in the
             2-Channel Stereo Area. If the 2-Channel Stereo Area is not present,
             this value must be zero. }
-        SChTocAddress1: DWord;  // 4 bytes
+        SChToc1: DWord;  // 4 bytes
 
         { 2CH_TOC_2_Address: The LSN of the first Sector of Area TOC-2 in the
             2-Channel Stereo Area. If the 2-Channel Stereo Area is not present,
             this value must be zero. }
-        SChTocAddress2: DWord; // 4 bytes
+        SChToc2: DWord; // 4 bytes
 
         { MC_TOC_1_Address: The LSN of the first Sector of Area TOC-1 in the
             Multi Channel Area. If the Multi Channel Area is not present, this
             value must be zero. }
-        MChTocAddress1: DWord;  // 4 bytes
+        MChToc1: DWord;  // 4 bytes
 
         { MC_TOC_2_Address: The LSN of the first Sector of Area TOC-2 in the
             Multi Channel Area. If the Multi Channel Area is not present, this
             value must be zero. }
-        MChTocAddress2: DWord;  // 4 bytes
+        MChToc2: DWord;  // 4 bytes
 
         { Disc_Flags: The information about SACD disc, Hybrid or not, for
             example. }
@@ -428,7 +428,7 @@ type
         Date: TSACDDate;  // 4 bytes
 
         { Reserved: Just reserved to future using. }
-        Reserved4, Reserved5, Reserved6, Reserved7: Byte;  // 4 bytes
+        Reserved4: DWord;  // 4 bytes
 
         { Returns true, if this disc is Hybrid SACD. }
         function IsHybrid(): Boolean;
@@ -1061,10 +1061,10 @@ begin
         + MASTER_TOC_DISC_INFO_OFFSET));
     Result := PDisc^;
     // We should convert some pieces of data from big-endian to little-endian
-    Result.SChTocAddress1 := SwapEndian(Result.SChTocAddress1);
-    Result.SChTocAddress2 := SwapEndian(Result.SChTocAddress2);
-    Result.MChTocAddress1 := SwapEndian(Result.MChTocAddress1);
-    Result.MChTocAddress2 := SwapEndian(Result.MChTocAddress2);
+    Result.SChToc1 := SwapEndian(Result.SChToc1);
+    Result.SChToc2 := SwapEndian(Result.SChToc2);
+    Result.MChToc1 := SwapEndian(Result.MChToc1);
+    Result.MChToc2 := SwapEndian(Result.MChToc2);
     Result.SChTocLength := SwapEndian(Result.SChTocLength);
     Result.MChTocLength := SwapEndian(Result.MChTocLength);
     Result.Date.Year := SwapEndian(Result.Date.Year);
