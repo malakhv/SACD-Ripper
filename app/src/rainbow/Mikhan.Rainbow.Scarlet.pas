@@ -495,13 +495,16 @@ type
         constructor Create();
     end;
 
-    TMasterTocManuf = class (TSACDArea)
+    {
+        The Manuf_Info can contain information stored by the disc manufacturer.
+        The content and the format of the data is decided by the disc
+        manufacturer. If manufacturer information is not stored in this Sector,
+        all bytes in the Information field must be set to zero.
+    }
+    TMasterManufArea = class (TSACDArea)
     private
         { The offset of significant data in this area. }
         const AREA_DATA_OFFSET = SACD_AREA_HEADER_LENGTH;
-
-    protected
-
     public
 
         { Construct a new instance with default parameters. }
@@ -530,6 +533,7 @@ type
         FFileName: TFileName;           // See FileName property
         FMasterToc: TMasterTocArea;     // See MasterToc property
         FMasterText: TMasterTextArea;   // See TextToc property
+        FMasterManuf: TMasterManufArea; // See MasterManuf property
         FOnLoad: TSACDOnImageLoad;      // See OnLoad property
     protected
         { See OnLoad property. }
@@ -544,6 +548,8 @@ type
 
         { The Text TOC Area data (into Mater TOC). }
         property MasterText: TMasterTextArea read FMasterText;
+
+        property MasterManuf: TMasterManufArea read FMasterManuf;
 
         { Call when data was loaded from SACD image file. }
         property OnLoad: TSACDOnImageLoad read FOnLoad write FOnLoad;
@@ -584,6 +590,7 @@ begin
     inherited;
     FMasterToc := TMasterTocArea.Create();
     FMasterText := TMasterTextArea.Create();
+    FMasterManuf := TMasterManufArea.Create();
 end;
 
 constructor TSACDImage.Create(FileName: TFileName);
@@ -602,6 +609,7 @@ procedure TSACDImage.Clear();
 begin
     FMasterToc.Clear();
     FMasterText.Clear();
+    FMasterManuf.Clear();
     FFileName := EMPTY;
 end;
 
@@ -609,7 +617,8 @@ function TSACDImage.LoadFromFile(const FileName: TFileName): Boolean;
 begin
     Clear();
     FFileName := FileName;
-    Result := FMasterToc.Load(FileName) and FMasterText.Load(FileName);
+    Result := FMasterToc.Load(FileName) and FMasterText.Load(FileName)
+        and FMasterManuf.Load(FileName);
     if not Result then Clear();
     Self.DoLoad(FileName, Result);
 end;
@@ -626,6 +635,8 @@ begin
     FMasterText.Dump(False, 256);
     Writeln();
     FMasterText.Dump(True, 256);
+    Writeln();
+    FMasterManuf.Dump(True, 256);
 end;
 
 {------------------------------------------------------------------------------}
@@ -1072,9 +1083,9 @@ end;
 { TMasterTocManuf                                                              }
 {------------------------------------------------------------------------------}
 
-constructor TMasterTocManuf.Create();
+constructor TMasterManufArea.Create();
 begin
-    inherited Create('Master TOC Manuf', 519);
+    inherited Create('Master Manuf', 519);
 end;
 
 end.                                                                     { END }
