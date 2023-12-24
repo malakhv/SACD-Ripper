@@ -86,6 +86,12 @@ begin
     WriteLn(PROG_COPYRIGHT);
 end;
 
+procedure OnLoad(Sender: TObject; const FileName: TFileName;
+    const Success: Boolean);
+begin
+    WriteLn('Load - ', FileName, ' - ', Success);
+end;
+
 {
     Print information about SACD disc.
 }
@@ -93,10 +99,10 @@ procedure PrintInfo(AFile: TFileName; Debug: Boolean);
 var SACDImg: TSACDImage;
 begin
     WriteLn();
-    WriteLn('SACD: ', AFile);
     SACDImg := TSACDImage.Create();
-    SACDImg.LoadFromFile(AFile);
-    Reports.PrintSACD(SACDImg, piAll, True);
+    SACDImg.OnLoad := OnLoad;
+    if SACDImg.LoadFromFile(AFile) then
+        Reports.PrintSACD(SACDImg, piAll, True);
     WriteLn();
     // Just for testing and debug
     if Debug then

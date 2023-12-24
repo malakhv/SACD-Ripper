@@ -519,7 +519,7 @@ type
         Event: Call when data was loaded from SACD image file.
     }
     TSACDOnImageLoad = procedure (Sender: TObject;
-        const FileName: TFileName; const Success: Boolean) of object;
+        const FileName: TFileName; const Success: Boolean);// of object;
 
     {
         The SACD image. This class contains properties and methods to retrieve
@@ -546,7 +546,7 @@ type
         property MasterText: TMasterTextArea read FMasterText;
 
         { Call when data was loaded from SACD image file. }
-        property OnLoad: TSACDOnImageLoad read FOnLoad;
+        property OnLoad: TSACDOnImageLoad read FOnLoad write FOnLoad;
 
         { Loads data from specified file. }
         function LoadFromFile(const FileName: TFileName): Boolean;
@@ -607,8 +607,8 @@ end;
 
 function TSACDImage.LoadFromFile(const FileName: TFileName): Boolean;
 begin
-    FFileName := FileName;
     Clear();
+    FFileName := FileName;
     Result := FMasterToc.Load(FileName) and FMasterText.Load(FileName);
     if not Result then Clear();
     Self.DoLoad(FileName, Result);
@@ -616,7 +616,7 @@ end;
 
 procedure TSACDImage.DoLoad(const FileName: TFileName; const Success: Boolean);
 begin
-    if Assigned(FOnLoad) then FOnLoad(Self, FFileName, Success);
+    if Assigned(FOnLoad) then FOnLoad(Self, FileName, Success);
 end;
 
 procedure TSACDImage.Dump();
@@ -624,6 +624,7 @@ begin
     FMasterToc.Dump(False, 256);
     Writeln();
     FMasterText.Dump(False, 256);
+    Writeln();
     FMasterText.Dump(True, 256);
 end;
 
@@ -767,22 +768,24 @@ procedure TSACDArea.Dump(Header: String; AsText: Boolean; Limit: Integer);
 var I: Integer;
     Title: String;
 begin
-    // No Data, No Cry ;)
-    if not HasData() then
-    begin
-        WriteLn(Header, ' - has no data'); Exit;
-    end;
 
     // Make a title
     if not IsEmpty(Header) then
-        Title := Header + ' - Sector'
+        Title := Header
     else
         if not IsEmpty(FName) then
-            Title := FName + ' - Sector'
+            Title := FName
         else
-            Title := 'SACD Area - Sector';
+            Title := 'SACD Area';
+
+    // No Data, No Cry ;)
+    if not HasData() then
+    begin
+        WriteLn(Title, ' - EMPTY'); Exit;
+    end;
 
     // Dump all sectors
+    Title := Title + ' - Sector';
     for I := Low(FSectors) to High(FSectors) do
         FSectors[I].Dump(Title, AsText, Limit);
 end;
@@ -820,6 +823,7 @@ end;
 function TSACDArea.Load(const Stream: TStream): Boolean;
 var Offset, Current, i: Integer;
 begin
+    Result := True;
     // Clear current data
     Clear();
     SetLength(FSectors, Self.Size);
@@ -839,9 +843,9 @@ begin
             Inc(Current);
         end;
     except
-        Clear(); Raise;
+        Clear(); //Raise;
+        Result := False;
     end;
-    Result := True;
 end;
 
 {------------------------------------------------------------------------------}
