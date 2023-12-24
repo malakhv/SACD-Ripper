@@ -35,8 +35,7 @@ program sacd;                                                        { PROGRAM }
 
 uses
     SysUtils, Classes, ProgVer, ProgMsg, Reports, Mikhan.Util.StrUtils,
-    Mikhan.Util.AppArgs, Mikhan.Util.AppLogs, Mikhan.Rainbow.Scarlet,
-    Mikhan.Util.Dump;
+    Mikhan.Util.AppArgs, Mikhan.Util.AppLogs, Mikhan.Rainbow.Scarlet;
 
 const
 
