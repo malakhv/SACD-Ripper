@@ -630,13 +630,15 @@ end;
 
 procedure TSACDImage.Dump();
 begin
-    FMasterToc.Dump(False, 256);
+    FMasterToc.Dump(False, 512);
     Writeln();
-    FMasterText.Dump(False, 256);
+    FMasterToc.Dump(True, 512);
     Writeln();
-    FMasterText.Dump(True, 256);
+    FMasterText.Dump(False, 512);
     Writeln();
-    FMasterManuf.Dump(True, 256);
+    FMasterText.Dump(True, 512);
+    Writeln();
+    FMasterManuf.Dump(True, 512);
 end;
 
 {------------------------------------------------------------------------------}
