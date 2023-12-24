@@ -61,41 +61,45 @@
 {    - Part 3, Copy Protection Specification.                                  }
 {                                                                              }
 { This Unit was develop folloving Part 1 and Part 2 of Super Audio CD System   }
-{ Description.                                                                 }
+{ Description (Super Audio CD Specification Version 2.0).                      }
 {------------------------------------------------------------------------------}
 
 {------------------------------------------------------------------------------}
 {                                 Definitions                                  }
 {                                                                              }
-{ Album    - An Album consists of one or more discs. All discs in an Album     }
-{            must have the same Album Catalog Number.                          }
+{ Album     - An Album consists of one or more discs. All discs in an Album    }
+{             must have the same Album Catalog Number.                         }
 {                                                                              }
-{ DSD      - Direct Stream Digital, the one bit audio signal. A DSD signal can }
-{            either be DST Coded DSD, or Plain DSD.                            }
+{ DSD       - Direct Stream Digital, the one bit audio signal. A DSD signal    }
+{             can either be DST Coded DSD, or Plain DSD.                       }
 {                                                                              }
-{ EOS      - End of Sector.                                                    }
+{ EOS       - End of Sector.                                                   }
 {                                                                              }
-{ Frame    - A block of data belonging to a certain Time Code. The data can be }
-{            either Audio Data, Supplementary Data, Padding or it can be       }
-{            Multiplexed. The playing time of a Frame is 1/75 Sec.             }
+{ Frame     - A block of data belonging to a certain Time Code. The data can   }
+{             be either Audio Data, Supplementary Data, Padding or it can be   }
+{             Multiplexed. The playing time of a Frame is 1/75 Sec.            }
 {                                                                              }
-{ Reserved - All fields labeled Reserved are reserved for future               }
-{            standardization. All Reserved fields must be set to zero.         }
+{ Reserved  - All fields labeled Reserved are reserved for future              }
+{             standardization. All Reserved fields must be set to zero.        }
 {                                                                              }
-{ Sector   - The 2048 bytes of Main Data in a Data Frame (for more details see }
-{            Part 1 of Super Audio CD System Description (chapters 4.2.2 and   }
-{            4.2.7).                                                           }
+{ SACD Spec - The Super Audio CD Specification, sometimes the version of this  }
+{             specification is very important. This Unit develop folloving     }
+{             SACD Spec Version 2.0.                                           }
 {                                                                              }
-{ TNO      - Track Number. A Track Number is the sequence number of a Track.   }
-{            The first Track Number in an Audio Area is one. The maximum       }
-{            number of Tracks in an Audio Area is 255.                         }
+{ Sector    - The 2048 bytes of Main Data in a Data Frame (for more details    }
+{             see Part 1 of Super Audio CD System Description (chapters 4.2.2  }
+{             and 4.2.7).                                                      }
 {                                                                              }
-{ TOC      - Table Of Contents. Album and disc related information is stored   }
-{            in the Master TOC. Area and track related information is stored   }
-{            in the Area TOC.                                                  }
+{ TNO       - Track Number. A Track Number is the sequence number of a Track.  }
+{             The first Track Number in an Audio Area is one. The maximum      }
+{             number of Tracks in an Audio Area is 255.                        }
 {                                                                              }
-{ Track    - A Track is a contiguous area on the disc with audio information   }
-{            and with one and the same Track Number.                           }
+{ TOC       - Table Of Contents. Album and disc related information is stored  }
+{             in the Master TOC. Area and track related information is stored  }
+{             in the Area TOC.                                                 }
+{                                                                              }
+{ Track     - A Track is a contiguous area on the disc with audio information  }
+{             and with one and the same Track Number.                          }
 {------------------------------------------------------------------------------}
 
 unit Mikhan.Rainbow.Scarlet;                                            { UNIT }
@@ -119,7 +123,8 @@ uses SysUtils, Classes, Mikhan.Rainbow.Types;
 { order to the Physical Sectors on the disc. The Logical Sector Number 0 must  }
 { be assigned to Sector Start PSN of Physical Layer 0.                         }
 {                                                                              }
-{ For more details, please see Part 2 of Super Audio CD System Description.    }
+{ For more details, please see Part 2 of Super Audio CD System Description     }
+{ (section 2.1).                                                               }
 {------------------------------------------------------------------------------}
 
 const
@@ -194,23 +199,23 @@ type
     TSACDSectors = array of TSACDSector;
 
 {------------------------------------------------------------------------------}
-{                            The SACD disc Area                                }
+{                             The SACD Volume Space                            }
 {                                                                              }
 { The SACD Volume Space of a disc is split into: File System Area, DTCP Area,  }
 { EKB1 Area, Master TOC Area, Rev TOC Area, Audio Areas, Extension Area, EKB2  }
 { Area, Revocation Data Area and Extra Data Area.                              }
 {                                                                              }
-{ In discs according to the Super Audio CD Specification Version 1.3 or lower, }
-{ the EKB1 Area, the Rev TOC Area, the Extension Area, the EKB2 Area and the   }
-{ Revocation Data Area do not exist.                                           }
+{ In discs according to the SACD Spec Version 1.3 or lower, the EKB1 Area, the }
+{ Rev TOC Area, the Extension Area, the EKB2 Area and the Revocation Data Area }
+{ do not exist.                                                                }
 {                                                                              }
-{ The general structure of the Volume Space shows on following figur:          }
+{ The general structure of the Volume Space is shown on following figure:      }
 {                                                                              }
 {   0                          510          540       544                      }
 {   +-------------+------+------+------------+---------+------------------+    }
 {   | File System | DTCP | EKB1 | Master TOC | Rev TOC | 2-Channel Stereo |    }
 {   |     Area    | Area | Area |    Area    |   Area  |       Area       |    }
-{   +-------------+----------------------------------+--------------------+    }
+{   +-------------+-------------+------------+---------+------------------+    }
 {                                                                              }
 {   +---------------+-----------+------+------------+---------+-----------+    }
 {   | Multi Channel | Extension | EKB2 | Revocation |     Extra Data      |    }
@@ -220,14 +225,13 @@ type
 { If a 2-Channel Stereo Area is present, the 2-Channel Stereo Area must start  }
 { at LSN 544. If a 2-Channel Stereo Area is not present, the Multi Channel     }
 { Area must start at LSN 544. Note that the 2-Channel Stereo Area must be      }
-{ present on discs according to the Super Audio CD Specification Version 2.0   }
-{ or higher, and that the 2-Channel Stereo Area optionally is present on discs }
-{ according to the Super Audio CD Specification Version 1.3 or lower.          }
+{ present on discs according to the SACD Spec Version 2.0 or higher, and that  }
+{ the 2-Channel Stereo Area optionally is present on discs according to the    }
+{ SACD Spec Version 1.3 or lower.                                              }
 {                                                                              }
 { For more details, please see Part 2 of Super Audio CD System Description     }
 { (section 2.2).                                                               }
 {------------------------------------------------------------------------------}
-
 const
 
     { The default length of SACD Area's header, in bytes. }
@@ -287,8 +291,8 @@ type
         procedure Dump(AsText: Boolean; Limit: Integer); overload;
 
         { Print a dump of this SACD Area. }
-        procedure Dump(Header: String; AsText: Boolean;
-            Limit: Integer); overload;
+        procedure Dump(Header: String; AsText: Boolean; Limit: Integer);
+            overload;
 
         { Construct a new instance of TSACDArea class with specified
             parameters. }
@@ -314,29 +318,21 @@ type
 {                                                                              }
 { For more details, please see Part 2 of Super Audio CD System Description     }
 { (sections 3.1 and 3.2).                                                      }
-{                                                                              }
+{------------------------------------------------------------------------------}
+
+{------------------------------------------------------------------------------}
 {                               Master TOC Area                                }
 {                                                                              }
 { The Master TOC Area contains three identical copies of the Master TOC. The   }
 { Master TOC has a fixed size of 10 Sectors. The three instances of the Master }
 { TOC are stored starting at LSN 510, 520, 530. The structure of the Master    }
-{ TOC shows on following figure:                                               }
+{ TOC is shown on following figure:                                            }
 {                                                                              }
 {       +--------------+----------------------------------+------------+       }
 {       | Master TOC 0 | 8 x Text Channels (Master Texts) | Manuf Info |       }
 {       +--------------+----------------------------------+------------+       }
 {                                                                              }
 {------------------------------------------------------------------------------}
-
-{ Master_TOC_0()
-    M_TOC_0_Header()
-    Album_Info()
-    Disc_Info()
-    Text_Channels()
-    Disc_WebLink_Info()
-    Disc_Info_2()
-    Reserved }
-
 type
 
     {
@@ -497,30 +493,27 @@ type
         EDataEnd: DWord;  // 4 bytes
 
         { EKB1_Area_Address: The LSN of the first Sector of the EKB1 Area. In
-            discs according to this version of the Super Audio CD Specification
-            this value must be 448. A zero value means the EKB1 Area is not
-            present. The EKB1 Area is not present in discs according to the
-            Super Audio CD Specification version 1.3 or lower. }
+            discs according to this version of the SACD Spec this value must be
+            448. A zero value means the EKB1 Area is not present. The EKB1 Area
+            is not present in discs according to the SACD Spec Version 1.3 or
+            lower. }
         EKB1Area: DWord;  // 4 bytes
 
         { EKB2_Area_Address: The LSN of the first Sector of the EKB2 Area. A
             zero value means the EKB2 Area is not present. The EKB2 Area is not
-            present in discs according to the Super Audio CD Specification
-            version 1.3 or lower. }
+            present in discs according to the SACD Spec Version 1.3 or lower. }
         EKB2Area: DWord;  // 4 bytes
 
         { Rev_Area_Start_Address: The LSN of the first Sector of the Revocation
             Data Area. If the Revocation Data Area is not present, this value
             must be zero. The Revocation Data Area is not present in discs
-            according to the Super Audio CD Specification version 1.3 or
-            lower. }
+            according to the SACD Spec Version 1.3 or lower. }
         RevAreaStart: DWord;  // 4 bytes
 
         { Rev_Area_End_Address: The LSN of the last Sector of the Revocation
             Data Area. If the Revocation Data Area is not present, this value
             must be zero. The Revocation Data Area is not present in discs
-            according to the Super Audio CD Specification version 1.3 or
-            lower. }
+            according to the SACD Spec Version 1.3 or lower. }
         RevAreaEnd: DWord;  // 4 bytes
 
         { Reserved: Just reserved to future using. }
@@ -618,6 +611,29 @@ type
         constructor Create();
 
     end;
+
+{------------------------------------------------------------------------------}
+{                                 Audio Areas                                  }
+{                                                                              }
+{ The 2-Channel Stereo Area and the Multi Channel Area are called Audio Areas. }
+{                                                                              }
+{ Each Audio Area contains Area TOC-1, Track Area, Area TOC-2 and optionally   }
+{ Area TOC-3 and Area TOC-4. Area TOC-2 is a copy of Area TOC-1, Area TOC-4 is }
+{ a copy of Area TOC-3. Note that discs according to the SACD Spec Version 1.3 }
+{ or lower only contain Area TOC-1 and Area TOC-2.                             }
+{                                                                              }
+{ The Track Area contains the Tracks with audio information. The audio info    }
+{ is stored in Audio Tracks.                                                   }
+{                                                                              }
+{ The structure of an Audio Area is shown on following figure:                 }
+{                                                                              }
+{      +------------+------------+------------+------------+------------+      }
+{      | Area TOC-1 | Area TOC-3 | Track Area | Area TOC-4 | Area TOC-2 |      }
+{      +------------+------------+------------+------------+------------+      }
+{                                                                              }
+{ For more details, please see Part 2 of Super Audio CD System Description     }
+{ (sections 3.1 and 3.2).                                                      }
+{------------------------------------------------------------------------------}
 
 {------------------------------------------------------------------------------}
 {                                    SACD                                      }
