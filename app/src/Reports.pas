@@ -92,12 +92,14 @@ var
     MasterToc: TMasterTocArea;
     MasterText: TMasterTextArea;
     Disc: TMasterTocDisc;
+    Disc2: TMasterTocDiscTwo;
     Channels: TSACDTextChannels;
     I: Integer;
 begin
     MasterToc := SACDImg.MasterToc;
     MasterText := SACDImg.MasterText;
     Disc := MasterToc.GetDiscInfo();
+    Disc2 := MasterToc.GetDiscInfoTwo();
 
     Writeln(HEADER);
     Writeln('| Disc Info',
@@ -121,12 +123,26 @@ begin
     if PrintTechInfo then
     begin
         Channels := MasterToc.GetTextChannels();
-        Writeln(TAB, 'SChTocAddress1:          ', Disc.SChTocAddress1);
-        Writeln(TAB, 'SChTocAddress2:          ', Disc.SChTocAddress2);
-        Writeln(TAB, 'MChTocAddress1:          ', Disc.MChTocAddress1);
-        Writeln(TAB, 'MChTocAddress2:          ', Disc.MChTocAddress2);
-        Writeln(TAB, 'SChTocLength:            ', Disc.SChTocLength);
-        Writeln(TAB, 'MChTocLength:            ', Disc.MChTocLength);
+        Writeln(TAB, '2CH_TOC_1_Address:       ', Disc.SChTocAddress1);
+        Writeln(TAB, '2CH_TOC_2_Address:       ', Disc.SChTocAddress2);
+        Writeln(TAB, 'MC_TOC_1_Address:        ', Disc.MChTocAddress1);
+        Writeln(TAB, 'MC_TOC_2_Address:        ', Disc.MChTocAddress2);
+        Writeln(TAB, '2CH_TOC_Length:          ', Disc.SChTocLength);
+        Writeln(TAB, 'MC_TOC_Length:           ', Disc.MChTocLength);
+        Writeln(TAB, '2CH_TOC_3_Address:       ', Disc2.SChToc3);
+        Writeln(TAB, '2CH_TOC_4_Address:       ', Disc2.SChToc4);
+        Writeln(TAB, 'MC_TOC_3_Address:        ', Disc2.MChToc3);
+        Writeln(TAB, 'MC_TOC_4_Address:        ', Disc2.MChToc4);
+        Writeln(TAB, '2CH_TOC_B_Length:        ', Disc2.SChTocBLength);
+        Writeln(TAB, 'MC_TOC_B_Length:         ', Disc2.MChTocBLength);
+        Writeln(TAB, 'E_TOC_Address:           ', Disc2.ETocAddress);
+        Writeln(TAB, 'E_TOC_Length:            ', Disc2.ETocLength);
+        Writeln(TAB, 'E_Data_Start_Address:    ', Disc2.EDataStart);
+        Writeln(TAB, 'E_Data_End_Address:      ', Disc2.EDataEnd);
+        Writeln(TAB, 'EKB1_Area_Address:       ', Disc2.EKB1Area);
+        Writeln(TAB, 'EKB2_Area_Address:       ', Disc2.EKB2Area);
+        Writeln(TAB, 'Rev_Area_Start_Address:  ', Disc2.RevAreaStart);
+        Writeln(TAB, 'Rev_Area_End_Address:    ', Disc2.RevAreaEnd);
         Writeln();
         Writeln(TAB, 'TextChannels:            ', Channels.Count);
         for I := 1 to Channels.Count do

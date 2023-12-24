@@ -327,6 +327,16 @@ type
 {       +--------------+----------------------------------+------------+       }
 {                                                                              }
 {------------------------------------------------------------------------------}
+
+{ Master_TOC_0()
+    M_TOC_0_Header()
+    Album_Info()
+    Disc_Info()
+    Text_Channels()
+    Disc_WebLink_Info()
+    Disc_Info_2()
+    Reserved }
+
 type
 
     {
@@ -426,6 +436,99 @@ type
     end;
     PMasterTocDisc = ^TMasterTocDisc;
 
+    {
+        Disc_Info2: The additional information about SACD Disc in Master TOC
+        Area (64 bytes in total).
+    }
+    TMasterTocDiscTwo = packed record  // 64 bytes in total
+
+        { 2CH_TOC_3_Address: The LSN of the first Sector of Area TOC-3 in the
+            2-Channel Stereo Area. A zero value means that Area TOC-3 is not
+            available in the 2-Channel Stereo Area. }
+        SChToc3: DWord;  // 4 bytes
+
+        { 2CH_TOC_4_Address: The LSN of the first Sector of Area TOC-4 in the
+            2-Channel Stereo Area. A zero value means that Area TOC-4 is not
+            available in the 2-Channel Stereo Area. }
+        SChToc4: DWord;  // 4 bytes
+
+        { MC_TOC_3_Address: The LSN of the first Sector of Area TOC-3 in the
+            Multi Channel Area. A zero value means that Area TOC-3 is not
+            available in the Multi Channel Area. }
+        MChToc3: DWord;  // 4 bytes
+
+        { MC_TOC_4_Address: The LSN of the first Sector of Area TOC-4 in the
+            Multi Channel Area. A zero value means that Area TOC-4 is not
+            available in the Multi Channel Area. }
+        MChToc4: DWord;  // 4 bytes
+
+        { Reserved: Just reserved to future using. }
+        Reserved1: DWord; // 4 bytes
+
+        { 2CH_TOC_B_Length: The length in Sectors of Area TOC-B in the 2-Channel
+            Stereo Area. If Area TOC-B is not present in the 2-Channel Stereo
+            Area, or if the 2-Channel Stereo Area is not present, this value
+            must be zero. }
+        SChTocBLength: Word;  // 2 bytes
+
+        { MC_TOC_B_Length: The length in Sectors of Area TOC-B in the Multi
+            Channel Area. If Area TOC-B is not present in the Multi Channel
+            Area, or if the Multi Channel Area is not present, this value must
+            be zero. }
+        MChTocBLength: Word;  // 2 bytes
+
+        { E_TOC_Address: The LSN of the first Sector of the Extension TOC. If
+            the Extension Area is not present, this value must be zero. }
+        ETocAddress: DWord;  // 4 bytes
+
+        { E_TOC_Length: The length in Sectors of the Extension TOC. If the
+            Extension Area is not present, this value must be zero. }
+        ETocLength: Word;  // 2 bytes
+
+        { Reserved: Just reserved to future using. }
+        Reserved2: Word;  // 2 bytes
+
+        { E_Data_Start_Address: The LSN of the first Sector of Extension Data.
+            If the Extension Area is not present, this value must be zero. }
+        EDataStart: DWord;  // 4 bytes
+
+        { E_Data_End_Address: The LSN of the last Sector of the Extension Data.
+            If the Extension Area is not present, this value must be zero. }
+        EDataEnd: DWord;  // 4 bytes
+
+        { EKB1_Area_Address: The LSN of the first Sector of the EKB1 Area. In
+            discs according to this version of the Super Audio CD Specification
+            this value must be 448. A zero value means the EKB1 Area is not
+            present. The EKB1 Area is not present in discs according to the
+            Super Audio CD Specification version 1.3 or lower. }
+        EKB1Area: DWord;  // 4 bytes
+
+        { EKB2_Area_Address: The LSN of the first Sector of the EKB2 Area. A
+            zero value means the EKB2 Area is not present. The EKB2 Area is not
+            present in discs according to the Super Audio CD Specification
+            version 1.3 or lower. }
+        EKB2Area: DWord;  // 4 bytes
+
+        { Rev_Area_Start_Address: The LSN of the first Sector of the Revocation
+            Data Area. If the Revocation Data Area is not present, this value
+            must be zero. The Revocation Data Area is not present in discs
+            according to the Super Audio CD Specification version 1.3 or
+            lower. }
+        RevAreaStart: DWord;  // 4 bytes
+
+        { Rev_Area_End_Address: The LSN of the last Sector of the Revocation
+            Data Area. If the Revocation Data Area is not present, this value
+            must be zero. The Revocation Data Area is not present in discs
+            according to the Super Audio CD Specification version 1.3 or
+            lower. }
+        RevAreaEnd: DWord;  // 4 bytes
+
+        { Reserved: Just reserved to future using. }
+        Reserverd3, Reserverd4: DWord; // 8 bytes
+
+    end;
+    PMasterTocDiscTwo = ^TMasterTocDiscTwo;
+
 type
 
     {
@@ -455,6 +558,10 @@ type
         { Returns the information about SACD Disc which stored in Master TOC
             Area. }
         function GetDiscInfo(): TMasterTocDisc;
+
+        { Returns the additional information about SACD Disc which stored in
+            Master TOC Area. }
+        function GetDiscInfoTwo(): TMasterTocDiscTwo;
 
         { Returns the definitions of Text Channels in this Area. }
         function GetTextChannels(): TSACDTextChannels;
@@ -906,6 +1013,9 @@ const
     { The offset of SACD Disc Web Link Info this area. }
     MASTER_TOC_DISC_WEB_LINK_OFFSET = 168;
 
+    { The offset of SACD Disc additional information in this area. }
+    MASTER_TOC_DISC_INFO_2_OFFSET = MASTER_TOC_DISC_WEB_LINK_OFFSET + 128;
+
 constructor TMasterTocArea.Create();
 begin
     inherited Create('Master TOC', 510);
@@ -965,6 +1075,30 @@ begin
     // Fix CatalogNumber string
     Result.CatalogNumber := Trim(Self[0]^.ToString(
         MASTER_TOC_DISC_CATALOG_NUMBER_OFFSET, 16));
+end;
+
+function TMasterTocArea.GetDiscInfoTwo(): TMasterTocDiscTwo;
+var PDisc: PMasterTocDiscTwo;
+begin
+    if not HasData() then Exit;
+    PDisc := PMasterTocDiscTwo((PByte(@(Self[0]^.RawData))
+        + MASTER_TOC_DISC_INFO_2_OFFSET));
+    Result := PDisc^;
+    // We should convert some pieces of data from big-endian to little-endian
+    Result.SChToc3 := SwapEndian(Result.SChToc3);
+    Result.SChToc4 := SwapEndian(Result.SChToc4);
+    Result.MChToc3 := SwapEndian(Result.MChToc3);
+    Result.MChToc4 := SwapEndian(Result.MChToc4);
+    Result.SChTocBLength := SwapEndian(Result.SChTocBLength);
+    Result.MChTocBLength := SwapEndian(Result.MChTocBLength);
+    Result.ETocAddress := SwapEndian(Result.ETocAddress);
+    Result.ETocLength := SwapEndian(Result.ETocLength);
+    Result.EDataStart := SwapEndian(Result.EDataStart);
+    Result.EDataEnd := SwapEndian(Result.EDataEnd);
+    Result.EKB1Area := SwapEndian(Result.EKB1Area);
+    Result.EKB2Area := SwapEndian(Result.EKB2Area);
+    Result.RevAreaStart := SwapEndian(Result.RevAreaStart);
+    Result.RevAreaEnd := SwapEndian(Result.RevAreaEnd);
 end;
 
 function TMasterTocArea.GetTextChannels(): TSACDTextChannels;
