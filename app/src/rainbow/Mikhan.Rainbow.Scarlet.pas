@@ -274,6 +274,12 @@ type
         { Returns true, if this instance has a data. }
         function HasData(): Boolean;
 
+        { Load area data from a file. }
+        function Load(const FileName: TFileName): Boolean; overload; virtual;
+
+        { Load area data from a stream. }
+        function Load(const Stream: TStream): Boolean; overload; virtual;
+
         { Clears all sectors' data. }
         procedure Clear(); virtual;
 
@@ -284,20 +290,14 @@ type
         procedure Dump(Header: String; AsText: Boolean;
             Limit: Integer); overload;
 
-        { Load area data from a file. }
-        procedure Load(var AFile: File); overload; virtual;
-
-        { Load area data from a stream. }
-        procedure Load(const AStream: TStream); overload; virtual;
-
         { Construct a new instance of TSACDArea class with specified
             parameters. }
         constructor Create(AName: String; First: TLSNumber); virtual; overload;
 
         { Construct a new instance of TSACDArea class with specified
             parameters. }
-        constructor Create(AName: String; First,
-            Size: TLSNumber); virtual; overload;
+        constructor Create(AName: String; First, Size: TLSNumber); virtual;
+            overload;
 
         { Free all related resources. }
         destructor Destroy; override;
@@ -519,7 +519,7 @@ type
         Event: Call when data was loaded from SACD image file.
     }
     TSACDOnImageLoad = procedure (Sender: TObject;
-        const FileName: TFileName) of object;
+        const FileName: TFileName; const Success: Boolean) of object;
 
     {
         The SACD image. This class contains properties and methods to retrieve
@@ -532,10 +532,8 @@ type
         FMasterText: TMasterTextArea;   // See TextToc property
         FOnLoad: TSACDOnImageLoad;      // See OnLoad property
     protected
-        { Loads data from known SACD image file. }
-        function Load(): Boolean;
         { See OnLoad property. }
-        procedure DoLoad();
+        procedure DoLoad(const FileName: TFileName; const Success: Boolean);
     public
 
         { The known SACD image file name. }
@@ -551,7 +549,7 @@ type
         property OnLoad: TSACDOnImageLoad read FOnLoad;
 
         { Loads data from specified file. }
-        function LoadFromFile(FileName: TFileName): Boolean;
+        function LoadFromFile(const FileName: TFileName): Boolean;
 
         { Clears all data into this instance. }
         procedure Clear();
@@ -607,37 +605,18 @@ begin
     FFileName := EMPTY;
 end;
 
-function TSACDImage.Load(): Boolean;
-var InStream: TStream;
-begin
-    Result := True;
-    try
-        try
-            InStream := TFileStream.Create(Self.FileName, fmOpenRead);
-            FMasterToc.Load(InStream);
-            FMasterText.Load(InStream);
-        except
-            Clear(); Result := False;
-        end;
-    finally
-        try
-            InStream.Free();
-        except
-            Clear(); Result := False;
-        end;
-    end;
-    if Result then DoLoad();
-end;
-
-function TSACDImage.LoadFromFile(FileName: TFileName): Boolean;
+function TSACDImage.LoadFromFile(const FileName: TFileName): Boolean;
 begin
     FFileName := FileName;
-    Result := Load();
+    Clear();
+    Result := FMasterToc.Load(FileName) and FMasterText.Load(FileName);
+    if not Result then Clear();
+    Self.DoLoad(FileName, Result);
 end;
 
-procedure TSACDImage.DoLoad();
+procedure TSACDImage.DoLoad(const FileName: TFileName; const Success: Boolean);
 begin
-    if Assigned(FOnLoad) then FOnLoad(Self, FFileName);
+    if Assigned(FOnLoad) then FOnLoad(Self, FFileName, Success);
 end;
 
 procedure TSACDImage.Dump();
@@ -826,34 +805,19 @@ begin
     Result := Length(FSectors) > 0;
 end;
 
-procedure TSACDArea.Load(var AFile: File);
-var i, sector, offset, sz: integer;
+function TSACDArea.Load(const FileName: TFileName): Boolean;
+var Stream: TStream;
 begin
-    // Clear current data
-    Clear();
-    SetLength(FSectors, Size);
-
-    // Open input file read and setting up size of read chunk to 1 byte
-    Reset(AFile, 1);
-
-    // Read data
-    sector := First;
-    offset := GetSectorOffset(First);
-    sz := SizeOf(TLSData);
+    Result := False;
     try
-        Seek(AFile, offset);
-        for i:= Low(FSectors) to High(FSectors) do
-        begin
-            FSectors[i].Number := sector;
-            BlockRead(AFile, FSectors[i].RawData, sz);
-            Inc(sector);
-        end;
+        Stream := TFileStream.Create(FileName, fmOpenRead);
+        Result := Self.Load(Stream);
     finally
-        CloseFile(AFile);
+        Stream.Free();
     end;
 end;
 
-procedure TSACDArea.Load(const AStream: TStream);
+function TSACDArea.Load(const Stream: TStream): Boolean;
 var Offset, Current, i: Integer;
 begin
     // Clear current data
@@ -861,22 +825,23 @@ begin
     SetLength(FSectors, Self.Size);
 
     // Empty input?
-    if AStream.Size <= 0 then Exit;
+    if Stream.Size <= 0 then Exit;
 
     // Read raw data
     Current := First;
     Offset := GetSectorOffset(Self.First);
     try
-        if Offset > 0 then AStream.Seek(Offset, soBeginning);
+        if Offset > 0 then Stream.Seek(Offset, soBeginning);
         for i:= Low(FSectors) to High(FSectors) do
         begin
             FSectors[i].Number := Current;
-            AStream.ReadBuffer(FSectors[i].RawData, SizeOf(TLSData));
+            Stream.ReadBuffer(FSectors[i].RawData, SizeOf(TLSData));
             Inc(Current);
         end;
     except
         Clear(); Raise;
     end;
+    Result := True;
 end;
 
 {------------------------------------------------------------------------------}
