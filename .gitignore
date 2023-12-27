@@ -2,5 +2,6 @@ build
 
 *.o
 *.ppu
+*.exe
 
 .DS_Store

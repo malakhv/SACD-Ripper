@@ -1,0 +1,64 @@
+object MainForm: TMainForm
+  Left = 514
+  Height = 357
+  Top = 225
+  Width = 513
+  Caption = 'SACD Ripper'
+  ClientHeight = 357
+  ClientWidth = 513
+  Menu = MainMenu
+  LCLVersion = '3.0.0.3'
+  object StatusBar: TStatusBar
+    Left = 0
+    Height = 23
+    Top = 334
+    Width = 513
+    Panels = <    
+      item
+        Width = 50
+      end>
+    SimplePanel = False
+  end
+  object ActionList: TActionList
+    Left = 384
+    Top = 8
+    object ActFileOpen: TFileOpen
+      Category = 'File'
+      Caption = 'О&ткрыть ...'
+      Hint = 'Открыть'
+      ShortCut = 16463
+      OnAccept = ActFileOpenAccept
+      OnCancel = ActFileOpenCancel
+    end
+    object ActExit: TFileExit
+      Category = 'File'
+      Caption = 'В&ыход'
+      Hint = 'Выход'
+    end
+  end
+  object MainMenu: TMainMenu
+    Left = 456
+    Top = 8
+    object MenuFile: TMenuItem
+      Caption = '&Файл'
+      object MenuOpen: TMenuItem
+        Action = ActFileOpen
+      end
+      object MenuSep01: TMenuItem
+        Caption = '-'
+      end
+      object MenuItem5: TMenuItem
+        Caption = '&Сохранить'
+      end
+      object MenuItem6: TMenuItem
+        Caption = 'Сохранить &как'
+      end
+      object MenuSep02: TMenuItem
+        Caption = '-'
+      end
+      object MenuExit: TMenuItem
+        Action = ActExit
+      end
+    end
+  end
+end
