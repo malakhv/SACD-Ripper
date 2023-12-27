@@ -1,6 +1,7 @@
 unit MainUnit;
 
-{$mode objfpc}{$H+}
+{$mode objfpc}
+{$H+}
 
 interface
 
@@ -40,11 +41,13 @@ implementation
 
 {$R *.lfm}
 
+uses Mikhan.Util.StrUtils;
+
 { Common }
 
 procedure ClearStatusBar();
 begin
-    MainForm.StatusBar.Panels[0].Text := '';
+    MainForm.StatusBar.Panels[0].Text := EMPTY;
 end;
 
 { TMainForm }
