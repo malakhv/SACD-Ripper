@@ -1,7 +1,7 @@
 object MainForm: TMainForm
-  Left = 455
+  Left = 588
   Height = 357
-  Top = 274
+  Top = 311
   Width = 513
   Caption = 'SACD Ripper'
   ClientHeight = 357
