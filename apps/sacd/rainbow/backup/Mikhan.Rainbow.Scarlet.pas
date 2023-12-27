@@ -754,7 +754,7 @@ end;
 
 function TSACDImage.IsSACDImage(): Boolean;
 begin
-    Result := FMasterToc.HasData() and (FMasterToc.Header = 'SACDMTOC');
+    Result := FMasterToc.HasData() and FMasterToc.Header = 'SACDMTOC';
 end;
 
 procedure TSACDImage.DoLoad(const FileName: TFileName; const Success: Boolean);

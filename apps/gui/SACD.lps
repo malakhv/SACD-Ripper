@@ -8,10 +8,9 @@
       <Unit>
         <Filename Value="SACD.lpr"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="1"/>
-        <CursorPos X="11" Y="8"/>
-        <UsageCount Value="21"/>
-        <Loaded Value="True"/>
+        <EditorIndex Value="-1"/>
+        <CursorPos X="64" Y="13"/>
+        <UsageCount Value="22"/>
       </Unit>
       <Unit>
         <Filename Value="MainUnit.pas"/>
@@ -20,11 +19,28 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <IsVisibleTab Value="True"/>
-        <TopLine Value="20"/>
-        <CursorPos Y="54"/>
-        <UsageCount Value="21"/>
+        <TopLine Value="45"/>
+        <CursorPos X="36" Y="73"/>
+        <UsageCount Value="22"/>
         <Loaded Value="True"/>
         <LoadedDesigner Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="..\sacd\rainbow\Mikhan.Rainbow.Types.pas"/>
+        <IsPartOfProject Value="True"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="136"/>
+        <CursorPos Y="136"/>
+        <UsageCount Value="21"/>
+      </Unit>
+      <Unit>
+        <Filename Value="..\sacd\rainbow\Mikhan.Rainbow.Scarlet.pas"/>
+        <IsPartOfProject Value="True"/>
+        <EditorIndex Value="3"/>
+        <TopLine Value="409"/>
+        <CursorPos X="38" Y="715"/>
+        <UsageCount Value="21"/>
+        <Loaded Value="True"/>
       </Unit>
       <Unit>
         <Filename Value="C:\Programs\Lazarus\fpc\3.2.2\source\rtl\objpas\classes\classesh.inc"/>
@@ -55,11 +71,112 @@
         <CursorPos X="3" Y="160"/>
         <UsageCount Value="10"/>
       </Unit>
+      <Unit>
+        <Filename Value="C:\Programs\Lazarus\lcl\stdctrls.pp"/>
+        <UnitName Value="StdCtrls"/>
+        <EditorIndex Value="1"/>
+        <TopLine Value="923"/>
+        <CursorPos X="29" Y="938"/>
+        <UsageCount Value="10"/>
+        <Loaded Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="C:\Programs\Lazarus\lcl\include\customlistbox.inc"/>
+        <EditorIndex Value="2"/>
+        <TopLine Value="637"/>
+        <CursorPos X="3" Y="639"/>
+        <UsageCount Value="10"/>
+        <Loaded Value="True"/>
+      </Unit>
     </Units>
-    <JumpHistory>
+    <JumpHistory HistoryIndex="21">
       <Position>
         <Filename Value="MainUnit.pas"/>
         <Caret Line="3" Column="15"/>
+      </Position>
+      <Position>
+        <Filename Value="MainUnit.pas"/>
+        <Caret Line="54" TopLine="20"/>
+      </Position>
+      <Position>
+        <Filename Value="..\sacd\rainbow\Mikhan.Rainbow.Scarlet.pas"/>
+        <Caret Line="707" Column="16" TopLine="690"/>
+      </Position>
+      <Position>
+        <Filename Value="..\sacd\rainbow\Mikhan.Rainbow.Scarlet.pas"/>
+        <Caret Line="705" Column="28" TopLine="690"/>
+      </Position>
+      <Position>
+        <Filename Value="..\sacd\rainbow\Mikhan.Rainbow.Scarlet.pas"/>
+        <Caret Line="687" Column="23" TopLine="664"/>
+      </Position>
+      <Position>
+        <Filename Value="..\sacd\rainbow\Mikhan.Rainbow.Scarlet.pas"/>
+        <Caret Line="757" Column="5" TopLine="736"/>
+      </Position>
+      <Position>
+        <Filename Value="MainUnit.pas"/>
+        <Caret Line="63" Column="9" TopLine="44"/>
+      </Position>
+      <Position>
+        <Filename Value="MainUnit.pas"/>
+        <Caret Line="64" Column="9" TopLine="36"/>
+      </Position>
+      <Position>
+        <Filename Value="MainUnit.pas"/>
+        <Caret Line="82" Column="34" TopLine="52"/>
+      </Position>
+      <Position>
+        <Filename Value="MainUnit.pas"/>
+        <Caret Line="76" Column="6" TopLine="20"/>
+      </Position>
+      <Position>
+        <Filename Value="MainUnit.pas"/>
+        <Caret Line="77" Column="6" TopLine="47"/>
+      </Position>
+      <Position>
+        <Filename Value="MainUnit.pas"/>
+        <Caret Line="65" Column="39" TopLine="50"/>
+      </Position>
+      <Position>
+        <Filename Value="C:\Programs\Lazarus\lcl\stdctrls.pp"/>
+        <Caret Line="613" Column="15" TopLine="599"/>
+      </Position>
+      <Position>
+        <Filename Value="MainUnit.pas"/>
+        <Caret Line="65" Column="39" TopLine="50"/>
+      </Position>
+      <Position>
+        <Filename Value="MainUnit.pas"/>
+        <Caret Line="64" Column="39" TopLine="49"/>
+      </Position>
+      <Position>
+        <Filename Value="MainUnit.pas"/>
+        <Caret Line="65" Column="39" TopLine="50"/>
+      </Position>
+      <Position>
+        <Filename Value="MainUnit.pas"/>
+        <Caret Line="63" Column="7" TopLine="48"/>
+      </Position>
+      <Position>
+        <Filename Value="MainUnit.pas"/>
+        <Caret Line="78" Column="19" TopLine="68"/>
+      </Position>
+      <Position>
+        <Filename Value="MainUnit.pas"/>
+        <Caret Line="68" Column="12" TopLine="53"/>
+      </Position>
+      <Position>
+        <Filename Value="MainUnit.pas"/>
+        <Caret Line="67" Column="41" TopLine="53"/>
+      </Position>
+      <Position>
+        <Filename Value="MainUnit.pas"/>
+        <Caret Line="21" Column="5" TopLine="6"/>
+      </Position>
+      <Position>
+        <Filename Value="C:\Programs\Lazarus\lcl\stdctrls.pp"/>
+        <Caret Line="1019" Column="3" TopLine="1006"/>
       </Position>
     </JumpHistory>
     <RunParams>

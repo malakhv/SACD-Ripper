@@ -10,7 +10,7 @@ uses
   athreads,
   {$ENDIF}
   Interfaces, // this includes the LCL widgetset
-  Forms, MainUnit
+  Forms, MainUnit, Mikhan.Rainbow.Types, Mikhan.Rainbow.Scarlet
   { you can add units after this };
 
 {$R *.res}
