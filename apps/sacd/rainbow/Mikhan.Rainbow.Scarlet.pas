@@ -234,8 +234,8 @@ type
 {------------------------------------------------------------------------------}
 const
 
-    { The default length of SACD Area's header, in bytes. }
-    SACD_AREA_HEADER_LENGTH = 8;
+    { The default length of SACD Area's signature, in bytes. }
+    SACD_AREA_SIGNATURE_LENGTH = 8;
 
     { The offset of significant data in this area. }
     SACD_AREA_DATA_OFFSET = 16;
@@ -252,8 +252,8 @@ type
         FSize: TLSNumber;           // See Size property
         FSectors: TSACDSectors;     // See Sectors property
     protected
-        { See Header property. }
-        function GetHeader(): String; virtual;
+        { See Signature property. }
+        function GetSignature(): String; virtual;
         { See Sectors property. }
         function GetSector(Index : TLSNumber): PSACDSector;
     public
@@ -261,9 +261,9 @@ type
         { The name of this SACD Area (Master TOC, for example). }
         property Name: String read FName;
 
-        { The header of this Area. In current implementation this is header
-            of first sector. }
-        property Header: String read GetHeader;
+        { The signature of this Area. In current implementation this is
+            signature of first sector in Area. }
+        property Signature: String read GetSignature;
 
         { The first sector number of this Area. }
         property First: TLSNumber read FFirst;
@@ -604,7 +604,7 @@ type
     TMasterManufArea = class (TSACDArea)
     private
         { The offset of significant data in this area. }
-        const AREA_DATA_OFFSET = SACD_AREA_HEADER_LENGTH;
+        const AREA_DATA_OFFSET = SACD_AREA_SIGNATURE_LENGTH;
     public
 
         { Construct a new instance with default parameters. }
@@ -869,10 +869,10 @@ begin
         FSectors[I].Dump(Title, AsText, Limit);
 end;
 
-function TSACDArea.GetHeader(): String;
+function TSACDArea.GetSignature(): String;
 begin
     if HasData() then
-        Result := Self[0].ToString(0, SACD_AREA_HEADER_LENGTH)
+        Result := Self[0].ToString(0, SACD_AREA_SIGNATURE_LENGTH)
     else
         Result := Mikhan.Util.StrUtils.EMPTY;
 end;
@@ -955,7 +955,7 @@ const
     MASTER_TOC_SIGNATURE = 'SACDMTOC';
 
     { The offset of SACD format specification version in this area. }
-    MASTER_TOC_SPEC_VERSION_OFFSET = SACD_AREA_HEADER_LENGTH;
+    MASTER_TOC_SPEC_VERSION_OFFSET = SACD_AREA_SIGNATURE_LENGTH;
 
     { The offset of SACD Album information in this area. }
     MASTER_TOC_ALBUM_INFO_OFFSET = SACD_AREA_DATA_OFFSET;
@@ -1231,7 +1231,7 @@ end;
 function TSACDImage.IsSACDImage(): Boolean;
 begin
     Result := FMasterToc.HasData() and
-        (FMasterToc.Header = MASTER_TOC_SIGNATURE);
+        (FMasterToc.Signature = MASTER_TOC_SIGNATURE);
 end;
 
 procedure TSACDImage.DoLoad(const FileName: TFileName; const Success: Boolean);
