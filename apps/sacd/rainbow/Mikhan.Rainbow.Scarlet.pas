@@ -651,9 +651,6 @@ type
         The SACD image. This class contains properties and methods to retrieve
         information from SACD image file.
     }
-
-    { TSACDImage }
-
     TSACDImage = class(TPersistent)
     private
         FFileName: TFileName;           // See FileName property
@@ -709,71 +706,6 @@ type
 implementation                                                { IMPLEMENTETION }
 
 uses Mikhan.Util.StrUtils, Mikhan.Util.Dump;
-
-{------------------------------------------------------------------------------}
-{ TSACDImage                                                                   }
-{------------------------------------------------------------------------------}
-
-constructor TSACDImage.Create();
-begin
-    inherited;
-    FMasterToc := TMasterTocArea.Create();
-    FMasterText := TMasterTextArea.Create();
-    FMasterManuf := TMasterManufArea.Create();
-end;
-
-constructor TSACDImage.Create(FileName: TFileName);
-begin
-    Create();
-    FFileName := FileName;
-end;
-
-destructor TSACDImage.Destroy();
-begin
-    Clear();
-    inherited;
-end;
-
-procedure TSACDImage.Clear();
-begin
-    FMasterToc.Clear();
-    FMasterText.Clear();
-    FMasterManuf.Clear();
-    FFileName := EMPTY;
-end;
-
-function TSACDImage.LoadFromFile(const FileName: TFileName): Boolean;
-begin
-    Clear();
-    FFileName := FileName;
-    Result := FMasterToc.Load(FileName) and FMasterText.Load(FileName)
-        and FMasterManuf.Load(FileName);
-    if not Result then Clear();
-    Self.DoLoad(FileName, Result);
-end;
-
-function TSACDImage.IsSACDImage(): Boolean;
-begin
-    Result := FMasterToc.HasData() and (FMasterToc.Header = 'SACDMTOC');
-end;
-
-procedure TSACDImage.DoLoad(const FileName: TFileName; const Success: Boolean);
-begin
-    if Assigned(FOnLoad) then FOnLoad(Self, FileName, Success);
-end;
-
-procedure TSACDImage.Dump();
-begin
-    FMasterToc.Dump(False, 512);
-    Writeln();
-    FMasterToc.Dump(True, 512);
-    Writeln();
-    FMasterText.Dump(False, 512);
-    Writeln();
-    FMasterText.Dump(True, 512);
-    Writeln();
-    FMasterManuf.Dump(True, 512);
-end;
 
 {------------------------------------------------------------------------------}
 { Common                                                                       }
@@ -1019,6 +951,9 @@ const
     { The lenght of Master TOC, in sectors. }
     MASTER_TOC_LENGTH = 10;
 
+    { The signature of Master TOC Area. }
+    MASTER_TOC_SIGNATURE = 'SACDMTOC';
+
     { The offset of SACD format specification version in this area. }
     MASTER_TOC_SPEC_VERSION_OFFSET = SACD_AREA_HEADER_LENGTH;
 
@@ -1249,6 +1184,72 @@ end;
 constructor TMasterManufArea.Create();
 begin
     inherited Create('Master Manuf', 519);
+end;
+
+{------------------------------------------------------------------------------}
+{ TSACDImage                                                                   }
+{------------------------------------------------------------------------------}
+
+constructor TSACDImage.Create();
+begin
+    inherited;
+    FMasterToc := TMasterTocArea.Create();
+    FMasterText := TMasterTextArea.Create();
+    FMasterManuf := TMasterManufArea.Create();
+end;
+
+constructor TSACDImage.Create(FileName: TFileName);
+begin
+    Create();
+    FFileName := FileName;
+end;
+
+destructor TSACDImage.Destroy();
+begin
+    Clear();
+    inherited;
+end;
+
+procedure TSACDImage.Clear();
+begin
+    FMasterToc.Clear();
+    FMasterText.Clear();
+    FMasterManuf.Clear();
+    FFileName := EMPTY;
+end;
+
+function TSACDImage.LoadFromFile(const FileName: TFileName): Boolean;
+begin
+    Clear();
+    FFileName := FileName;
+    Result := FMasterToc.Load(FileName) and FMasterText.Load(FileName)
+        and FMasterManuf.Load(FileName);
+    if not Result then Clear();
+    Self.DoLoad(FileName, Result);
+end;
+
+function TSACDImage.IsSACDImage(): Boolean;
+begin
+    Result := FMasterToc.HasData() and
+        (FMasterToc.Header = MASTER_TOC_SIGNATURE);
+end;
+
+procedure TSACDImage.DoLoad(const FileName: TFileName; const Success: Boolean);
+begin
+    if Assigned(FOnLoad) then FOnLoad(Self, FileName, Success);
+end;
+
+procedure TSACDImage.Dump();
+begin
+    FMasterToc.Dump(False, 512);
+    Writeln();
+    FMasterToc.Dump(True, 512);
+    Writeln();
+    FMasterText.Dump(False, 512);
+    Writeln();
+    FMasterText.Dump(True, 512);
+    Writeln();
+    FMasterManuf.Dump(True, 512);
 end;
 
 end.                                                                     { END }
