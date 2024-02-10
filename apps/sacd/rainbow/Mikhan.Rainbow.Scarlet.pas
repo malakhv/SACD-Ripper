@@ -242,6 +242,13 @@ const
 
 type
 
+    { The types of SACD Areas. }
+    TSACDAreaType = (atUnknown = -1, atFile, atDTCP, atEKB1, atMasterToc,
+        atMasterText, atMasterManuf, atRevToc, atStereo, atMulti, atExtension,
+        atEKB2, atRevoc, atExtra);
+
+type
+
     {
         The abstract Area (a group of sequential sectors) on a SACD disc.
     }
@@ -252,11 +259,16 @@ type
         FSize: TLSNumber;           // See Size property
         FSectors: TSACDSectors;     // See Sectors property
     protected
+        { See Type property. }
+        function GetAreaType(): TSACDAreaType;
         { See Signature property. }
         function GetSignature(): String; virtual;
         { See Sectors property. }
         function GetSector(Index : TLSNumber): PSACDSector;
     public
+
+        { The type of this SACD Area. }
+        property AreaType: TSACDAreaType read GetAreaType;
 
         { The name of this SACD Area (Master TOC, for example). }
         property Name: String read FName;
@@ -816,6 +828,35 @@ end;
 { TSACDArea                                                                    }
 {------------------------------------------------------------------------------}
 
+{
+    The signatures of SACD Areas.
+}
+const
+    { The signature of Master TOC Area. }
+    //MASTER_TOC_SIGNATURE = 'SACDMTOC';
+    SACD_AREA_SIG_FILE_SYSTEM = '';
+    SACD_AREA_SIG_DTCP = '';
+    SACD_AREA_SIG_EKB1 = '';
+    SACD_AREA_SIG_MASTER_TOC = 'SACDMTOC';
+    SACD_AREA_SIG_MASTER_TEXT = '';
+    SACD_AREA_SIG_MASTER_MANUF = '';
+    SACD_AREA_SIG_REV_TOC = '';
+    SACD_AREA_SIG_STEREO = '';
+    SACD_AREA_SIG_MULTI = '';
+    SACD_AREA_SIG_EXTENSION = '';
+    SACD_AREA_SIG_EKB2 = '';
+    SACD_AREA_SIG_REVOCATION = '';
+    SACD_AREA_SIG_EXTRA = '';
+    SACD_AREA_SIG_UNKNOWN = 'UNKNOWN';
+
+    SACD_AREA_SIGNATURES: Array [TSACDAreaType] of String = (
+        SACD_AREA_SIG_UNKNOWN,
+        SACD_AREA_SIG_FILE_SYSTEM, SACD_AREA_SIG_DTCP, SACD_AREA_SIG_EKB1,
+        SACD_AREA_SIG_MASTER_TOC, SACD_AREA_SIG_MASTER_TEXT,
+        SACD_AREA_SIG_MASTER_MANUF, SACD_AREA_SIG_REV_TOC,
+        SACD_AREA_SIG_STEREO, SACD_AREA_SIG_MULTI, SACD_AREA_SIG_EXTENSION,
+        SACD_AREA_SIG_EKB2, SACD_AREA_SIG_REVOCATION, SACD_AREA_SIG_EXTRA);
+
 constructor TSACDArea.Create(AName: String; First: TLSNumber);
 begin
     // By default, the size of area is 1 sector;
@@ -867,6 +908,19 @@ begin
     Title := Title + ' - Sector';
     for I := Low(FSectors) to High(FSectors) do
         FSectors[I].Dump(Title, AsText, Limit);
+end;
+
+function TSACDArea.GetAreaType(): TSACDAreaType;
+var Sig: String;
+    I: TSACDAreaType;
+begin
+    Sig := Self.GetSignature();
+    for I := Low(SACD_AREA_SIGNATURES) to High(SACD_AREA_SIGNATURES) do
+        if SACD_AREA_SIGNATURES[I] = Sig then
+        begin
+            Result := I; Exit;
+        end;
+    Result := atUnknown;
 end;
 
 function TSACDArea.GetSignature(): String;
@@ -950,9 +1004,6 @@ const
 
     { The lenght of Master TOC, in sectors. }
     MASTER_TOC_LENGTH = 10;
-
-    { The signature of Master TOC Area. }
-    MASTER_TOC_SIGNATURE = 'SACDMTOC';
 
     { The offset of SACD format specification version in this area. }
     MASTER_TOC_SPEC_VERSION_OFFSET = SACD_AREA_SIGNATURE_LENGTH;
@@ -1231,7 +1282,7 @@ end;
 function TSACDImage.IsSACDImage(): Boolean;
 begin
     Result := FMasterToc.HasData() and
-        (FMasterToc.Signature = MASTER_TOC_SIGNATURE);
+        (FMasterToc.AreaType = atMasterToc);
 end;
 
 procedure TSACDImage.DoLoad(const FileName: TFileName; const Success: Boolean);
