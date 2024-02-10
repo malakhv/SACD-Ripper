@@ -254,7 +254,7 @@ type
     }
     TSACDArea = class (TObject)
     private
-        FName: String;              // See Name property
+        FAreaName: String;          // See AreaName property
         FFirst: TLSNumber;          // See First property
         FSize: TLSNumber;           // See Size property
         FSectors: TSACDSectors;     // See Sectors property
@@ -267,11 +267,11 @@ type
         function GetSector(Index : TLSNumber): PSACDSector;
     public
 
+        { The symbolic name of this SACD Area (Master TOC, for example). }
+        property AreaName: String read FAreaName;
+
         { The type of this SACD Area. }
         property AreaType: TSACDAreaType read GetAreaType;
-
-        { The name of this SACD Area (Master TOC, for example). }
-        property Name: String read FName;
 
         { The signature of this Area. In current implementation this is
             signature of first sector in Area. }
@@ -866,7 +866,7 @@ end;
 constructor TSACDArea.Create(AName: String; First, Size: TLSNumber);
 begin
     inherited Create();
-    FName := AName; FFirst := First; FSize := Size;
+    FAreaName := AName; FFirst := First; FSize := Size;
 end;
 
 destructor TSACDArea.Destroy();
@@ -893,8 +893,8 @@ begin
     if not IsEmpty(Header) then
         Title := Header
     else
-        if not IsEmpty(FName) then
-            Title := FName
+        if not IsEmpty(Self.AreaName) then
+            Title := Self.AreaName
         else
             Title := 'SACD Area';
 
