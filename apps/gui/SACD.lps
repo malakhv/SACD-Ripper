@@ -18,7 +18,8 @@
         <ComponentName Value="MainForm"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
-        <TopLine Value="58"/>
+        <IsVisibleTab Value="True"/>
+        <TopLine Value="16"/>
         <CursorPos X="20" Y="65"/>
         <UsageCount Value="22"/>
         <Loaded Value="True"/>
@@ -35,7 +36,6 @@
       <Unit>
         <Filename Value="..\sacd\rainbow\Mikhan.Rainbow.Scarlet.pas"/>
         <IsPartOfProject Value="True"/>
-        <IsVisibleTab Value="True"/>
         <EditorIndex Value="3"/>
         <TopLine Value="235"/>
         <CursorPos X="36" Y="218"/>
