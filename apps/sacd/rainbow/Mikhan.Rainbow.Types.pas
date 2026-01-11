@@ -59,9 +59,9 @@ interface                                                          { INTERFACE }
 type
 
     {
-        Album or Disc Catalog Number. This string is padded at the end with
-        space characters ($20). If a Catalog Number is not used, all bytes
-        must be set to zero.
+        The Album or Disc Catalog Number. This string is padded at the end
+        with space characters ($20). If a Catalog Number is not used, all
+        bytes must be set to zero.
     }
     TSACDCatalogNumber = String[15]; // 16 bytes
 
@@ -81,12 +81,12 @@ type
     }
     TSACDDate = packed record  // 4 bytes in total
         { Year: The value of the Year field has a range of 0..65535. }
-        Year: Word;  // 2 bytes
+        Year: Word; // 2 bytes
         { Month: The value of the Month field has a range of 0..12, with 1..12
-            meaning January. }
-        Month: Byte;  // 1 byte
+          meaning January..December. }
+        Month: Byte; // 1 byte
         { Day: The value of the Day field has a range of 0..31. }
-        Day: Byte;  // 1 byte
+        Day: Byte; // 1 byte
         { Represents a creation date of SACD disc as a human readable string. }
         function ToString(): String;
     end;
@@ -173,11 +173,11 @@ type
     TSACDTextChannel = packed record // 4 bytes in total
 
         { Language_Code: The ISO 639 Language Code that is used with
-            appropriate Text Channel. The value $0000 is not allowed. }
+          appropriate Text Channel. The value $0000 is not allowed. }
         LangCode: TSACDLangCode;
 
-        { Character_Set_Code: The character set used for appropriate Text
-            Channel. }
+        { Character_Set_Code: The character set used for appropriate
+          Text Channel. }
         CharSet: Byte;  // 1 byte
 
         { Reserved: Just reserved to future using. }
@@ -196,8 +196,8 @@ type
     TSACDTextChannels = packed record  // 40 bytes in total
 
         { N_Text_Channels: The number of Text Channels used. The maximum
-            allowed value is 8. A value of zero is allowed. This value must be
-            equal to the number of used Text Channels. }
+          allowed value is 8. A value of zero is allowed. This value must
+          be equal to the number of used Text Channels. }
         Count: Byte;  // 1 byte
 
         { Reserved: Just reserved to future using. }

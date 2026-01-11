@@ -156,8 +156,8 @@ type
     }
     TSACDSector = record
 
-        { Logical Sector Number (LSN), used to address the Sectors on
-          the disc. }
+        { Logical Sector Number (LSN), used to address the Sectors
+          on the disc. }
         Number: TLSNumber;
 
         { The raw data of a disc sector represents as a byte array. }
@@ -184,8 +184,8 @@ type
         { Returns sector as a string (as is, with all special character). }
         function ToString(): String; overload;
 
-        { Returns part of sector data from Start position as a string
-            (as is, with all special character). }
+        { Returns part of sector data from Start position as a string (as is,
+          with all special character). }
         function ToString(Start, Count: Integer): String; overload;
 
         { Clear all sector data in this record. }
@@ -307,11 +307,11 @@ type
             overload;
 
         { Construct a new instance of TSACDArea class with specified
-            parameters. }
+          parameters. }
         constructor Create(AName: String; First: TLSNumber); virtual; overload;
 
         { Construct a new instance of TSACDArea class with specified
-            parameters. }
+          parameters. }
         constructor Create(AName: String; First, Size: TLSNumber); virtual;
             overload;
 
@@ -353,28 +353,28 @@ type
     }
     TMasterTocAlbum = packed record  // 48 bytes in total
 
-        { Album_Set_Size: The total number of discs in this album. The minimum
-            allowed value is one. All discs in one Album must have the same
-            value. }
+        { Album_Set_Size: The total number of discs in this album. The
+          minimum allowed value is one. All discs in one Album must have
+          the same value. }
         SetSize: Word;  // 2 bytes
 
-        { Album_Sequence_Number: The sequence number of this disc within the
-            album. This must be numbered consecutively over all discs in an
-            Album. The first disc from an Album must have set this value to 1.
-            The maximum allowed value is equals Album_Set_Size. }
+        { Album_Sequence_Number: The sequence number of this disc within
+          the album. This must be numbered consecutively over all discs in
+          an Album. The first disc from an Album must have set this value
+          to 1. The maximum allowed value is equals Album_Set_Size. }
         SequenceNumber: Word;  // 2 bytes
 
         { Reserved: Just reserved to future using. }
         Reserved: DWord; // 4 bytes
 
-        { Album_Catalog_Number: The catalog number of this album. All discs in
-            one Album must have the same catalog number. This fields must be
-            padded at the end with bytes with space characters (#20). }
+        { Album_Catalog_Number: The catalog number of this album. All discs
+          in one Album must have the same catalog number. This fields must
+          be padded at the end with bytes with space characters (#20). }
         CatalogNumber: TSACDCatalogNumber; // 16 bytes
 
         { Album_Genre: The genres associated with this Super Audio CD Album
-            (min 0 and max 4). It is recommended that all discs in one Album
-            have the same genres. }
+          (min 0 and max 4). It is recommended that all discs in one Album
+          have the same genres. }
         Genres: TSACDGenres; // 16 bytes
 
     end;
@@ -387,49 +387,49 @@ type
     TMasterTocDisc = packed record  // 64 bytes in total
 
         { 2CH_TOC_1_Address: The LSN of the first Sector of Area TOC-1 in the
-            2-Channel Stereo Area. If the 2-Channel Stereo Area is not present,
-            this value must be zero. }
+          2-Channel Stereo Area. If the 2-Channel Stereo Area is not present,
+          this value must be zero. }
         SChToc1: DWord;  // 4 bytes
 
         { 2CH_TOC_2_Address: The LSN of the first Sector of Area TOC-2 in the
-            2-Channel Stereo Area. If the 2-Channel Stereo Area is not present,
-            this value must be zero. }
+          2-Channel Stereo Area. If the 2-Channel Stereo Area is not present,
+          this value must be zero. }
         SChToc2: DWord; // 4 bytes
 
         { MC_TOC_1_Address: The LSN of the first Sector of Area TOC-1 in the
-            Multi Channel Area. If the Multi Channel Area is not present, this
-            value must be zero. }
+          Multi Channel Area. If the Multi Channel Area is not present, this
+          value must be zero. }
         MChToc1: DWord;  // 4 bytes
 
         { MC_TOC_2_Address: The LSN of the first Sector of Area TOC-2 in the
-            Multi Channel Area. If the Multi Channel Area is not present, this
-            value must be zero. }
+          Multi Channel Area. If the Multi Channel Area is not present, this
+          value must be zero. }
         MChToc2: DWord;  // 4 bytes
 
         { Disc_Flags: The information about SACD disc, Hybrid or not, for
-            example. }
+          example. }
         DiscFlags: Byte;  // 1 byte
 
         { Reserved: Just reserved to future using. }
         Reserved1, Reserved2, Reserved3: Byte;  // 3 bytes
 
         { 2CH_TOC_Length: The length in Sectors of Area TOC-A in the 2-Channel
-            Stereo Area. If the 2-Channel Stereo Area is not present, this
-            value must be zero. }
+          Stereo Area. If the 2-Channel Stereo Area is not present, this
+          value must be zero. }
         SChTocLength: Word; // 2 bytes
 
         { MC_TOC_Length: The length in Sectors of Area TOC-A in the Multi
-            Channel Area. If the Multi Channel Area is not present, this value
-            must be zero. }
+          Channel Area. If the Multi Channel Area is not present, this value
+          must be zero. }
         MChTocLength: Word;  // 2 bytes
 
         { Disc_Catalog_Number: The catalog number of SACD disc that uniquely
-            identifies each disc in an Album. }
+          identifies each disc in an Album. }
         CatalogNumber: TSACDCatalogNumber;  // 16 bytes
 
         { Disc_Genre: The genres associated with this Super Audio CD Album
-            (min 0 and max 4). It is recommended that all discs in one Album
-            have the same genres. }
+          (min 0 and max 4). It is recommended that all discs in one Album
+          have the same genres. }
         Genres: TSACDGenres;  // 16 bytes
 
         { Disc_Date: The creation date of the SACD disc. }
@@ -451,81 +451,81 @@ type
     TMasterTocDiscTwo = packed record  // 64 bytes in total
 
         { 2CH_TOC_3_Address: The LSN of the first Sector of Area TOC-3 in the
-            2-Channel Stereo Area. A zero value means that Area TOC-3 is not
-            available in the 2-Channel Stereo Area. }
+          2-Channel Stereo Area. A zero value means that Area TOC-3 is not
+          available in the 2-Channel Stereo Area. }
         SChToc3: DWord;  // 4 bytes
 
         { 2CH_TOC_4_Address: The LSN of the first Sector of Area TOC-4 in the
-            2-Channel Stereo Area. A zero value means that Area TOC-4 is not
-            available in the 2-Channel Stereo Area. }
+          2-Channel Stereo Area. A zero value means that Area TOC-4 is not
+          available in the 2-Channel Stereo Area. }
         SChToc4: DWord;  // 4 bytes
 
         { MC_TOC_3_Address: The LSN of the first Sector of Area TOC-3 in the
-            Multi Channel Area. A zero value means that Area TOC-3 is not
-            available in the Multi Channel Area. }
+          Multi Channel Area. A zero value means that Area TOC-3 is not
+          available in the Multi Channel Area. }
         MChToc3: DWord;  // 4 bytes
 
         { MC_TOC_4_Address: The LSN of the first Sector of Area TOC-4 in the
-            Multi Channel Area. A zero value means that Area TOC-4 is not
-            available in the Multi Channel Area. }
+          Multi Channel Area. A zero value means that Area TOC-4 is not
+          available in the Multi Channel Area. }
         MChToc4: DWord;  // 4 bytes
 
         { Reserved: Just reserved to future using. }
         Reserved1: DWord; // 4 bytes
 
         { 2CH_TOC_B_Length: The length in Sectors of Area TOC-B in the 2-Channel
-            Stereo Area. If Area TOC-B is not present in the 2-Channel Stereo
-            Area, or if the 2-Channel Stereo Area is not present, this value
-            must be zero. }
+          Stereo Area. If Area TOC-B is not present in the 2-Channel Stereo
+          Area, or if the 2-Channel Stereo Area is not present, this value
+          must be zero. }
         SChTocBLength: Word;  // 2 bytes
 
         { MC_TOC_B_Length: The length in Sectors of Area TOC-B in the Multi
-            Channel Area. If Area TOC-B is not present in the Multi Channel
-            Area, or if the Multi Channel Area is not present, this value must
-            be zero. }
+          Channel Area. If Area TOC-B is not present in the Multi Channel
+          Area, or if the Multi Channel Area is not present, this value must
+          be zero. }
         MChTocBLength: Word;  // 2 bytes
 
         { E_TOC_Address: The LSN of the first Sector of the Extension TOC. If
-            the Extension Area is not present, this value must be zero. }
+          the Extension Area is not present, this value must be zero. }
         ETocAddress: DWord;  // 4 bytes
 
         { E_TOC_Length: The length in Sectors of the Extension TOC. If the
-            Extension Area is not present, this value must be zero. }
+          Extension Area is not present, this value must be zero. }
         ETocLength: Word;  // 2 bytes
 
         { Reserved: Just reserved to future using. }
         Reserved2: Word;  // 2 bytes
 
         { E_Data_Start_Address: The LSN of the first Sector of Extension Data.
-            If the Extension Area is not present, this value must be zero. }
+          If the Extension Area is not present, this value must be zero. }
         EDataStart: DWord;  // 4 bytes
 
         { E_Data_End_Address: The LSN of the last Sector of the Extension Data.
-            If the Extension Area is not present, this value must be zero. }
+          If the Extension Area is not present, this value must be zero. }
         EDataEnd: DWord;  // 4 bytes
 
         { EKB1_Area_Address: The LSN of the first Sector of the EKB1 Area. In
-            discs according to this version of the SACD Spec this value must be
-            448. A zero value means the EKB1 Area is not present. The EKB1 Area
-            is not present in discs according to the SACD Spec Version 1.3 or
-            lower. }
+          discs according to this version of the SACD Spec this value must be
+          448. A zero value means the EKB1 Area is not present. The EKB1 Area
+          is not present in discs according to the SACD Spec Version 1.3 or
+          lower. }
         EKB1Area: DWord;  // 4 bytes
 
         { EKB2_Area_Address: The LSN of the first Sector of the EKB2 Area. A
-            zero value means the EKB2 Area is not present. The EKB2 Area is not
-            present in discs according to the SACD Spec Version 1.3 or lower. }
+          zero value means the EKB2 Area is not present. The EKB2 Area is not
+          present in discs according to the SACD Spec Version 1.3 or lower. }
         EKB2Area: DWord;  // 4 bytes
 
         { Rev_Area_Start_Address: The LSN of the first Sector of the Revocation
-            Data Area. If the Revocation Data Area is not present, this value
-            must be zero. The Revocation Data Area is not present in discs
-            according to the SACD Spec Version 1.3 or lower. }
+          Data Area. If the Revocation Data Area is not present, this value
+          must be zero. The Revocation Data Area is not present in discs
+          according to the SACD Spec Version 1.3 or lower. }
         RevAreaStart: DWord;  // 4 bytes
 
         { Rev_Area_End_Address: The LSN of the last Sector of the Revocation
-            Data Area. If the Revocation Data Area is not present, this value
-            must be zero. The Revocation Data Area is not present in discs
-            according to the SACD Spec Version 1.3 or lower. }
+          Data Area. If the Revocation Data Area is not present, this value
+          must be zero. The Revocation Data Area is not present in discs
+          according to the SACD Spec Version 1.3 or lower. }
         RevAreaEnd: DWord;  // 4 bytes
 
         { Reserved: Just reserved to future using. }
@@ -556,16 +556,16 @@ type
         { The SACD format specification version. }
         property SpecVersion: TSACDVersion read GetSpecVersion;
 
-        { Returns the information about SACD Album which stored in Master TOC
-            Area. }
+        { Returns the information about SACD Album which stored in the
+          Master TOC Area. }
         function GetAlbumInfo(): TMasterTocAlbum;
 
-        { Returns the information about SACD Disc which stored in Master TOC
-            Area. }
+        { Returns the information about SACD Disc which stored in the
+          Master TOC Area. }
         function GetDiscInfo(): TMasterTocDisc;
 
         { Returns the additional information about SACD Disc which stored in
-            Master TOC Area. }
+          the Master TOC Area. }
         function GetDiscInfoTwo(): TMasterTocDiscTwo;
 
         { Returns the definitions of Text Channels in this Area. }
