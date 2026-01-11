@@ -94,7 +94,7 @@ type
 type
 
     {
-        Spec_Version: The SACD format specification version.
+        The SACD format specification version (Spec_Version).
     }
     TSACDVersion = packed record // 2 bytes in total
         { Major_Version: The major version number of SACD specification. }
@@ -112,21 +112,24 @@ type
 { A music genre is a conventional category that identifies some pieces of      }
 { music as belonging to a shared tradition or set of conventions.              }
 {                                                                              }
-{ For more details about SACD Genre format, please see Part 2 of Super Audio   }
-{ CD System Description (section 1.7.2.2 and Annex B).                         }
+{ For more details about SACD Genre format (included Genre_Code, Genre_Table   }
+{ and Genre_Index), please see Part 2 of Super Audio CD System Description     }
+{ (section 1.7.2.2 and Annex B).                                               }
 {------------------------------------------------------------------------------}
 
 type
 
     {
-        Genre_Code: The information about Genre.
+        The information about Genre (Genre_Code). If a Genre is not used,
+        Table and Index must be set to zero.
     }
     TSACDGenre = packed record // 4 bytes in total
-        { Genre_Table: The Genre's table. }
+        { Genre_Table: The table used by Index. It can be 0 (not used),
+          1 (general Genre Table) and 2 (Japanese Genre Table, see RIS504). }
         Table: Byte;  // 1 byte
         { Reserved data. }
         Reserved: Byte;  // 1 byte
-        { Genre_Index: The Genre's index in table. }
+        { Genre_Index: The Genre's index in specified table. }
         Index: Word;  // 2 bytes
         { Returns Genre as a human readable string. }
         function GetGenre(): String;
@@ -135,7 +138,7 @@ type
     end;
 
     {
-        Genre4: The Album or Disc Genres.
+        The Album or Disc Genres (Genre4).
     }
     TSACDGenres = Array [1..4] of TSACDGenre;  // 16 bytes
     PSACDGenres = ^TSACDGenres;
