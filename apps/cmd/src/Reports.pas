@@ -105,7 +105,7 @@ begin
     Writeln(TAB, 'Creation:                ', Disc.Date.ToString());
     Writeln(TAB, 'Hybrid Disc:             ', Disc.IsHybrid());
     for I := Low(Disc.Genres) to High(Disc.Genres) do
-        Writeln(TAB, 'Disc Genre ', I, ':            ', Disc.Genres[1].Genre);
+        Writeln(TAB, 'Disc Genre ', I, ':            ', Disc.Genres[I].Genre);
 
     Writeln(TAB, 'Disc Title:              ', MasterText.DiscTitle);
     Writeln(TAB, 'Disc Artist:             ', MasterText.DiscArtist);
